@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIRCLOCK - On Time Worldwide</title>
+    <!-- Preconnect to essential origins for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://worldtimeapi.org">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f0f4f8;
+            --text-light: #2c3e50;
+            --bg-dark: #1a2639;
+            --text-dark: #ecf0f1;
+            --accent: #3498db;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2c3e50;
+            --shadow-light: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 25px rgba(0, 0, 0, 0.3);
+            --border-light: rgba(0, 0, 0, 0.1);
+            --border-dark: rgba(255, 255, 255, 0.1);
+            --transition: all 0.3s ease-in-out;
+            --card-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-theme {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body.dark-theme {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+
+        header {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .light-theme header {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: var(--border-light);
+        }
+
+        .dark-theme header {
+            background-color: rgba(26, 38, 57, 0.8);
+            border-color: var(--border-dark);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Styles for the hamburger menu */
+        .menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1050;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .nav-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 2rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .nav-link:hover {
+            transform: scale(1.1);
+            color: var(--accent);
+        }
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .settings-btn {
+            cursor: pointer;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .settings-btn:hover {
+            background-color: rgba(128, 128, 128, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .main-clock {
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--card-radius);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            cursor: pointer; /* For fullscreen toggle */
+        }
+        .main-clock .date {
+            transition: color 0.2s ease;
+        }
+
+        .light-theme .main-clock {
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+        }
+
+        .dark-theme .main-clock {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .main-clock:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        .dark-theme .main-clock:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .main-clock .time {
+            font-size: clamp(3rem, 12vw, 6rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+        
+        .main-clock .location {
+            font-size: 1rem;
+            opacity: 0.6;
+            margin-top: 0.5rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .light-theme .search-input {
+            background-color: var(--card-bg-light);
+            color: var(--text-light);
+            border-color: var(--border-light);
+        }
+
+        .dark-theme .search-input {
+            background-color: var(--card-bg-dark);
+            color: var(--text-dark);
+            border-color: var(--border-dark);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 12px;
+            z-index: 100;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .light-theme .search-dropdown {
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+        }
+
+        .dark-theme .search-dropdown {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-dropdown-item:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .search-dropdown-item .flag { font-size: 1.5rem; }
+        .search-dropdown-item .city-name { font-weight: 500; }
+        .search-dropdown-item .timezone { font-size: 0.8rem; opacity: 0.7; margin-left: auto; }
+
+        .clocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .clock-card {
+            padding: 1.5rem;
+            border-radius: var(--card-radius);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .clock-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* New styles for day/night cards, independent of body theme */
+        .clock-card.card-day {
+            background-color: var(--card-bg-light);
+            color: var(--text-light);
+            box-shadow: var(--shadow-light);
+        }
+        .clock-card.card-day:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .clock-card.card-night {
+            background-color: var(--card-bg-dark);
+            color: var(--text-dark);
+            box-shadow: var(--shadow-dark);
+        }
+        .clock-card.card-night:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+
+        .clock-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clock-card-title .flag { font-size: 1.5rem; margin-right: 0.5rem; }
+        .clock-card-title .city-name { font-size: 1.2rem; font-weight: 600; }
+
+        .pin-btn {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            background: none;
+            border: none;
+            color: inherit;
+        }
+
+        .pin-btn:hover, .pin-btn.pinned {
+            opacity: 1;
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .clock-card .time { font-size: 2.2rem; font-weight: 500; }
+        .clock-card .date { font-size: 0.9rem; opacity: 0.8; }
+
+        .time-difference {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+        
+        /* Specific styles for time difference based on card color */
+        .card-day .time-difference.ahead { background-color: rgba(46, 204, 113, 0.1); color: #27ae60; }
+        .card-day .time-difference.behind { background-color: rgba(231, 76, 60, 0.1); color: #c0392b; }
+        .card-night .time-difference.ahead { background-color: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .card-night .time-difference.behind { background-color: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+
+        .day-night-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .section {
+             margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid;
+        }
+        .light-theme .section-title { border-color: var(--border-light); }
+        .dark-theme .section-title { border-color: var(--border-dark); }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border-radius: var(--card-radius);
+            border: 1px solid;
+            font-size: 1rem;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .light-theme textarea { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
+        .dark-theme textarea { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
+        textarea:focus { outline: none; border-color: var(--accent); }
+
+        .calendar {
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .light-theme .calendar { background-color: var(--card-bg-light); box-shadow: var(--shadow-light); }
+        .dark-theme .calendar { background-color: var(--card-bg-dark); box-shadow: var(--shadow-dark); }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--accent);
+            color: white;
+        }
+        
+        .calendar-title-text {
+            font-weight: 600; font-size: 1.1rem;
+            cursor: pointer; /* Make calendar title clickable */
+            transition: opacity 0.2s;
+        }
+        .calendar-title-text:hover {
+            opacity: 0.8;
+        }
+
+        .calendar-nav { display: flex; gap: 0.5rem; }
+        .calendar-nav-btn { background: none; border: none; color: white; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s ease; }
+        .calendar-nav-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 1rem; gap: 0.5rem; }
+        .calendar-day-header { text-align: center; font-weight: 600; font-size: 0.8rem; opacity: 0.7; }
+        .calendar-day { text-align: center; padding: 0.5rem; cursor: pointer; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto; transition: background-color 0.2s ease; }
+        .calendar-day:hover { background-color: rgba(52, 152, 219, 0.1); }
+        .calendar-day.today { background-color: var(--accent); color: white; font-weight: 600; }
+        .calendar-day.other-month { opacity: 0.3; }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .reset-btn:hover { background-color: #c0392b; }
+
+        footer {
+            padding: 2rem 1.5rem;
+            background-color: white;
+        }
+        .quote-container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .quote {
+            font-family: 'Roboto Mono', monospace;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .quote-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* Generic Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            width: 90%; max-width: 500px; border-radius: var(--card-radius);
+            padding: 2rem; position: relative; transition: transform 0.3s ease;
+            transform: scale(0.95);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .light-theme .modal-content { background-color: var(--card-bg-light); }
+        .dark-theme .modal-content { background-color: var(--card-bg-dark); }
+
+        .close-modal-btn {
+            position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem;
+            cursor: pointer; width: 30px; height: 30px; display: flex;
+            align-items: center; justify-content: center; border-radius: 50%;
+            transition: var(--transition);
+            background: none; border: none;
+            color: inherit;
+        }
+        .close-modal-btn:hover { background-color: rgba(128, 128, 128, 0.1); transform: rotate(90deg); }
+        
+        /* Date Picker Modal Styles */
+        #datePickerModal .modal-content {
+            max-width: 400px;
+            background-color: #2c3e50; /* Dark background as in screenshot */
+            color: #ecf0f1;
+        }
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .date-picker-year-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .year-nav-btn {
+            background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;
+        }
+        .year-input {
+            font-size: 1.5rem; font-weight: 600;
+            background: none;
+            border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            width: 70px;
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .year-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+        .year-input::-webkit-outer-spin-button,
+        .year-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .year-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .date-picker-months-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        .month-btn {
+            background: none;
+            border: 2px solid transparent;
+            color: #ecf0f1;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .month-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .month-btn.active {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .fullscreen-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .fullscreen-overlay.active { opacity: 1; pointer-events: all; }
+        .fullscreen-overlay .time { font-size: clamp(4rem, 20vw, 12rem); font-weight: 700; color: white; text-shadow: 0 0 30px rgba(255,255,255,0.5); }
+        .fullscreen-overlay .date { font-size: clamp(1.5rem, 6vw, 3rem); color: white; opacity: 0.8; }
+        .close-fullscreen-btn { position: absolute; top: 2rem; right: 2rem; font-size: 2rem; color: white; background: none; border: none; cursor: pointer; transition: transform 0.3s ease; }
+        .close-fullscreen-btn:hover { transform: scale(1.2) rotate(90deg); }
+        
+        .settings-group { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid; }
+        .light-theme .settings-group { border-color: var(--border-light); }
+        .dark-theme .settings-group { border-color: var(--border-dark); }
+        .settings-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .settings-group h3 { margin-bottom: 1rem; font-size: 1.2rem; color: var(--accent); }
+        .setting-row { margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; }
+        
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        
+        .language-select {
+            width: 100%; padding: 0.75rem; border-radius: 8px;
+            border: 1px solid; font-size: 1rem;
+        }
+        .light-theme .language-select { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
+        .dark-theme .language-select { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
+    </style>
+</head>
+<body>
+    <!-- Header: Logo, Navigation, and Settings Button -->
+    <header>
+        <div class="logo">AIRCLOCK</div>
+        <div class="header-right">
+            <button class="menu-btn" id="menuBtn">☰</button>
+            <button class="settings-btn" id="settingsBtn">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay">
+        <nav class="nav-menu">
+            <a href="#" class="nav-link active">Time</a>
+            <a href="#" class="nav-link">Stopwatch</a>
+            <a href="#" class="nav-link">Timer</a>
+            <a href="#" class="nav-link">Alarm</a>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Main Clock Display (User's Local Time) -->
+        <div class="main-clock" id="mainClockContainer">
+            <div class="time" id="mainTime">--:--:--</div>
+            <div class="date" id="mainDate">Loading...</div>
+            <div class="location" id="mainLocation"></div>
+        </div>
+
+        <!-- City Search Input and Dropdown -->
+        <div class="search-container" id="searchContainer">
+            <input type="text" class="search-input" id="citySearchInput" placeholder="Search for a city...">
+            <div class="search-dropdown" id="searchDropdown"></div>
+        </div>
+
+        <!-- Grid for Pinned Clocks -->
+        <div class="clocks-grid" id="clocksGrid"></div>
+
+        <!-- Calendar Section -->
+        <div class="section">
+            <h2 class="section-title" id="calendarSectionTitle">Calendar</h2>
+            <div class="calendar">
+                <div class="calendar-header">
+                    <span class="calendar-title-text" id="calendarTitleText"></span>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" id="prevMonthBtn">◀</button>
+                        <button class="calendar-nav-btn" id="nextMonthBtn">▶</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="section">
+            <h2 class="section-title" id="notesTitle">Notes</h2>
+            <textarea id="notesArea" placeholder="Write something..."></textarea>
+        </div>
+        
+        <!-- Reset Button Section -->
+        <div class="section" style="text-align: center;">
+            <button class="reset-btn" id="resetBtn">Reset All Data</button>
+        </div>
+    </div>
+
+    <!-- Footer with a time-related quote -->
+    <footer>
+        <div class="quote-container">
+            <p class="quote">"Time is what we want most, but what we use worst"</p>
+            <p class="quote-author">- William Penn</p>
+        </div>
+    </footer>
+
+    <!-- Fullscreen Clock Overlay -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <button class="close-fullscreen-btn" id="closeFullscreenBtn">✕</button>
+        <div class="time" id="fullscreenTime"></div>
+        <div class="date" id="fullscreenDate"></div>
+    </div>
+
+    <!-- Date Picker Modal -->
+    <div class="modal-overlay" id="datePickerModal">
+        <div class="modal-content">
+            <div class="date-picker-header">
+                <div class="date-picker-year-selector">
+                    <button class="year-nav-btn" id="prevYearBtn">◀</button>
+                    <input type="number" class="year-input" id="pickerYearInput">
+                    <button class="year-nav-btn" id="nextYearBtn">▶</button>
+                </div>
+                <button class="close-modal-btn" id="closeDatePickerBtn">✕</button>
+            </div>
+            <div class="date-picker-months-grid" id="datePickerMonthsGrid">
+                <!-- Months will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content">
+            <button class="close-modal-btn" id="closeSettingsBtn">✕</button>
+            <h2 id="settingsModalTitle">Settings</h2>
+            
+            <div class="settings-group">
+                <h3 id="themeSettingsTitle">Theme</h3>
+                <div class="setting-row">
+                    <span id="autoThemeLabel">Auto Theme</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoThemeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <span id="darkThemeLabel">Dark Mode</span>
+                    <label class="toggle-switch" id="manualThemeToggleContainer">
+                        <input type="checkbox" id="manualThemeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3 id="formatSettingsTitle">Format</h3>
+                <div class="setting-row">
+                    <span id="hourFormatLabel">24-Hour Format</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="hourFormatToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <h3 id="languageSettingsTitle">Language</h3>
+                <select id="languageSelect" class="language-select">
+                    <!-- Languages are populated dynamically -->
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. CONFIGURATION & STATE MANAGEMENT ---
+
+            const dom = {
+                body: document.body,
+                mainTime: document.getElementById('mainTime'),
+                mainDate: document.getElementById('mainDate'),
+                mainLocation: document.getElementById('mainLocation'),
+                mainClockContainer: document.getElementById('mainClockContainer'),
+                searchContainer: document.getElementById('searchContainer'),
+                citySearchInput: document.getElementById('citySearchInput'),
+                searchDropdown: document.getElementById('searchDropdown'),
+                clocksGrid: document.getElementById('clocksGrid'),
+                notesArea: document.getElementById('notesArea'),
+                resetBtn: document.getElementById('resetBtn'),
+                menuBtn: document.getElementById('menuBtn'),
+                navOverlay: document.getElementById('navOverlay'),
+                settingsBtn: document.getElementById('settingsBtn'),
+                settingsModal: document.getElementById('settingsModal'),
+                closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+                autoThemeToggle: document.getElementById('autoThemeToggle'),
+                manualThemeToggle: document.getElementById('manualThemeToggle'),
+                manualThemeToggleContainer: document.getElementById('manualThemeToggleContainer'),
+                hourFormatToggle: document.getElementById('hourFormatToggle'),
+                languageSelect: document.getElementById('languageSelect'),
+                calendarTitleText: document.getElementById('calendarTitleText'),
+                calendarGrid: document.getElementById('calendarGrid'),
+                prevMonthBtn: document.getElementById('prevMonthBtn'),
+                nextMonthBtn: document.getElementById('nextMonthBtn'),
+                datePickerModal: document.getElementById('datePickerModal'),
+                closeDatePickerBtn: document.getElementById('closeDatePickerBtn'),
+                pickerYearInput: document.getElementById('pickerYearInput'),
+                prevYearBtn: document.getElementById('prevYearBtn'),
+                nextYearBtn: document.getElementById('nextYearBtn'),
+                datePickerMonthsGrid: document.getElementById('datePickerMonthsGrid'),
+                fullscreenOverlay: document.getElementById('fullscreenOverlay'),
+                fullscreenTime: document.getElementById('fullscreenTime'),
+                fullscreenDate: document.getElementById('fullscreenDate'),
+                closeFullscreenBtn: document.getElementById('closeFullscreenBtn'),
+                uiText: {
+                    notesTitle: document.getElementById('notesTitle'),
+                    calendarSectionTitle: document.getElementById('calendarSectionTitle'),
+                    settingsModalTitle: document.getElementById('settingsModalTitle'),
+                    themeSettingsTitle: document.getElementById('themeSettingsTitle'),
+                    formatSettingsTitle: document.getElementById('formatSettingsTitle'),
+                    languageSettingsTitle: document.getElementById('languageSettingsTitle'),
+                    autoThemeLabel: document.getElementById('autoThemeLabel'),
+                    darkThemeLabel: document.getElementById('darkThemeLabel'),
+                    hourFormatLabel: document.getElementById('hourFormatLabel'),
+                }
+            };
+
+            let state = {
+                mainClock: null,
+                pinnedClocks: [],
+                settings: {
+                    autoTheme: true,
+                    manualThemeDark: false,
+                    is24Hour: true,
+                    language: 'en'
+                },
+                currentCalendarDate: new Date(),
+            };
+            
+            let clockUpdateInterval = null;
+            const API_BASE_URL = 'https://worldtimeapi.org/api';
+
+            const cityData = [
+                { name: "New York", timezone: "America/New_York", flag: "🇺🇸" }, { name: "London", timezone: "Europe/London", flag: "🇬🇧" },
+                { name: "Tokyo", timezone: "Asia/Tokyo", flag: "🇯🇵" }, { name: "Paris", timezone: "Europe/Paris", flag: "🇫🇷" },
+                { name: "Sydney", timezone: "Australia/Sydney", flag: "🇦🇺" }, { name: "Dubai", timezone: "Asia/Dubai", flag: "🇦🇪" },
+                { name: "Dhaka", timezone: "Asia/Dhaka", flag: "🇧🇩" }, { name: "Berlin", timezone: "Europe/Berlin", flag: "🇩🇪" },
+                { name: "Moscow", timezone: "Europe/Moscow", flag: "🇷🇺" }, { name: "Beijing", timezone: "Asia/Shanghai", flag: "🇨🇳" },
+                { name: "Mumbai", timezone: "Asia/Kolkata", flag: "🇮🇳" }, { name: "Los Angeles", timezone: "America/Los_Angeles", flag: "🇺🇸" },
+                { name: "Cairo", timezone: "Africa/Cairo", flag: "🇪🇬" }, { name: "Rio de Janeiro", timezone: "America/Sao_Paulo", flag: "🇧🇷" },
+                { name: "Singapore", timezone: "Asia/Singapore", flag: "🇸🇬" }, { name: "Toronto", timezone: "America/Toronto", flag: "🇨🇦" },
+                { name: "Istanbul", timezone: "Europe/Istanbul", flag: "🇹🇷" }, { name: "Seoul", timezone: "Asia/Seoul", flag: "🇰🇷" },
+                { name: "Mexico City", timezone: "America/Mexico_City", flag: "🇲🇽" }, { name: "Lagos", timezone: "Africa/Lagos", flag: "🇳🇬" },
+                { name: "Jakarta", timezone: "Asia/Jakarta", flag: "🇮🇩" }, { name: "Buenos Aires", timezone: "America/Argentina/Buenos_Aires", flag: "🇦🇷" },
+                { name: "Madrid", timezone: "Europe/Madrid", flag: "🇪🇸" }
+            ];
+
+            const translations = {
+                en: { name: "English", ui: { notes: "Notes", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data" }, placeholders: { search: "Search for a city...", notes: "Write something..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+                bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন" }, placeholders: { search: "শহর খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
+                es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos" }, placeholders: { search: "Buscar una ciudad...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+            };
+            
+            // --- 2. CORE LOGIC ---
+
+            const debounce = (func, timeout = 300) => {
+                let timer;
+                return (...args) => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+                };
+            };
+
+            const createClockObject = async (timezone) => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/timezone/${timezone}`);
+                    if (!response.ok) throw new Error(`API fetch failed for ${timezone}`);
+                    const data = await response.json();
+                    const cityInfo = cityData.find(c => c.timezone === data.timezone) || {};
+                    return { ...data, ...cityInfo, offset: new Date(data.utc_datetime).getTime() - Date.now(), apiFailed: false };
+                } catch (error) {
+                    console.warn(`${error.message}. Falling back to browser time.`);
+                    const cityInfo = cityData.find(c => c.timezone === timezone) || {};
+                    return { timezone, ...cityInfo, apiFailed: true, offset: 0 };
+                }
+            };
+            
+            const getHourInTimezone = (date, timezone) => {
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    hour: 'numeric',
+                    hour12: false,
+                    timeZone: timezone,
+                });
+                return parseInt(formatter.format(date), 10);
+            };
+
+            const updateAllClocks = () => {
+                const now = Date.now();
+                
+                if (state.mainClock) {
+                    const mainTime = new Date(now + state.mainClock.offset);
+                    const formattedTime = formatTime(mainTime, state.mainClock.timezone);
+                    const formattedDate = formatDate(mainTime, state.mainClock.timezone);
+
+                    dom.mainTime.textContent = formattedTime;
+                    dom.mainDate.textContent = formattedDate;
+                    
+                    if (dom.fullscreenOverlay.classList.contains('active')) {
+                        dom.fullscreenTime.textContent = formattedTime;
+                        dom.fullscreenDate.textContent = formattedDate;
+                    }
+                }
+                
+                state.pinnedClocks.forEach(clock => {
+                    const card = document.querySelector(`.clock-card[data-timezone="${clock.timezone}"]`);
+                    if (card) {
+                        const clockTime = new Date(now + clock.offset);
+                        const hourInTimezone = getHourInTimezone(clockTime, clock.timezone);
+                        const isDay = hourInTimezone >= 6 && hourInTimezone < 18;
+
+                        card.querySelector('.time').textContent = formatTime(clockTime, clock.timezone);
+                        card.querySelector('.date').textContent = formatDate(clockTime, clock.timezone, 'short');
+                        card.querySelector('.day-night-indicator').textContent = isDay ? '☀️' : '🌙';
+                        
+                        // FIX: Toggle card color based on day/night status
+                        card.classList.toggle('card-day', isDay);
+                        card.classList.toggle('card-night', !isDay);
+                    }
+                });
+            };
+
+            const addClock = async (timezone) => {
+                if (state.pinnedClocks.some(c => c.timezone === timezone)) return;
+                const newClock = await createClockObject(timezone);
+                if (newClock) {
+                    state.pinnedClocks.push(newClock);
+                    renderPinnedClocks();
+                    saveState();
+                }
+            };
+
+            const removeClock = (timezone) => {
+                state.pinnedClocks = state.pinnedClocks.filter(c => c.timezone !== timezone);
+                renderPinnedClocks();
+                saveState();
+            };
+
+            // --- 3. UI RENDERING & FORMATTING ---
+
+            const renderPinnedClocks = () => {
+                dom.clocksGrid.innerHTML = '';
+                const t = translations[state.settings.language];
+
+                if (state.pinnedClocks.length === 0) {
+                    dom.clocksGrid.innerHTML = `<p style="opacity: 0.7; grid-column: 1 / -1; text-align: center;">${t.alerts.noPinned}</p>`;
+                    return;
+                }
+                state.pinnedClocks.forEach(clock => {
+                    const card = document.createElement('div');
+                    card.className = 'clock-card';
+                    card.dataset.timezone = clock.timezone;
+
+                    let diffText = '';
+                    if (state.mainClock && !state.mainClock.apiFailed && !clock.apiFailed) {
+                        const timeDiffMinutes = (clock.offset - state.mainClock.offset) / 60000;
+                        if (Math.abs(timeDiffMinutes) > 1) {
+                            const ahead = timeDiffMinutes > 0;
+                            const diffAbs = Math.abs(timeDiffMinutes);
+                            const hours = Math.floor(diffAbs / 60);
+                            const minutes = Math.round(diffAbs % 60);
+                            let parts = [];
+                            if (hours > 0) parts.push(`${hours}h`);
+                            if (minutes > 0) parts.push(`${minutes}m`);
+                            diffText = `<div class="time-difference ${ahead ? 'ahead' : 'behind'}">${parts.join(' ')} ${ahead ? t.time.ahead : t.time.behind}</div>`;
+                        }
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="day-night-indicator"></div>
+                        <div class="clock-card-header">
+                            <div class="clock-card-title">
+                                <span class="flag">${clock.flag || '🌐'}</span>
+                                <span class="city-name">${clock.name || clock.timezone.split('/').pop().replace(/_/g, ' ')}</span>
+                            </div>
+                            <button class="pin-btn pinned">📌</button>
+                        </div>
+                        <div class="time">--:--:--</div>
+                        <div class="date">Loading...</div>
+                        ${diffText}
+                    `;
+                    dom.clocksGrid.appendChild(card);
+                    card.querySelector('.pin-btn').addEventListener('click', () => removeClock(clock.timezone));
+                });
+                updateAllClocks();
+            };
+
+            const renderCalendar = () => {
+                const date = state.currentCalendarDate;
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                const t = translations[state.settings.language].calendar;
+
+                dom.calendarTitleText.textContent = `${t.months[month]} ${year}`;
+                
+                dom.calendarGrid.innerHTML = '';
+                t.weekdays.forEach(day => {
+                    dom.calendarGrid.innerHTML += `<div class="calendar-day-header">${day}</div>`;
+                });
+
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    dom.calendarGrid.innerHTML += `<div></div>`;
+                }
+
+                const today = new Date();
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = i;
+                    if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                        dayEl.classList.add('today');
+                    }
+                    dom.calendarGrid.appendChild(dayEl);
+                }
+            };
+            
+            const renderDatePicker = (targetYear) => {
+                const t = translations[state.settings.language].calendar;
+                dom.pickerYearInput.value = targetYear;
+                dom.datePickerMonthsGrid.innerHTML = '';
+
+                t.shortMonths.forEach((monthName, index) => {
+                    const monthBtn = document.createElement('button');
+                    monthBtn.className = 'month-btn';
+                    monthBtn.textContent = monthName;
+                    monthBtn.dataset.month = index;
+                    
+                    if (index === state.currentCalendarDate.getMonth() && targetYear === state.currentCalendarDate.getFullYear()) {
+                        monthBtn.classList.add('active');
+                    }
+                    
+                    monthBtn.addEventListener('click', () => {
+                        state.currentCalendarDate.setFullYear(targetYear, index, 1);
+                        renderCalendar();
+                        dom.datePickerModal.classList.remove('active');
+                    });
+                    dom.datePickerMonthsGrid.appendChild(monthBtn);
+                });
+            };
+
+            const applyTheme = () => {
+                if (state.settings.autoTheme) {
+                    if (state.mainClock) {
+                        const hour = getHourInTimezone(new Date(Date.now() + state.mainClock.offset), state.mainClock.timezone);
+                        dom.body.className = (hour >= 6 && hour < 18) ? 'light-theme' : 'dark-theme';
+                    } else {
+                        dom.body.className = 'light-theme';
+                    }
+                } else {
+                    dom.body.className = state.settings.manualThemeDark ? 'dark-theme' : 'light-theme';
+                }
+                dom.manualThemeToggle.disabled = state.settings.autoTheme;
+                dom.manualThemeToggleContainer.style.opacity = state.settings.autoTheme ? 0.5 : 1;
+            };
+
+            const applyLanguage = () => {
+                const lang = state.settings.language;
+                const t = translations[lang];
+                
+                // FIX: Correctly target and update each UI text element.
+                dom.uiText.notesTitle.textContent = t.ui.notes;
+                dom.uiText.calendarSectionTitle.textContent = t.ui.calendar;
+                dom.uiText.settingsModalTitle.textContent = t.ui.settings;
+                dom.uiText.themeSettingsTitle.textContent = t.ui.theme;
+                dom.uiText.autoThemeLabel.textContent = t.ui.autoTheme;
+                dom.uiText.darkThemeLabel.textContent = t.ui.darkMode;
+                dom.uiText.formatSettingsTitle.textContent = t.ui.format;
+                dom.uiText.hourFormatLabel.textContent = t.ui.hourFormat;
+                dom.uiText.languageSettingsTitle.textContent = t.ui.language;
+
+                dom.citySearchInput.placeholder = t.placeholders.search;
+                dom.notesArea.placeholder = t.placeholders.notes;
+                dom.resetBtn.textContent = t.ui.reset;
+                
+                renderCalendar();
+                renderPinnedClocks();
+            };
+            
+            const formatTime = (date, timezone) => {
+                const locale = state.settings.language === 'bn' ? 'bn-BD' : state.settings.language;
+                return date.toLocaleTimeString(locale, {
+                    timeZone: timezone,
+                    hour12: !state.settings.is24Hour,
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+            };
+
+            const formatDate = (date, timezone, format = 'long') => {
+                const locale = state.settings.language === 'bn' ? 'bn-BD' : state.settings.language;
+                return date.toLocaleDateString(locale, {
+                    timeZone: timezone,
+                    weekday: format, year: 'numeric', month: format, day: 'numeric'
+                });
+            };
+
+            // --- 4. EVENT LISTENERS ---
+
+            const setupEventListeners = () => {
+                const toggleModal = (modal, show) => {
+                    modal.classList.toggle('active', show);
+                };
+                
+                // --- Modal & Overlay Listeners ---
+                dom.mainClockContainer.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, true));
+                dom.closeFullscreenBtn.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, false));
+                dom.settingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, true));
+                dom.closeSettingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, false));
+                dom.menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleModal(dom.navOverlay, true)
+                });
+
+                // --- Date Picker Listeners (FIXED) ---
+                dom.calendarTitleText.addEventListener('click', () => {
+                    renderDatePicker(state.currentCalendarDate.getFullYear());
+                    toggleModal(dom.datePickerModal, true);
+                });
+                dom.closeDatePickerBtn.addEventListener('click', () => toggleModal(dom.datePickerModal, false));
+                
+                // Close modals when clicking the overlay
+                [dom.settingsModal, dom.datePickerModal, dom.navOverlay].forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            toggleModal(modal, false);
+                        }
+                    });
+                });
+
+                dom.prevYearBtn.addEventListener('click', () => {
+                    const newYear = parseInt(dom.pickerYearInput.value) - 1;
+                    renderDatePicker(newYear);
+                });
+                dom.nextYearBtn.addEventListener('click', () => {
+                    const newYear = parseInt(dom.pickerYearInput.value) + 1;
+                    renderDatePicker(newYear);
+                });
+                dom.pickerYearInput.addEventListener('change', () => {
+                    const newYear = parseInt(dom.pickerYearInput.value);
+                    if (!isNaN(newYear)) {
+                        renderDatePicker(newYear);
+                    } else {
+                        renderDatePicker(state.currentCalendarDate.getFullYear());
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === "Escape") {
+                        [dom.fullscreenOverlay, dom.settingsModal, dom.navOverlay, dom.datePickerModal].forEach(modal => toggleModal(modal, false));
+                    }
+                });
+
+                // --- Settings Controls ---
+                dom.autoThemeToggle.addEventListener('change', (e) => {
+                    state.settings.autoTheme = e.target.checked;
+                    applyTheme();
+                    saveState();
+                });
+                dom.manualThemeToggle.addEventListener('change', (e) => {
+                    state.settings.manualThemeDark = e.target.checked;
+                    applyTheme();
+                    saveState();
+                });
+                dom.hourFormatToggle.addEventListener('change', (e) => {
+                    state.settings.is24Hour = e.target.checked;
+                    updateAllClocks();
+                    saveState();
+                });
+                dom.languageSelect.addEventListener('change', (e) => {
+                    state.settings.language = e.target.value;
+                    applyLanguage();
+                    saveState();
+                });
+
+                // --- City Search ---
+                const handleSearchInput = debounce(() => {
+                    const query = dom.citySearchInput.value.toLowerCase();
+                    dom.searchDropdown.innerHTML = '';
+                    if (query) {
+                        const filteredCities = cityData.filter(c => c.name.toLowerCase().includes(query) || c.timezone.toLowerCase().replace(/_/g, ' ').includes(query));
+                        filteredCities.forEach(city => {
+                            const item = document.createElement('div');
+                            item.className = 'search-dropdown-item';
+                            item.innerHTML = `<span class="flag">${city.flag}</span> <span class="city-name">${city.name}</span>`;
+                            item.addEventListener('click', () => {
+                                addClock(city.timezone);
+                                dom.citySearchInput.value = '';
+                                dom.searchDropdown.classList.remove('active');
+                            });
+                            dom.searchDropdown.appendChild(item);
+                        });
+                        dom.searchDropdown.classList.toggle('active', filteredCities.length > 0);
+                    } else {
+                        dom.searchDropdown.classList.remove('active');
+                    }
+                });
+                dom.citySearchInput.addEventListener('input', handleSearchInput);
+                document.addEventListener('click', (e) => {
+                    if (!dom.searchContainer.contains(e.target)) {
+                        dom.searchDropdown.classList.remove('active');
+                    }
+                });
+
+                // --- Data Persistence & Calendar Nav ---
+                dom.notesArea.addEventListener('input', debounce(saveState, 500));
+                dom.resetBtn.addEventListener('click', () => {
+                    const t = translations[state.settings.language];
+                    if (confirm(t.alerts.resetConfirm)) {
+                        localStorage.removeItem('airclockState');
+                        window.location.reload();
+                    }
+                });
+
+                dom.prevMonthBtn.addEventListener('click', () => {
+                    state.currentCalendarDate.setMonth(state.currentCalendarDate.getMonth() - 1);
+                    renderCalendar();
+                });
+                dom.nextMonthBtn.addEventListener('click', () => {
+                    state.currentCalendarDate.setMonth(state.currentCalendarDate.getMonth() + 1);
+                    renderCalendar();
+                });
+            };
+
+            // --- 5. INITIALIZATION & STATE PERSISTENCE ---
+
+            const saveState = () => {
+                const stateToSave = {
+                    pinnedTimezones: state.pinnedClocks.map(c => c.timezone),
+                    notes: dom.notesArea.value,
+                    settings: state.settings
+                };
+                localStorage.setItem('airclockState', JSON.stringify(stateToSave));
+            };
+
+            const loadState = async () => {
+                const savedState = JSON.parse(localStorage.getItem('airclockState'));
+                if (savedState) {
+                    dom.notesArea.value = savedState.notes || '';
+                    state.settings = { ...state.settings, ...savedState.settings };
+                    
+                    if (savedState.pinnedTimezones) {
+                       for (const timezone of savedState.pinnedTimezones) {
+                           const clock = await createClockObject(timezone);
+                           if (clock) state.pinnedClocks.push(clock);
+                       }
+                    }
+                }
+            };
+            
+            const populateLanguageSelector = () => {
+                dom.languageSelect.innerHTML = '';
+                for(const langCode in translations) {
+                    const option = document.createElement('option');
+                    option.value = langCode;
+                    option.textContent = translations[langCode].name;
+                    dom.languageSelect.appendChild(option);
+                }
+            }
+
+            const init = async () => {
+                populateLanguageSelector();
+                await loadState();
+                
+                dom.autoThemeToggle.checked = state.settings.autoTheme;
+                dom.manualThemeToggle.checked = state.settings.manualThemeDark;
+                dom.hourFormatToggle.checked = state.settings.is24Hour;
+                dom.languageSelect.value = state.settings.language;
+
+                applyLanguage();
+                
+                let initialTimezone;
+                try {
+                    const response = await fetch(`${API_BASE_URL}/ip`);
+                    if (!response.ok) throw new Error("IP API failed");
+                    initialTimezone = (await response.json()).timezone;
+                } catch (e) {
+                    console.warn("IP lookup failed. Using browser's local timezone as fallback.");
+                    initialTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                }
+
+                state.mainClock = await createClockObject(initialTimezone);
+                if(state.mainClock) dom.mainLocation.textContent = state.mainClock.timezone.replace(/_/g, ' ');
+                
+                applyTheme();
+                renderPinnedClocks();
+                setupEventListeners();
+                
+                updateAllClocks();
+                clockUpdateInterval = setInterval(updateAllClocks, 1000);
+            };
+
+            init();
+        });
+    </script>
+</body>
+</html>
