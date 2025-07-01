@@ -810,25 +810,69 @@
             let clockUpdateInterval = null;
             const API_BASE_URL = 'https://worldtimeapi.org/api';
 
+            // FIX: Expanded city list with country data for better searching
             const cityData = [
-                { name: "New York", timezone: "America/New_York", flag: "🇺🇸" }, { name: "London", timezone: "Europe/London", flag: "🇬🇧" },
-                { name: "Tokyo", timezone: "Asia/Tokyo", flag: "🇯🇵" }, { name: "Paris", timezone: "Europe/Paris", flag: "🇫🇷" },
-                { name: "Sydney", timezone: "Australia/Sydney", flag: "🇦🇺" }, { name: "Dubai", timezone: "Asia/Dubai", flag: "🇦🇪" },
-                { name: "Dhaka", timezone: "Asia/Dhaka", flag: "🇧🇩" }, { name: "Berlin", timezone: "Europe/Berlin", flag: "🇩🇪" },
-                { name: "Moscow", timezone: "Europe/Moscow", flag: "🇷🇺" }, { name: "Beijing", timezone: "Asia/Shanghai", flag: "🇨🇳" },
-                { name: "Mumbai", timezone: "Asia/Kolkata", flag: "🇮🇳" }, { name: "Los Angeles", timezone: "America/Los_Angeles", flag: "🇺🇸" },
-                { name: "Cairo", timezone: "Africa/Cairo", flag: "🇪🇬" }, { name: "Rio de Janeiro", timezone: "America/Sao_Paulo", flag: "🇧🇷" },
-                { name: "Singapore", timezone: "Asia/Singapore", flag: "🇸🇬" }, { name: "Toronto", timezone: "America/Toronto", flag: "🇨🇦" },
-                { name: "Istanbul", timezone: "Europe/Istanbul", flag: "🇹🇷" }, { name: "Seoul", timezone: "Asia/Seoul", flag: "🇰🇷" },
-                { name: "Mexico City", timezone: "America/Mexico_City", flag: "🇲🇽" }, { name: "Lagos", timezone: "Africa/Lagos", flag: "🇳🇬" },
-                { name: "Jakarta", timezone: "Asia/Jakarta", flag: "🇮🇩" }, { name: "Buenos Aires", timezone: "America/Argentina/Buenos_Aires", flag: "🇦🇷" },
-                { name: "Madrid", timezone: "Europe/Madrid", flag: "🇪🇸" }
+                { name: "New York", country: "USA", timezone: "America/New_York", flag: "🇺🇸" },
+                { name: "London", country: "United Kingdom", timezone: "Europe/London", flag: "🇬🇧" },
+                { name: "Tokyo", country: "Japan", timezone: "Asia/Tokyo", flag: "🇯🇵" },
+                { name: "Paris", country: "France", timezone: "Europe/Paris", flag: "🇫🇷" },
+                { name: "Sydney", country: "Australia", timezone: "Australia/Sydney", flag: "🇦🇺" },
+                { name: "Dhaka", country: "Bangladesh", timezone: "Asia/Dhaka", flag: "🇧🇩" },
+                { name: "Berlin", country: "Germany", timezone: "Europe/Berlin", flag: "🇩🇪" },
+                { name: "Los Angeles", country: "USA", timezone: "America/Los_Angeles", flag: "🇺🇸" },
+                { name: "Chicago", country: "USA", timezone: "America/Chicago", flag: "🇺🇸" },
+                { name: "Toronto", country: "Canada", timezone: "America/Toronto", flag: "🇨🇦" },
+                { name: "Sao Paulo", country: "Brazil", timezone: "America/Sao_Paulo", flag: "🇧🇷" },
+                { name: "Mexico City", country: "Mexico", timezone: "America/Mexico_City", flag: "🇲🇽" },
+                { name: "Buenos Aires", country: "Argentina", timezone: "America/Argentina/Buenos_Aires", flag: "🇦🇷" },
+                { name: "Lagos", country: "Nigeria", timezone: "Africa/Lagos", flag: "🇳🇬" },
+                { name: "Cairo", country: "Egypt", timezone: "Africa/Cairo", flag: "🇪🇬" },
+                { name: "Johannesburg", country: "South Africa", timezone: "Africa/Johannesburg", flag: "🇿🇦" },
+                { name: "Nairobi", country: "Kenya", timezone: "Africa/Nairobi", flag: "🇰🇪" },
+                { name: "Moscow", country: "Russia", timezone: "Europe/Moscow", flag: "🇷🇺" },
+                { name: "Madrid", country: "Spain", timezone: "Europe/Madrid", flag: "🇪🇸" },
+                { name: "Rome", country: "Italy", timezone: "Europe/Rome", flag: "🇮🇹" },
+                { name: "Amsterdam", country: "Netherlands", timezone: "Europe/Amsterdam", flag: "🇳🇱" },
+                { name: "Stockholm", country: "Sweden", timezone: "Europe/Stockholm", flag: "🇸🇪" },
+                { name: "Istanbul", country: "Turkey", timezone: "Europe/Istanbul", flag: "🇹🇷" },
+                { name: "Dubai", country: "UAE", timezone: "Asia/Dubai", flag: "🇦🇪" },
+                { name: "Mumbai", country: "India", timezone: "Asia/Kolkata", flag: "🇮🇳" },
+                { name: "Delhi", country: "India", timezone: "Asia/Kolkata", flag: "�🇳" },
+                { name: "Shanghai", country: "China", timezone: "Asia/Shanghai", flag: "🇨🇳" },
+                { name: "Beijing", country: "China", timezone: "Asia/Shanghai", flag: "🇨🇳" },
+                { name: "Singapore", country: "Singapore", timezone: "Asia/Singapore", flag: "🇸🇬" },
+                { name: "Seoul", country: "South Korea", timezone: "Asia/Seoul", flag: "🇰🇷" },
+                { name: "Bangkok", country: "Thailand", timezone: "Asia/Bangkok", flag: "🇹🇭" },
+                { name: "Jakarta", country: "Indonesia", timezone: "Asia/Jakarta", flag: "🇮🇩" },
+                { name: "Kuala Lumpur", country: "Malaysia", timezone: "Asia/Kuala_Lumpur", flag: "🇲🇾" },
+                { name: "Ho Chi Minh City", country: "Vietnam", timezone: "Asia/Ho_Chi_Minh", flag: "🇻🇳" },
+                { name: "Manila", country: "Philippines", timezone: "Asia/Manila", flag: "🇵🇭" },
+                { name: "Auckland", country: "New Zealand", timezone: "Pacific/Auckland", flag: "🇳🇿" },
+                { name: "Honolulu", country: "USA", timezone: "Pacific/Honolulu", flag: "🇺🇸" },
+                { name: "Ankara", country: "Turkey", timezone: "Europe/Istanbul", flag: "🇹🇷" },
+                { name: "Riyadh", country: "Saudi Arabia", timezone: "Asia/Riyadh", flag: "🇸🇦" },
+                { name: "Tehran", country: "Iran", timezone: "Asia/Tehran", flag: "🇮🇷" },
+                { name: "Baghdad", country: "Iraq", timezone: "Asia/Baghdad", flag: "🇮🇶" },
+                { name: "Lima", country: "Peru", timezone: "America/Lima", flag: "🇵🇪" },
+                { name: "Bogota", country: "Colombia", timezone: "America/Bogota", flag: "🇨🇴" },
+                { name: "Santiago", country: "Chile", timezone: "America/Santiago", flag: "🇨🇱" },
+                { name: "Caracas", country: "Venezuela", timezone: "America/Caracas", flag: "🇻🇪" },
+                { name: "Helsinki", country: "Finland", timezone: "Europe/Helsinki", flag: "🇫🇮" },
+                { name: "Oslo", country: "Norway", timezone: "Europe/Oslo", flag: "🇳🇴" },
+                { name: "Copenhagen", country: "Denmark", timezone: "Europe/Copenhagen", flag: "🇩🇰" },
+                { name: "Dublin", country: "Ireland", timezone: "Europe/Dublin", flag: "🇮🇪" },
+                { name: "Lisbon", country: "Portugal", timezone: "Europe/Lisbon", flag: "🇵🇹" },
+                { name: "Prague", country: "Czech Republic", timezone: "Europe/Prague", flag: "🇨🇿" },
+                { name: "Warsaw", country: "Poland", timezone: "Europe/Warsaw", flag: "🇵🇱" },
+                { name: "Vienna", country: "Austria", timezone: "Europe/Vienna", flag: "🇦🇹" },
+                { name: "Budapest", country: "Hungary", timezone: "Europe/Budapest", flag: "🇭🇺" },
+                { name: "Athens", country: "Greece", timezone: "Europe/Athens", flag: "🇬🇷" },
             ];
 
             const translations = {
-                en: { name: "English", ui: { notes: "Notes", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data" }, placeholders: { search: "Search for a city...", notes: "Write something..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
-                bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন" }, placeholders: { search: "শহর খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
-                es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos" }, placeholders: { search: "Buscar una ciudad...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+                en: { name: "English", ui: { notes: "Notes", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data" }, placeholders: { search: "Search for a city or country...", notes: "Write something..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+                bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
+                es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
             };
             
             // --- 2. CORE LOGIC ---
@@ -892,7 +936,6 @@
                         card.querySelector('.date').textContent = formatDate(clockTime, clock.timezone, 'short');
                         card.querySelector('.day-night-indicator').textContent = isDay ? '☀️' : '🌙';
                         
-                        // FIX: Toggle card color based on day/night status
                         card.classList.toggle('card-day', isDay);
                         card.classList.toggle('card-night', !isDay);
                     }
@@ -1039,7 +1082,6 @@
                 const lang = state.settings.language;
                 const t = translations[lang];
                 
-                // FIX: Correctly target and update each UI text element.
                 dom.uiText.notesTitle.textContent = t.ui.notes;
                 dom.uiText.calendarSectionTitle.textContent = t.ui.calendar;
                 dom.uiText.settingsModalTitle.textContent = t.ui.settings;
@@ -1158,7 +1200,11 @@
                     const query = dom.citySearchInput.value.toLowerCase();
                     dom.searchDropdown.innerHTML = '';
                     if (query) {
-                        const filteredCities = cityData.filter(c => c.name.toLowerCase().includes(query) || c.timezone.toLowerCase().replace(/_/g, ' ').includes(query));
+                        // FIX: Search by city name OR country name
+                        const filteredCities = cityData.filter(c => 
+                            c.name.toLowerCase().includes(query) || 
+                            c.country.toLowerCase().includes(query)
+                        );
                         filteredCities.forEach(city => {
                             const item = document.createElement('div');
                             item.className = 'search-dropdown-item';
