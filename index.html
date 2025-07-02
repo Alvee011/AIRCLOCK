@@ -706,6 +706,8 @@
             text-align: center;
             font-weight: 700;
             margin-bottom: 1.5rem;
+            /* Fix for stopwatch shaking */
+            font-variant-numeric: tabular-nums;
         }
         .utility-display .milliseconds {
             font-size: 0.5em;
@@ -742,10 +744,10 @@
         .laps-list, .alarms-list {
             list-style: none;
             padding: 0;
-            max-height: 200px;
+            max-height: 300px; /* Increased height for new alarm cards */
             overflow-y: auto;
         }
-        .lap-item, .alarm-item {
+        .lap-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -753,9 +755,9 @@
             border-bottom: 1px solid;
             font-family: 'Roboto Mono', monospace;
         }
-        .light-theme .lap-item, .light-theme .alarm-item { border-color: var(--border-light); }
-        .dark-theme .lap-item, .dark-theme .alarm-item { border-color: var(--border-dark); }
-        .lap-item:last-child, .alarm-item:last-child { border-bottom: none; }
+        .light-theme .lap-item { border-color: var(--border-light); }
+        .dark-theme .lap-item { border-color: var(--border-dark); }
+        .lap-item:last-child { border-bottom: none; }
         .lap-number { font-weight: bold; }
 
         .timer-inputs {
@@ -803,15 +805,68 @@
             color: white;
         }
 
-        .alarm-item .alarm-time { font-size: 1.2rem; font-weight: bold; }
-        .alarm-item .alarm-label { opacity: 0.8; }
-        .alarm-item .delete-alarm-btn {
+        /* --- New Alarm UI Styles --- */
+        .alarm-item {
+            padding: 0;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        .alarm-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-radius: var(--card-radius);
+            transition: var(--transition);
+        }
+        .light-theme .alarm-card {
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+        }
+        .dark-theme .alarm-card {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+        .alarm-card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .alarm-card-time {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+        }
+        .alarm-card-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        .alarm-card-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .delete-alarm-btn {
             background: none;
             border: none;
             color: #e74c3c;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            transition: transform 0.2s ease;
         }
+        .delete-alarm-btn:hover {
+            transform: scale(1.1);
+        }
+        .alarm-card.disabled {
+            opacity: 0.6;
+        }
+        .alarm-card.disabled .alarm-card-time,
+        .alarm-card.disabled .alarm-card-label {
+            text-decoration: line-through;
+        }
+        .light-theme .alarm-card.disabled { background-color: #e9ecef; }
+        .dark-theme .alarm-card.disabled { background-color: #34495e; }
+
     </style>
 </head>
 <body>
@@ -833,6 +888,7 @@
     </div>
 
     <div class="container">
+        <!-- Time Section -->
         <div id="page-time" class="page-section active">
             <div class="main-clock" id="mainClockContainer">
                 <div class="time" id="mainTime">--:--:--</div>
@@ -894,6 +950,7 @@
             </div>
         </div>
 
+        <!-- Stopwatch Section -->
         <div id="page-stopwatch" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Stopwatch</h2>
@@ -908,6 +965,7 @@
             </div>
         </div>
 
+        <!-- Timer Section -->
         <div id="page-timer" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Timer</h2>
@@ -934,6 +992,7 @@
             </div>
         </div>
 
+        <!-- Alarm Section -->
         <div id="page-alarm" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Alarm</h2>
@@ -1394,22 +1453,6 @@
                 } catch(e) { console.error("Tone.js could not play sound.", e); }
                 alert(`⏰ ${label}`);
             };
-
-            const renderAlarms = () => {
-                dom.alarmsList.innerHTML = '';
-                state.alarms.forEach((alarm) => {
-                    const li = document.createElement('li');
-                    li.className = 'alarm-item';
-                    li.innerHTML = `
-                        <div>
-                            <div class="alarm-time">${alarm.time}</div>
-                            <div class="alarm-label">${alarm.label}</div>
-                        </div>
-                        <button class="delete-alarm-btn" data-id="${alarm.id}">✕</button>
-                    `;
-                    dom.alarmsList.appendChild(li);
-                });
-            };
             
              const checkAlarms = () => {
                 const now = new Date();
@@ -1417,7 +1460,7 @@
                 let stateChanged = false;
 
                 state.alarms.forEach(alarm => {
-                    if (alarm.time === currentTime) {
+                    if (alarm.enabled && alarm.time === currentTime) {
                         if (!alarm.triggeredToday) {
                             playAlarmSound(alarm.label);
                             alarm.triggeredToday = true;
@@ -1435,6 +1478,34 @@
             };
 
             // --- 4. UI RENDERING & FORMATTING ---
+
+            const renderAlarms = () => {
+                dom.alarmsList.innerHTML = '';
+                state.alarms.forEach((alarm) => {
+                    const li = document.createElement('li');
+                    li.className = 'alarm-item';
+
+                    const card = document.createElement('div');
+                    card.className = `alarm-card ${alarm.enabled ? '' : 'disabled'}`;
+                    card.dataset.id = alarm.id;
+
+                    card.innerHTML = `
+                        <div class="alarm-card-details">
+                            <div class="alarm-card-time">${alarm.time}</div>
+                            <div class="alarm-card-label">${alarm.label}</div>
+                        </div>
+                        <div class="alarm-card-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="alarm-toggle-cb" ${alarm.enabled ? 'checked' : ''}>
+                                <span class="slider"></span>
+                            </label>
+                            <button class="delete-alarm-btn">✕</button>
+                        </div>
+                    `;
+                    li.appendChild(card);
+                    dom.alarmsList.appendChild(li);
+                });
+            };
 
             const renderPinnedClocks = () => {
                 dom.clocksGrid.innerHTML = '';
@@ -1829,7 +1900,7 @@
                     const label = dom.alarmLabelInput.value.trim() || 'Alarm';
                     if (!time || state.alarms.some(a => a.time === time)) return;
 
-                    const newAlarm = { id: Date.now(), time, label, triggeredToday: false };
+                    const newAlarm = { id: Date.now(), time, label, enabled: true, triggeredToday: false };
                     state.alarms.push(newAlarm);
                     
                     dom.alarmTimeInput.value = '';
@@ -1840,12 +1911,21 @@
                 });
                 
                 dom.alarmsList.addEventListener('click', (e) => {
-                    if(e.target.classList.contains('delete-alarm-btn')) {
-                        const alarmId = parseInt(e.target.dataset.id);
+                    const alarmCard = e.target.closest('.alarm-card');
+                    if (!alarmCard) return;
+
+                    const alarmId = parseInt(alarmCard.dataset.id);
+                    const alarm = state.alarms.find(a => a.id === alarmId);
+                    if (!alarm) return;
+
+                    if (e.target.classList.contains('delete-alarm-btn')) {
                         state.alarms = state.alarms.filter(a => a.id !== alarmId);
                         renderAlarms();
-                        saveState();
+                    } else if (e.target.classList.contains('alarm-toggle-cb')) {
+                        alarm.enabled = e.target.checked;
+                        alarmCard.classList.toggle('disabled', !alarm.enabled);
                     }
+                    saveState();
                 });
             };
 
@@ -1866,7 +1946,8 @@
                 if (savedState) {
                     dom.notesArea.value = savedState.notes || '';
                     state.settings = { ...state.settings, ...savedState.settings };
-                    state.alarms = savedState.alarms || [];
+                    // Ensure loaded alarms have the 'enabled' property, defaulting to true
+                    state.alarms = savedState.alarms ? savedState.alarms.map(a => ({...a, enabled: a.enabled !== false })) : [];
                     
                     if (savedState.pinnedTimezones) {
                        for (const timezone of savedState.pinnedTimezones) {
