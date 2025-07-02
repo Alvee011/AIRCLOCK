@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIRCLOCK - On Time Worldwide</title>
-    <!-- Preconnect to essential origins for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://worldtimeapi.org">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         :root {
             --bg-light: #f0f4f8;
@@ -90,7 +90,6 @@
             gap: 1rem;
         }
 
-        /* Styles for the hamburger menu */
         .menu-btn {
             background: none;
             border: none;
@@ -135,6 +134,7 @@
             font-size: 2rem;
             font-weight: 600;
             transition: transform 0.2s ease, color 0.2s ease;
+            cursor: pointer;
         }
         .nav-link:hover {
             transform: scale(1.1);
@@ -159,6 +159,19 @@
         .settings-btn:hover {
             background-color: rgba(128, 128, 128, 0.1);
             transform: rotate(30deg);
+        }
+        
+        /* Styles for page sections */
+        .page-section {
+            display: none;
+        }
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .main-clock {
@@ -329,7 +342,6 @@
         .clock-card-title .flag { font-size: 1.5rem; margin-right: 0.5rem; }
         .clock-card-title .city-name { font-size: 1.2rem; font-weight: 600; }
 
-        /* FIX: Styles for the new remove button */
         .remove-card-btn {
             position: absolute;
             top: -10px;
@@ -671,6 +683,135 @@
         }
         .light-theme .language-select { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
         .dark-theme .language-select { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
+
+        /* Styles for Stopwatch, Timer, and Alarm */
+        .utility-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: var(--card-radius);
+        }
+        .light-theme .utility-container {
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+        }
+        .dark-theme .utility-container {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .utility-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: clamp(3rem, 12vw, 5rem);
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .utility-display .milliseconds {
+            font-size: 0.5em;
+            color: var(--accent);
+        }
+
+        .utility-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .utility-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .utility-btn.start-btn { background-color: #2ecc71; color: white; }
+        .utility-btn.start-btn:hover { background-color: #27ae60; }
+        .utility-btn.stop-btn { background-color: #e74c3c; color: white; }
+        .utility-btn.stop-btn:hover { background-color: #c0392b; }
+        .utility-btn.lap-btn, .utility-btn.reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .utility-btn.lap-btn:hover, .utility-btn.reset-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .laps-list, .alarms-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .lap-item, .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .light-theme .lap-item, .light-theme .alarm-item { border-color: var(--border-light); }
+        .dark-theme .lap-item, .dark-theme .alarm-item { border-color: var(--border-dark); }
+        .lap-item:last-child, .alarm-item:last-child { border-bottom: none; }
+        .lap-number { font-weight: bold; }
+
+        .timer-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .timer-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .timer-input-group label {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+            opacity: 0.7;
+        }
+        .timer-input {
+            width: 80px;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+        .light-theme .timer-input { background-color: #f0f4f8; border-color: var(--border-light); }
+        .dark-theme .timer-input { background-color: #1a2639; border-color: var(--border-dark); color: var(--text-dark); }
+
+        .add-alarm-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .add-alarm-form input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+        .light-theme .add-alarm-form input { background-color: #f0f4f8; border-color: var(--border-light); }
+        .dark-theme .add-alarm-form input { background-color: #1a2639; border-color: var(--border-dark); color: var(--text-dark); }
+        .add-alarm-btn {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .alarm-item .alarm-time { font-size: 1.2rem; font-weight: bold; }
+        .alarm-item .alarm-label { opacity: 0.8; }
+        .alarm-item .delete-alarm-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -684,72 +825,125 @@
 
     <div class="nav-overlay" id="navOverlay">
         <nav class="nav-menu">
-            <a href="#" class="nav-link active">Time</a>
-            <a href="#" class="nav-link">Stopwatch</a>
-            <a href="#" class="nav-link">Timer</a>
-            <a href="#" class="nav-link">Alarm</a>
+            <a class="nav-link" data-page="time">Time</a>
+            <a class="nav-link" data-page="stopwatch">Stopwatch</a>
+            <a class="nav-link" data-page="timer">Timer</a>
+            <a class="nav-link" data-page="alarm">Alarm</a>
         </nav>
     </div>
 
     <div class="container">
-        <div class="main-clock" id="mainClockContainer">
-            <div class="time" id="mainTime">--:--:--</div>
-            <div class="date" id="mainDate">Loading...</div>
-            <div class="location" id="mainLocation"></div>
+        <div id="page-time" class="page-section active">
+            <div class="main-clock" id="mainClockContainer">
+                <div class="time" id="mainTime">--:--:--</div>
+                <div class="date" id="mainDate">Loading...</div>
+                <div class="location" id="mainLocation"></div>
+            </div>
+
+            <div class="search-container" id="searchContainer">
+                <input type="text" class="search-input" id="citySearchInput" placeholder="Search for a city or country...">
+                <div class="search-dropdown" id="searchDropdown"></div>
+            </div>
+
+            <div class="clocks-grid" id="clocksGrid"></div>
+
+            <div class="section" id="popular-cities-section">
+                <h2 class="section-title">Most popular timezones and cities</h2>
+                <div id="popular-cities-container">
+                    <div id="city-cloud"></div>
+                    <div class="timezone-controls">
+                        <div class="flex justify-center items-center space-x-4">
+                            <span class="timezone-item">UTC</span>
+                            <span class="timezone-item">GMT</span>
+                            <span class="timezone-item">CET</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center items-center space-x-4 mt-4">
+                            <span class="timezone-item">Pacific Time</span>
+                            <span class="timezone-item">Mountain Time</span>
+                            <span class="timezone-item">Central Time</span>
+                            <span class="timezone-item">Eastern Time</span>
+                            <span class="timezone-item">China Standard Time</span>
+                            <span class="timezone-item">India Standard Time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title" id="calendarSectionTitle">Calendar</h2>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <span class="calendar-title-text" id="calendarTitleText"></span>
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" id="prevMonthBtn">◀</button>
+                            <button class="calendar-nav-btn" id="nextMonthBtn">▶</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title" id="notesTitle">Notes</h2>
+                <textarea id="notesArea" placeholder="Write something..."></textarea>
+            </div>
+            
+            <div class="section action-buttons-container">
+                <button class="action-btn reset-btn" id="resetBtn">Reset All Data</button>
+                <button class="action-btn refresh-btn" id="refreshCardsBtn">Refresh Cards</button>
+            </div>
         </div>
 
-        <div class="search-container" id="searchContainer">
-            <input type="text" class="search-input" id="citySearchInput" placeholder="Search for a city or country...">
-            <div class="search-dropdown" id="searchDropdown"></div>
+        <div id="page-stopwatch" class="page-section">
+            <div class="utility-container">
+                <h2 class="section-title">Stopwatch</h2>
+                <div class="utility-display" id="stopwatchDisplay">00:00:00<span class="milliseconds">.00</span></div>
+                <div class="utility-controls">
+                    <button class="utility-btn start-btn" id="stopwatchStartBtn">Start</button>
+                    <button class="utility-btn stop-btn" id="stopwatchStopBtn">Stop</button>
+                    <button class="utility-btn lap-btn" id="stopwatchLapBtn">Lap</button>
+                    <button class="utility-btn reset-btn" id="stopwatchResetBtn">Reset</button>
+                </div>
+                <ul class="laps-list" id="lapsList"></ul>
+            </div>
         </div>
 
-        <div class="clocks-grid" id="clocksGrid"></div>
-
-        <div class="section" id="popular-cities-section">
-            <h2 class="section-title">Most popular timezones and cities</h2>
-            <div id="popular-cities-container">
-                <div id="city-cloud">
+        <div id="page-timer" class="page-section">
+            <div class="utility-container">
+                <h2 class="section-title">Timer</h2>
+                <div class="utility-display" id="timerDisplay">00:00:00</div>
+                <div class="timer-inputs" id="timerInputs">
+                    <div class="timer-input-group">
+                        <label for="timerHours">Hours</label>
+                        <input type="number" id="timerHours" class="timer-input" min="0" max="99" value="0">
                     </div>
-                <div class="timezone-controls">
-                    <div class="flex justify-center items-center space-x-4">
-                        <span class="timezone-item">UTC</span>
-                        <span class="timezone-item">GMT</span>
-                        <span class="timezone-item">CET</span>
+                    <div class="timer-input-group">
+                        <label for="timerMinutes">Minutes</label>
+                        <input type="number" id="timerMinutes" class="timer-input" min="0" max="59" value="10">
                     </div>
-                    <div class="flex flex-wrap justify-center items-center space-x-4 mt-4">
-                        <span class="timezone-item">Pacific Time</span>
-                        <span class="timezone-item">Mountain Time</span>
-                        <span class="timezone-item">Central Time</span>
-                        <span class="timezone-item">Eastern Time</span>
-                        <span class="timezone-item">China Standard Time</span>
-                        <span class="timezone-item">India Standard Time</span>
+                    <div class="timer-input-group">
+                        <label for="timerSeconds">Seconds</label>
+                        <input type="number" id="timerSeconds" class="timer-input" min="0" max="59" value="0">
                     </div>
+                </div>
+                <div class="utility-controls">
+                    <button class="utility-btn start-btn" id="timerStartBtn">Start</button>
+                    <button class="utility-btn stop-btn" id="timerStopBtn">Stop</button>
+                    <button class="utility-btn reset-btn" id="timerResetBtn">Reset</button>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title" id="calendarSectionTitle">Calendar</h2>
-            <div class="calendar">
-                <div class="calendar-header">
-                    <span class="calendar-title-text" id="calendarTitleText"></span>
-                    <div class="calendar-nav">
-                        <button class="calendar-nav-btn" id="prevMonthBtn">◀</button>
-                        <button class="calendar-nav-btn" id="nextMonthBtn">▶</button>
-                    </div>
+        <div id="page-alarm" class="page-section">
+            <div class="utility-container">
+                <h2 class="section-title">Alarm</h2>
+                <div class="add-alarm-form">
+                    <input type="time" id="alarmTimeInput">
+                    <input type="text" id="alarmLabelInput" placeholder="Alarm label">
+                    <button class="utility-btn add-alarm-btn" id="addAlarmBtn">Add</button>
                 </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
+                <ul class="alarms-list" id="alarmsList"></ul>
             </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title" id="notesTitle">Notes</h2>
-            <textarea id="notesArea" placeholder="Write something..."></textarea>
-        </div>
-        
-        <div class="section action-buttons-container">
-            <button class="action-btn reset-btn" id="resetBtn">Reset All Data</button>
-            <button class="action-btn refresh-btn" id="refreshCardsBtn">Refresh Cards</button>
         </div>
     </div>
 
@@ -840,9 +1034,10 @@
                 clocksGrid: document.getElementById('clocksGrid'),
                 notesArea: document.getElementById('notesArea'),
                 resetBtn: document.getElementById('resetBtn'),
-                refreshCardsBtn: document.getElementById('refreshCardsBtn'), // New button
+                refreshCardsBtn: document.getElementById('refreshCardsBtn'),
                 menuBtn: document.getElementById('menuBtn'),
                 navOverlay: document.getElementById('navOverlay'),
+                navLinks: document.querySelectorAll('.nav-link'),
                 settingsBtn: document.getElementById('settingsBtn'),
                 settingsModal: document.getElementById('settingsModal'),
                 closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -866,6 +1061,27 @@
                 fullscreenDate: document.getElementById('fullscreenDate'),
                 closeFullscreenBtn: document.getElementById('closeFullscreenBtn'),
                 popularCitiesContainer: document.getElementById('popular-cities-container'),
+                // Stopwatch elements
+                stopwatchDisplay: document.getElementById('stopwatchDisplay'),
+                stopwatchStartBtn: document.getElementById('stopwatchStartBtn'),
+                stopwatchStopBtn: document.getElementById('stopwatchStopBtn'),
+                stopwatchLapBtn: document.getElementById('stopwatchLapBtn'),
+                stopwatchResetBtn: document.getElementById('stopwatchResetBtn'),
+                lapsList: document.getElementById('lapsList'),
+                // Timer elements
+                timerDisplay: document.getElementById('timerDisplay'),
+                timerInputsContainer: document.getElementById('timerInputs'),
+                timerHoursInput: document.getElementById('timerHours'),
+                timerMinutesInput: document.getElementById('timerMinutes'),
+                timerSecondsInput: document.getElementById('timerSeconds'),
+                timerStartBtn: document.getElementById('timerStartBtn'),
+                timerStopBtn: document.getElementById('timerStopBtn'),
+                timerResetBtn: document.getElementById('timerResetBtn'),
+                // Alarm elements
+                alarmTimeInput: document.getElementById('alarmTimeInput'),
+                alarmLabelInput: document.getElementById('alarmLabelInput'),
+                addAlarmBtn: document.getElementById('addAlarmBtn'),
+                alarmsList: document.getElementById('alarmsList'),
                 uiText: {
                     notesTitle: document.getElementById('notesTitle'),
                     calendarSectionTitle: document.getElementById('calendarSectionTitle'),
@@ -889,12 +1105,25 @@
                     language: 'en'
                 },
                 currentCalendarDate: new Date(),
+                // State for new features
+                stopwatch: {
+                    startTime: 0,
+                    elapsedTime: 0,
+                    intervalId: null,
+                    laps: []
+                },
+                timer: {
+                    totalSeconds: 0,
+                    remainingSeconds: 0,
+                    intervalId: null
+                },
+                alarms: [],
+                alarmCheckInterval: null
             };
             
             let clockUpdateInterval = null;
             const API_BASE_URL = 'https://worldtimeapi.org/api';
 
-            // FIX: Consolidated all city data into one source of truth to ensure flags are always available.
             const cityData = [
                 { name: "New York", country: "USA", timezone: "America/New_York", flag: "🇺🇸" },
                 { name: "London", country: "United Kingdom", timezone: "Europe/London", flag: "🇬🇧" },
@@ -975,6 +1204,32 @@
                 es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
             };
             
+            
+            // --- Page Navigation Switching ---
+            dom.navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const targetPage = link.getAttribute('data-page');
+
+                    // Hide all sections
+                    document.querySelectorAll('.page-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Show selected section
+                    const targetSection = document.getElementById(`page-${targetPage}`);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+
+                    // Update nav link active class
+                    dom.navLinks.forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
+
+                    // Close menu
+                    dom.navOverlay.classList.remove('active');
+                });
+            });
+
             // --- 2. CORE LOGIC ---
 
             const debounce = (func, timeout = 300) => {
@@ -1086,8 +1341,100 @@
 
                 return `${timezoneInfo}${diffFromMainText}`;
             };
+            
+            // --- 3. UTILITY (STOPWATCH, TIMER, ALARM) LOGIC ---
 
-            // --- 3. UI RENDERING & FORMATTING ---
+            // Stopwatch
+            const updateStopwatchDisplay = () => {
+                const now = Date.now();
+                const time = state.stopwatch.elapsedTime + (state.stopwatch.startTime ? now - state.stopwatch.startTime : 0);
+                const ms = Math.floor((time % 1000) / 10).toString().padStart(2, '0');
+                const s = Math.floor((time / 1000) % 60).toString().padStart(2, '0');
+                const m = Math.floor((time / (1000 * 60)) % 60).toString().padStart(2, '0');
+                const h = Math.floor(time / (1000 * 60 * 60)).toString().padStart(2, '0');
+                dom.stopwatchDisplay.innerHTML = `${h}:${m}:${s}<span class="milliseconds">.${ms}</span>`;
+            };
+
+            const renderLaps = () => {
+                dom.lapsList.innerHTML = '';
+                state.stopwatch.laps.forEach((lap, index) => {
+                    const lapItem = document.createElement('li');
+                    lapItem.className = 'lap-item';
+                    lapItem.innerHTML = `<span class="lap-number">Lap ${index + 1}</span><span>${lap.time}</span>`;
+                    dom.lapsList.prepend(lapItem);
+                });
+            };
+
+            // Timer
+            const playTimerSound = () => {
+                try {
+                    const synth = new Tone.Synth().toDestination();
+                    synth.triggerAttackRelease("C5", "0.5s", Tone.now());
+                    synth.triggerAttackRelease("G4", "0.5s", Tone.now() + 0.5);
+                } catch (e) {
+                    alert('⏰ Timer finished!');
+                    console.error("Tone.js could not play sound.", e);
+                }
+            };
+            
+            const updateTimerDisplay = () => {
+                const s = state.timer.remainingSeconds;
+                const hrs = Math.floor(s / 3600).toString().padStart(2, '0');
+                const mins = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+                const secs = Math.floor(s % 60).toString().padStart(2, '0');
+                dom.timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
+            };
+            
+            // Alarm
+             const playAlarmSound = (label) => {
+                try {
+                    const synth = new Tone.Synth().toDestination();
+                    synth.triggerAttackRelease("A5", "0.2s", Tone.now());
+                    synth.triggerAttackRelease("A5", "0.2s", Tone.now() + 0.3);
+                } catch(e) { console.error("Tone.js could not play sound.", e); }
+                alert(`⏰ ${label}`);
+            };
+
+            const renderAlarms = () => {
+                dom.alarmsList.innerHTML = '';
+                state.alarms.forEach((alarm) => {
+                    const li = document.createElement('li');
+                    li.className = 'alarm-item';
+                    li.innerHTML = `
+                        <div>
+                            <div class="alarm-time">${alarm.time}</div>
+                            <div class="alarm-label">${alarm.label}</div>
+                        </div>
+                        <button class="delete-alarm-btn" data-id="${alarm.id}">✕</button>
+                    `;
+                    dom.alarmsList.appendChild(li);
+                });
+            };
+            
+             const checkAlarms = () => {
+                const now = new Date();
+                const currentTime = now.toTimeString().substring(0, 5); // Format: "HH:MM"
+                let stateChanged = false;
+
+                state.alarms.forEach(alarm => {
+                    if (alarm.time === currentTime) {
+                        if (!alarm.triggeredToday) {
+                            playAlarmSound(alarm.label);
+                            alarm.triggeredToday = true;
+                            stateChanged = true;
+                        }
+                    } else {
+                        if (alarm.triggeredToday) {
+                           alarm.triggeredToday = false; // Reset for the next day
+                           stateChanged = true;
+                        }
+                    }
+                });
+
+                if (stateChanged) saveState();
+            };
+
+            // --- 4. UI RENDERING & FORMATTING ---
 
             const renderPinnedClocks = () => {
                 dom.clocksGrid.innerHTML = '';
@@ -1246,7 +1593,7 @@
                 });
             };
 
-            // --- 4. EVENT LISTENERS ---
+            // --- 5. EVENT LISTENERS ---
 
             const setupEventListeners = () => {
                 const toggleModal = (modal, show) => {
@@ -1404,15 +1751,112 @@
                     state.currentCalendarDate.setMonth(state.currentCalendarDate.getMonth() + 1);
                     renderCalendar();
                 });
+
+                // --- Stopwatch Event Listeners ---
+                dom.stopwatchStartBtn.addEventListener('click', () => {
+                    if (!state.stopwatch.intervalId) {
+                        state.stopwatch.startTime = Date.now();
+                        state.stopwatch.intervalId = setInterval(updateStopwatchDisplay, 10);
+                    }
+                });
+                dom.stopwatchStopBtn.addEventListener('click', () => {
+                    if (state.stopwatch.intervalId) {
+                        clearInterval(state.stopwatch.intervalId);
+                        state.stopwatch.elapsedTime += Date.now() - state.stopwatch.startTime;
+                        state.stopwatch.intervalId = null;
+                        state.stopwatch.startTime = 0;
+                    }
+                });
+                dom.stopwatchResetBtn.addEventListener('click', () => {
+                    clearInterval(state.stopwatch.intervalId);
+                    state.stopwatch = { startTime: 0, elapsedTime: 0, intervalId: null, laps: [] };
+                    dom.stopwatchDisplay.innerHTML = `00:00:00<span class="milliseconds">.00</span>`;
+                    renderLaps();
+                });
+                dom.stopwatchLapBtn.addEventListener('click', () => {
+                    if (state.stopwatch.intervalId) {
+                        const lapTime = dom.stopwatchDisplay.innerHTML;
+                        state.stopwatch.laps.push({ time: lapTime });
+                        renderLaps();
+                    }
+                });
+
+                // --- Timer Event Listeners ---
+                dom.timerStartBtn.addEventListener('click', () => {
+                    if (state.timer.intervalId) return;
+
+                    let totalSeconds = parseInt(dom.timerHoursInput.value) * 3600 +
+                                       parseInt(dom.timerMinutesInput.value) * 60 +
+                                       parseInt(dom.timerSecondsInput.value);
+
+                    if (totalSeconds <= 0) return;
+                    
+                    state.timer.remainingSeconds = totalSeconds;
+                    dom.timerInputsContainer.style.display = 'none';
+                    updateTimerDisplay();
+
+                    state.timer.intervalId = setInterval(() => {
+                        state.timer.remainingSeconds--;
+                        updateTimerDisplay();
+                        if (state.timer.remainingSeconds <= 0) {
+                            clearInterval(state.timer.intervalId);
+                            state.timer.intervalId = null;
+                            dom.timerInputsContainer.style.display = 'flex';
+                            playTimerSound();
+                        }
+                    }, 1000);
+                });
+                dom.timerStopBtn.addEventListener('click', () => {
+                     if (state.timer.intervalId) {
+                        clearInterval(state.timer.intervalId);
+                        state.timer.intervalId = null;
+                        dom.timerInputsContainer.style.display = 'flex';
+                     }
+                });
+                dom.timerResetBtn.addEventListener('click', () => {
+                    if (state.timer.intervalId) clearInterval(state.timer.intervalId);
+                    state.timer = { totalSeconds: 0, remainingSeconds: 0, intervalId: null };
+                    dom.timerHoursInput.value = "0";
+                    dom.timerMinutesInput.value = "10";
+                    dom.timerSecondsInput.value = "0";
+                    dom.timerInputsContainer.style.display = 'flex';
+                    updateTimerDisplay();
+                });
+                
+                // --- Alarm Event Listeners ---
+                dom.addAlarmBtn.addEventListener('click', () => {
+                    const time = dom.alarmTimeInput.value;
+                    const label = dom.alarmLabelInput.value.trim() || 'Alarm';
+                    if (!time || state.alarms.some(a => a.time === time)) return;
+
+                    const newAlarm = { id: Date.now(), time, label, triggeredToday: false };
+                    state.alarms.push(newAlarm);
+                    
+                    dom.alarmTimeInput.value = '';
+                    dom.alarmLabelInput.value = '';
+
+                    renderAlarms();
+                    saveState();
+                });
+                
+                dom.alarmsList.addEventListener('click', (e) => {
+                    if(e.target.classList.contains('delete-alarm-btn')) {
+                        const alarmId = parseInt(e.target.dataset.id);
+                        state.alarms = state.alarms.filter(a => a.id !== alarmId);
+                        renderAlarms();
+                        saveState();
+                    }
+                });
             };
 
-            // --- 5. INITIALIZATION & STATE PERSISTENCE ---
+            // --- 6. INITIALIZATION & STATE PERSISTENCE ---
 
             const saveState = () => {
                 const stateToSave = {
                     pinnedTimezones: state.pinnedClocks.map(c => c.timezone),
                     notes: dom.notesArea.value,
-                    settings: state.settings
+                    settings: state.settings,
+                    alarms: state.alarms
                 };
                 localStorage.setItem('airclockState', JSON.stringify(stateToSave));
             };
@@ -1422,6 +1866,7 @@
                 if (savedState) {
                     dom.notesArea.value = savedState.notes || '';
                     state.settings = { ...state.settings, ...savedState.settings };
+                    state.alarms = savedState.alarms || [];
                     
                     if (savedState.pinnedTimezones) {
                        for (const timezone of savedState.pinnedTimezones) {
@@ -1452,6 +1897,7 @@
                 dom.languageSelect.value = state.settings.language;
 
                 applyLanguage();
+                renderAlarms(); // Render loaded alarms
                 
                 let initialTimezone;
                 try {
@@ -1472,6 +1918,9 @@
                 
                 updateAllClocks();
                 clockUpdateInterval = setInterval(updateAllClocks, 1000);
+                
+                // Start checking for alarms
+                state.alarmCheckInterval = setInterval(checkAlarms, 1000);
             };
 
             init();
