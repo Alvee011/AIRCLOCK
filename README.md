@@ -38,3 +38,11 @@ AIRCLOCK is a clean, modern, and feature-rich time utility web application built
 3.  **Data Persistence**
     -   All user settings, pinned clocks, notes, and alarms are saved to the browser's `localStorage`.
     -   This ensures your personalized configuration is remembered and restored between visits.
+
+## Check the live website
+
+```bash
+  https://alvee011.github.io/AIRCLOCK/#
+```
+
+[![my bio link](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://alvee.bio.link/)
