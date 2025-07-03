@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://worldtimeapi.org">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js" defer></script>
     <style>
         :root {
             --bg-light: #f0f4f8;
@@ -668,28 +668,21 @@
         .settings-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
         .settings-group h3 { margin-bottom: 1rem; font-size: 1.2rem; color: var(--accent); }
-        .setting-row { margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        .setting-row { margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; }
         
-        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
         
-        .language-select, .sound-select {
+        .language-select {
             width: 100%; padding: 0.75rem; border-radius: 8px;
             border: 1px solid; font-size: 1rem;
         }
-        .light-theme .language-select, .light-theme .sound-select { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
-        .dark-theme .language-select, .dark-theme .sound-select { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
-        
-        .sound-preview-btn {
-            background: none; border: none; cursor: pointer; font-size: 1.5rem;
-            padding: 0.5rem; display: flex; align-items: center; justify-content: center;
-            color: inherit; opacity: 0.7; transition: opacity 0.2s;
-        }
-        .sound-preview-btn:hover { opacity: 1; }
+        .light-theme .language-select { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
+        .dark-theme .language-select { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
 
         /* Styles for Stopwatch, Timer, and Alarm */
         .utility-container {
@@ -905,7 +898,6 @@
     </div>
 
     <div class="container">
-        <!-- Time Section -->
         <div id="page-time" class="page-section active">
             <div class="main-clock" id="mainClockContainer">
                 <div class="time" id="mainTime">--:--:--</div>
@@ -967,13 +959,11 @@
             </div>
         </div>
 
-        <!-- Stopwatch Section -->
         <div id="page-stopwatch" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Stopwatch</h2>
                 <div class="utility-display" id="stopwatchDisplay">00:00:00<span class="milliseconds">.00</span></div>
                 <div class="utility-controls">
-                    <!-- This single button will now handle both Start and Stop actions for the stopwatch -->
                     <button class="utility-btn start-btn" id="stopwatchToggleBtn">Start</button>
                     <button class="utility-btn lap-btn" id="stopwatchLapBtn">Lap</button>
                     <button class="utility-btn reset-btn" id="stopwatchResetBtn">Reset</button>
@@ -982,7 +972,6 @@
             </div>
         </div>
 
-        <!-- Timer Section -->
         <div id="page-timer" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Timer</h2>
@@ -1002,14 +991,12 @@
                     </div>
                 </div>
                 <div class="utility-controls">
-                    <!-- This single button will now handle both Start and Stop actions -->
                     <button class="utility-btn start-btn" id="timerToggleBtn">Start</button>
                     <button class="utility-btn reset-btn" id="timerResetBtn">Reset</button>
                 </div>
             </div>
         </div>
 
-        <!-- Alarm Section -->
         <div id="page-alarm" class="page-section">
             <div class="utility-container">
                 <h2 class="section-title">Alarm</h2>
@@ -1085,25 +1072,10 @@
                 </div>
             </div>
             
-            <!-- New Sound Settings Section -->
-            <div class="settings-group">
-                <h3 id="soundSettingsTitle">Sounds</h3>
-                <div class="setting-row">
-                    <span id="alarmSoundLabel">Alarm</span>
-                    <select id="alarmSoundSelect" class="sound-select"></select>
-                    <button class="sound-preview-btn" data-target="alarmSoundSelect">▶️</button>
-                </div>
-                <div class="setting-row">
-                    <span id="timerSoundLabel">Timer</span>
-                    <select id="timerSoundSelect" class="sound-select"></select>
-                    <button class="sound-preview-btn" data-target="timerSoundSelect">▶️</button>
-                </div>
-            </div>
-            
             <div class="settings-group">
                 <h3 id="languageSettingsTitle">Language</h3>
                 <select id="languageSelect" class="language-select">
-                </select>
+                    </select>
             </div>
         </div>
     </div>
@@ -1140,11 +1112,6 @@
                 manualThemeToggleContainer: document.getElementById('manualThemeToggleContainer'),
                 hourFormatToggle: document.getElementById('hourFormatToggle'),
                 languageSelect: document.getElementById('languageSelect'),
-                // Sound settings elements
-                alarmSoundSelect: document.getElementById('alarmSoundSelect'),
-                timerSoundSelect: document.getElementById('timerSoundSelect'),
-                soundPreviewBtns: document.querySelectorAll('.sound-preview-btn'),
-
                 calendarTitleText: document.getElementById('calendarTitleText'),
                 calendarGrid: document.getElementById('calendarGrid'),
                 prevMonthBtn: document.getElementById('prevMonthBtn'),
@@ -1186,9 +1153,6 @@
                     settingsModalTitle: document.getElementById('settingsModalTitle'),
                     themeSettingsTitle: document.getElementById('themeSettingsTitle'),
                     formatSettingsTitle: document.getElementById('formatSettingsTitle'),
-                    soundSettingsTitle: document.getElementById('soundSettingsTitle'),
-                    alarmSoundLabel: document.getElementById('alarmSoundLabel'),
-                    timerSoundLabel: document.getElementById('timerSoundLabel'),
                     languageSettingsTitle: document.getElementById('languageSettingsTitle'),
                     autoThemeLabel: document.getElementById('autoThemeLabel'),
                     darkThemeLabel: document.getElementById('darkThemeLabel'),
@@ -1205,9 +1169,7 @@
                     autoTheme: true,
                     manualThemeDark: false,
                     is24Hour: true,
-                    language: 'en',
-                    alarmSound: 'Alarm Clock', // Default sound for alarms
-                    timerSound: 'Digital' // Default sound for timer
+                    language: 'en'
                 },
                 currentCalendarDate: new Date(),
                 // State for utility features
@@ -1228,21 +1190,6 @@
             
             let clockUpdateInterval = null; // Will hold the main setInterval for updating all clocks
             const API_BASE_URL = 'https://worldtimeapi.org/api';
-
-            // A collection of sounds for the user to choose from.
-            // Each key is the display name, and the value is an array of notes/durations for Tone.js.
-            const sounds = {
-                'Alarm Clock': [['A5', '0.2s', 0], ['A5', '0.2s', 0.3]],
-                'Digital': [['C5', '0.5s', 0], ['G4', '0.5s', 0.5]],
-                'Beep': [['C5', '0.1s', 0]],
-                'Ascend': [['C4', '0.2s', 0], ['E4', '0.2s', 0.2], ['G4', '0.2s', 0.4], ['C5', '0.2s', 0.6]],
-                'Descend': [['C5', '0.2s', 0], ['G4', '0.2s', 0.2], ['E4', '0.2s', 0.4], ['C4', '0.2s', 0.6]],
-                'Triumph': [['G4', '0.1s', 0], ['C5', '0.1s', 0.15], ['E5', '0.1s', 0.3], ['G5', '0.4s', 0.45]],
-                'Alert': [['F#5', '0.1s', 0], ['F#5', '0.1s', 0.2], ['F#5', '0.1s', 0.4]],
-                'Chime': [['A5', '0.8s', 0], ['E6', '0.8s', 0.1]],
-                'Sci-Fi': [['A4', '0.1s', 0], ['D6', '0.2s', 0.15], ['B4', '0.3s', 0.35]],
-                'Xylophone': [['C5', '0.1s', 0], ['E5', '0.1s', 0.15], ['G5', '0.1s', 0.3], ['C6', '0.1s', 0.45], ['G5', '0.1s', 0.6], ['E5', '0.1s', 0.75], ['C5', '0.1s', 0.9]],
-            };
 
             const cityData = [
                 { name: "New York", country: "USA", timezone: "America/New_York", flag: "🇺🇸" },
@@ -1319,9 +1266,9 @@
             ];
 
             const translations = {
-                en: { name: "English", ui: { notes: "Notes", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", sounds: "Sounds", alarm: "Alarm", timer: "Timer" }, placeholders: { search: "Search for a city or country...", notes: "Write something..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
-                bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", sounds: "সাউন্ড", alarm: "অ্যালার্ম", timer: "টাইমার" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
-                es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", sounds: "Sonidos", alarm: "Alarma", timer: "Temporizador" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+                en: { name: "English", ui: { notes: "Notes", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data" }, placeholders: { search: "Search for a city or country...", notes: "Write something..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+                bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
+                es: { name: "Español", ui: { notes: "Notas", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
             };
             
             
@@ -1480,22 +1427,6 @@
             
             // --- 3. UTILITY (STOPWATCH, TIMER, ALARM) LOGIC ---
 
-            // Generic sound playing function
-            const playSound = (soundName) => {
-                try {
-                    const soundSequence = sounds[soundName];
-                    if (soundSequence) {
-                        const synth = new Tone.Synth().toDestination();
-                        const now = Tone.now();
-                        soundSequence.forEach(([note, duration, time]) => {
-                            synth.triggerAttackRelease(note, duration, now + time);
-                        });
-                    }
-                } catch(e) {
-                    console.error("Tone.js could not play sound.", e);
-                }
-            };
-            
             // Stopwatch logic
             const updateStopwatchDisplay = () => {
                 const now = Date.now();
@@ -1519,7 +1450,16 @@
 
             // Timer logic
             const playTimerSound = () => {
-                playSound(state.settings.timerSound);
+                try {
+                    // Use Tone.js for a pleasant sound effect
+                    const synth = new Tone.Synth().toDestination();
+                    synth.triggerAttackRelease("C5", "0.5s", Tone.now());
+                    synth.triggerAttackRelease("G4", "0.5s", Tone.now() + 0.5);
+                } catch (e) {
+                    // Fallback to a simple alert if Tone.js fails
+                    alert('⏰ Timer finished!');
+                    console.error("Tone.js could not play sound.", e);
+                }
             };
             
             const updateTimerDisplay = () => {
@@ -1531,8 +1471,13 @@
             };
             
             // Alarm logic
-            const playAlarmSound = () => {
-                playSound(state.settings.alarmSound);
+             const playAlarmSound = (label) => {
+                try {
+                    const synth = new Tone.Synth().toDestination();
+                    synth.triggerAttackRelease("A5", "0.2s", Tone.now());
+                    synth.triggerAttackRelease("A5", "0.2s", Tone.now() + 0.3);
+                } catch(e) { console.error("Tone.js could not play sound.", e); }
+                alert(`⏰ ${label}`);
             };
             
              const checkAlarms = () => {
@@ -1543,7 +1488,7 @@
                 state.alarms.forEach(alarm => {
                     if (alarm.enabled && alarm.time === currentTime) {
                         if (!alarm.triggeredToday) {
-                            playAlarmSound();
+                            playAlarmSound(alarm.label);
                             alarm.triggeredToday = true;
                             stateChanged = true;
                         }
@@ -1757,9 +1702,6 @@
                 dom.uiText.formatSettingsTitle.textContent = t.ui.format;
                 dom.uiText.hourFormatLabel.textContent = t.ui.hourFormat;
                 dom.uiText.languageSettingsTitle.textContent = t.ui.language;
-                dom.uiText.soundSettingsTitle.textContent = t.ui.sounds;
-                dom.uiText.alarmSoundLabel.textContent = t.ui.alarm;
-                dom.uiText.timerSoundLabel.textContent = t.ui.timer;
 
                 dom.citySearchInput.placeholder = t.placeholders.search;
                 dom.notesArea.placeholder = t.placeholders.notes;
@@ -1866,24 +1808,6 @@
                     saveState();
                 });
 
-                // --- Sound Settings Listeners ---
-                dom.alarmSoundSelect.addEventListener('change', (e) => {
-                    state.settings.alarmSound = e.target.value;
-                    saveState();
-                });
-                dom.timerSoundSelect.addEventListener('change', (e) => {
-                    state.settings.timerSound = e.target.value;
-                    saveState();
-                });
-                dom.soundPreviewBtns.forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const selectId = e.currentTarget.dataset.target;
-                        const selectedSound = document.getElementById(selectId).value;
-                        playSound(selectedSound);
-                    });
-                });
-
-
                 // --- City Search ---
                 const handleSearchInput = debounce(() => {
                     const query = dom.citySearchInput.value.toLowerCase();
@@ -1947,11 +1871,27 @@
                     }
                 });
                 
-                // --- Refresh Button Listener ---
+                // --- OPTIMIZED: Refresh Button Listener ---
                 dom.refreshCardsBtn.addEventListener('click', async () => {
+                    // Find clocks that failed to load initially, identified by the `apiFailed` flag.
+                    const clocksToRefresh = state.pinnedClocks.filter(clock => clock.apiFailed);
+
+                    if (clocksToRefresh.length === 0) return; // Nothing to do.
+
                     dom.refreshCardsBtn.disabled = true;
-                    const refreshPromises = state.pinnedClocks.map(clock => createClockObject(clock.timezone));
-                    state.pinnedClocks = await Promise.all(refreshPromises);
+
+                    const refreshPromises = clocksToRefresh.map(clock => createClockObject(clock.timezone));
+                    const refreshedClocks = await Promise.all(refreshPromises);
+
+                    // Update the main state array with the newly fetched data
+                    refreshedClocks.forEach(refreshedClock => {
+                        // Find the index of the clock we just refreshed
+                        const index = state.pinnedClocks.findIndex(c => c.timezone === refreshedClock.timezone);
+                        if (index !== -1) {
+                            state.pinnedClocks[index] = refreshedClock; // Replace the old object
+                        }
+                    });
+
                     renderPinnedClocks();
                     dom.refreshCardsBtn.disabled = false;
                 });
@@ -2137,11 +2077,11 @@
                     // Ensure loaded alarms have the 'enabled' property, defaulting to true
                     state.alarms = savedState.alarms ? savedState.alarms.map(a => ({...a, enabled: a.enabled !== false, triggeredToday: false })) : [];
                     
-                    if (savedState.pinnedTimezones) {
-                       for (const timezone of savedState.pinnedTimezones) {
-                           const clock = await createClockObject(timezone);
-                           if (clock) state.pinnedClocks.push(clock);
-                       }
+                    // --- OPTIMIZED: Load pinned clocks in parallel ---
+                    if (savedState.pinnedTimezones && savedState.pinnedTimezones.length > 0) {
+                       const clockPromises = savedState.pinnedTimezones.map(timezone => createClockObject(timezone));
+                       const loadedClocks = await Promise.all(clockPromises);
+                       state.pinnedClocks = loadedClocks.filter(clock => clock); // Assign the resolved clocks
                     }
                 }
             };
@@ -2154,26 +2094,12 @@
                     option.textContent = translations[langCode].name;
                     dom.languageSelect.appendChild(option);
                 }
-            };
-
-            // Populates the sound dropdowns with options from the 'sounds' object.
-            const populateSoundSelectors = () => {
-                [dom.alarmSoundSelect, dom.timerSoundSelect].forEach(select => {
-                    select.innerHTML = '';
-                    for (const soundName in sounds) {
-                        const option = document.createElement('option');
-                        option.value = soundName;
-                        option.textContent = soundName;
-                        select.appendChild(option);
-                    }
-                });
-            };
+            }
 
             // The main initialization function that runs when the page loads.
             const init = async () => {
-                // Set up language and sound options
+                // Set up language options
                 populateLanguageSelector();
-                populateSoundSelectors();
                 // Load any saved data from previous sessions
                 await loadState();
                 
@@ -2182,9 +2108,6 @@
                 dom.manualThemeToggle.checked = state.settings.manualThemeDark;
                 dom.hourFormatToggle.checked = state.settings.is24Hour;
                 dom.languageSelect.value = state.settings.language;
-                dom.alarmSoundSelect.value = state.settings.alarmSound;
-                dom.timerSoundSelect.value = state.settings.timerSound;
-
 
                 // Apply language and render initial UI components
                 applyLanguage();
