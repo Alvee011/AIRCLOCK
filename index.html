@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIRCLOCK - On Time Worldwide</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://worldtimeapi.org">
@@ -12,17 +13,18 @@
 
     <style>
         :root {
-    --bg-light: #f0f4f8;
-    --text-light: #2c3e50;
-    --bg-dark: #1a2639;
-    --text-dark: #ecf0f1;
-    --accent: #3498db;
-    --card-bg-light: #ffffff;
-    --card-bg-dark: #2c3e50;
-    --shadow-light: 0 8px 25px rgba(0, 0, 0, 0.1);
-    --shadow-dark: 0 8px 25px rgba(0, 0, 0, 0.3);
-    --border-light: rgba(0, 0, 0, 0.1);
-    --border-dark: rgba(255, 255, 255, 0.1);
+    --bg-light: #e5e7eb; /* Light mode background color */
+    --text-light: #2c3e50; /* Light mode text color */
+    --bg-dark: #000000; /* Dark mode background color */
+    --text-dark: #ecf0f1; /* Dark mode text color */
+    --accent-light: #3498db; /* Accent color for light mode */
+    --accent-dark: #0026ff;  /* Accent color for dark mode */
+    --card-bg-light: #ffffff; /* Card background in light mode */
+    --card-bg-dark: #1F1F1F; /* Card background in dark mode (deeper) */
+    --shadow-light: 0 8px 25px rgba(0, 0, 0, 0.1); /* Shadow for light mode elements */
+    --shadow-dark: 0 8px 25px rgba(0, 0, 0, 0.3); /* Shadow for dark mode elements */
+    --border-light: rgba(0, 0, 0, 0.1); /* Border color in light mode */
+    --border-dark: rgba(255, 255, 255, 0.1); /* Border color in dark mode */
     --transition: all 0.3s ease-in-out;
     --card-radius: 16px;
 }
@@ -44,11 +46,13 @@ body {
 body.light-theme {
     background-color: var(--bg-light);
     color: var(--text-light);
+    --accent-color: var(--accent-light);
 }
 
 body.dark-theme {
     background-color: var(--bg-dark);
     color: var(--text-dark);
+    --accent-color: var(--accent-dark);
 }
 
 .container {
@@ -77,7 +81,7 @@ header {
 }
 
 .dark-theme header {
-    background-color: rgba(26, 38, 57, 0.8);
+    background-color: rgba(31, 31, 31, 0.8);
     border-color: var(--border-dark);
 }
 
@@ -87,7 +91,7 @@ header {
 }
 
 .logo img {
-    height: 50px; /* Adjust height as needed */
+    height: 66px; /* Increased by ~32% */
     display: none;
 }
 
@@ -109,7 +113,7 @@ header {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.8rem;
+    font-size: 2.2rem; /* Increased by ~23% */
     padding: 0.5rem;
     display: flex;
     align-items: center;
@@ -153,17 +157,17 @@ header {
 }
 .nav-link:hover {
     transform: scale(1.1);
-    color: var(--accent);
+    color: var(--accent-color);
 }
 .nav-link.active {
-    color: var(--accent);
+    color: var(--accent-color);
 }
 
 .settings-btn {
     cursor: pointer;
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
+    font-size: 1.85rem; /* Increased by ~23% */
+    width: 49px; /* Increased by ~23% */
+    height: 49px; /* Increased by ~23% */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,6 +227,7 @@ header {
     font-size: clamp(3rem, 12vw, 6rem);
     font-weight: 700;
     letter-spacing: -2px;
+    font-variant-numeric: tabular-nums; /* Keeps numbers stable */
 }
 
 .main-clock .location {
@@ -260,7 +265,7 @@ header {
 
 .search-input:focus {
     outline: none;
-    border-color: var(--accent);
+    border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
@@ -478,7 +483,7 @@ textarea {
 }
 .light-theme textarea { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
 .dark-theme textarea { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
-textarea:focus { outline: none; border-color: var(--accent); }
+textarea:focus { outline: none; border-color: var(--accent-color); }
 
 .calendar {
     border-radius: var(--card-radius);
@@ -504,7 +509,7 @@ textarea:focus { outline: none; border-color: var(--accent); }
     font-weight: 600; font-size: 1.1rem;
     cursor: pointer; /* Make calendar title clickable */
     transition: opacity 0.2s;
-    background: var(--accent);
+    background: var(--accent-color);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 8px;
@@ -527,9 +532,9 @@ textarea:focus { outline: none; border-color: var(--accent); }
 }
 .calendar-day:hover { background-color: rgba(52, 152, 219, 0.1); }
 .calendar-day.selected {
-    box-shadow: 0 0 0 2px var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-color);
 }
-.calendar-day.today { background-color: var(--accent); color: white; font-weight: 600; }
+.calendar-day.today { background-color: var(--accent-color); color: white; font-weight: 600; }
 .calendar-day.other-month { opacity: 0.3; }
 .calendar-day.has-note::after {
     content: '';
@@ -540,7 +545,7 @@ textarea:focus { outline: none; border-color: var(--accent); }
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background-color: var(--accent);
+    background-color: var(--accent-color);
 }
 .calendar-day.today.has-note::after {
     background-color: white;
@@ -567,7 +572,7 @@ textarea:focus { outline: none; border-color: var(--accent); }
 }
 .reset-btn:hover { background-color: #c0392b; }
 .refresh-btn {
-    background-color: var(--accent);
+    background-color: var(--accent-color);
 }
 .refresh-btn:hover {
     background-color: #2980b9;
@@ -588,6 +593,100 @@ footer {
     padding: 2rem 1.5rem;
     background-color: white;
 }
+
+.light-theme .site-footer {
+    background-color: #f9fafb;
+    color: #4b5563;
+}
+.dark-theme .site-footer {
+    background-color: var(--card-bg-dark);
+    color: #9ca3af;
+}
+
+.site-footer {
+    padding: 3rem 1.5rem;
+}
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid;
+}
+.light-theme .footer-top { border-color: var(--border-light); }
+.dark-theme .footer-top { border-color: var(--border-dark); }
+
+.footer-logo img {
+    height: 50px;
+    display: none;
+}
+.light-theme .footer-logo .logo-light {
+    display: block;
+}
+.dark-theme .footer-logo .logo-dark {
+    display: block;
+}
+
+.app-store-btn img {
+    height: 40px;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-column a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+.footer-column a:hover {
+    color: var(--accent-color);
+}
+
+.footer-bottom {
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+.footer-bottom p {
+    margin-bottom: 0.5rem;
+}
+.footer-bottom a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+.quote-wrapper {
+    padding: 2rem 1.5rem;
+    background-color: #ffffff; /* Quote section always has a white background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 140px;
+}
+
 .quote-container {
     text-align: center;
     max-width: 800px;
@@ -598,14 +697,26 @@ footer {
     font-style: italic;
     font-weight: 700;
     font-size: 1.2rem;
-    color: #333;
     margin-bottom: 0.5rem;
+    color: #333; /* Quote text is always dark */
 }
+
 .quote-author {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    color: #555;
+    color: #555; /* Quote author text is always darkish gray */
 }
+
+
+.quote-container .cursor {
+    display: inline-block;
+    background-color: #333; /* Cursor is always dark to match text */
+    margin-left: 2px;
+    width: 3px;
+    height: 1.2rem;
+    animation: blink 1s infinite;
+}
+
 
 /* Generic Modal Styles */
 .modal-overlay {
@@ -665,7 +776,7 @@ footer {
 #allNotesContent .note-date {
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: var(--accent);
+    color: var(--accent-color);
 }
 #allNotesContent .note-text {
     white-space: pre-wrap; /* Respect line breaks in notes */
@@ -704,7 +815,7 @@ footer {
 }
 .year-input:focus {
     outline: none;
-    border-bottom-color: var(--accent);
+    border-bottom-color: var(--accent-color);
 }
 .year-input::-webkit-outer-spin-button,
 .year-input::-webkit-inner-spin-button {
@@ -735,35 +846,41 @@ footer {
     background-color: rgba(255, 255, 255, 0.1);
 }
 .month-btn.active {
-    background-color: var(--accent);
-    border-color: var(--accent);
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
 }
 
 .fullscreen-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+    background: black;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
 }
 .fullscreen-overlay.active { opacity: 1; pointer-events: all; }
-.fullscreen-overlay .time { font-size: clamp(4rem, 20vw, 12rem); font-weight: 700; color: white; text-shadow: 0 0 30px rgba(255,255,255,0.5); }
+.fullscreen-overlay .time { 
+    font-size: clamp(4rem, 20vw, 12rem); 
+    font-weight: 700; 
+    color: white; 
+    font-variant-numeric: tabular-nums; /* Keeps numbers stable */
+}
 .fullscreen-overlay .date { font-size: clamp(1.5rem, 6vw, 3rem); color: white; opacity: 0.8; }
-.close-fullscreen-btn { position: absolute; top: 2rem; right: 2rem; font-size: 2rem; color: white; background: none; border: none; cursor: pointer; transition: transform 0.3s ease; }
-.close-fullscreen-btn:hover { transform: scale(1.2) rotate(90deg); }
+.close-fullscreen-btn { 
+    display: none;
+}
 
 .settings-group { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid; }
 .light-theme .settings-group { border-color: var(--border-light); }
 .dark-theme .settings-group { border-color: var(--border-dark); }
 .settings-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-.settings-group h3 { margin-bottom: 1rem; font-size: 1.2rem; color: var(--accent); }
+.settings-group h3 { margin-bottom: 1rem; font-size: 1.2rem; color: var(--accent-color); }
 .setting-row { margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; }
 
 .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
 .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider { background-color: var(--accent-color); }
 input:checked + .slider:before { transform: translateX(22px); }
 
 .language-select {
@@ -800,7 +917,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 .utility-display .milliseconds {
     font-size: 0.5em;
-    color: var(--accent);
+    color: var(--accent-color);
 }
 
 .utility-controls {
@@ -891,7 +1008,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .light-theme .add-alarm-form input { background-color: #f0f4f8; border-color: var(--border-light); }
 .dark-theme .add-alarm-form input { background-color: #1a2639; border-color: var(--border-dark); color: var(--text-dark); }
 .add-alarm-btn {
-    background-color: var(--accent);
+    background-color: var(--accent-color);
     color: white;
 }
 
@@ -937,7 +1054,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .alarm-countdown {
     font-family: 'Roboto Mono', monospace;
     font-size: 0.85rem;
-    color: var(--accent);
+    color: var(--accent-color);
     margin-top: 0.5rem;
     min-height: 1.2em; /* Prevent layout shift when text appears */
 }
@@ -970,7 +1087,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 <body>
     <header>
         <div class="logo">
-            <img src="LOGOblack.png" alt="AIRCLOCK Logo" class="logo-light">
+            <img src="LOGOBlack.png" alt="AIRCLOCK Logo" class="logo-light">
             <img src="LOGOWhite.png" alt="AIRCLOCK Logo" class="logo-dark">
         </div>
         <div class="header-right">
@@ -1102,15 +1219,83 @@ input:checked + .slider:before { transform: translateX(22px); }
         </div>
     </div>
 
-    <footer>
-        <div class="quote-container">
-            <p class="quote">"Time is what we want most, but what we use worst"</p>
-            <p class="quote-author">- William Penn</p>
+    <div class="quote-wrapper">
+        <div class="quote-container" id="quoteContainer">
+            <p class="quote"><span id="quoteText"></span><span class="cursor">&nbsp;</span></p>
+            <p class="quote-author"><span id="quoteAuthor"></span></p>
+        </div>
+    </div>
+     <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <img src="LOGOBlack.png" alt="AIRCLOCK Logo" class="logo-light">
+                    <img src="LOGOWhite.png" alt="AIRCLOCK Logo" class="logo-dark">
+                </div>
+                <a href="#" class="app-store-btn">
+                    <img src="https://web.archive.org/web/20240127134319im_/https://www.time.is/assets/img/appstore-nonretina.png" alt="Download on the App Store">
+                </a>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <ul>
+                        <li><a href="#">Exact time now</a></li>
+                        <li><a href="#">Time here&there</a></li>
+                        <li><a href="#">Your time zone</a></li>
+                        <li><a href="#">Time zones</a></li>
+                        <li><a href="#">Daylight Saving Time</a></li>
+                        <li><a href="#">Clock</a></li>
+                        <li><a href="#">Countdown</a></li>
+                        <li><a href="#">Calendar</a></li>
+                        <li><a href="#">Compact calendar</a></li>
+                        <li><a href="#">Week number</a></li>
+                        <li><a href="#">Sound</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <ul>
+                        <li><a href="#">Apps</a></li>
+                        <li><a href="#">Widgets</a></li>
+                        <li><a href="#">Time zone news</a></li>
+                        <li><a href="#">Newsletter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <ul>
+                        <li><a href="#">UTC</a></li>
+                        <li><a href="#">Unix clock</a></li>
+                        <li><a href="#">Unix time converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <ul>
+                        <li><a href="#">Customize</a></li>
+                        <li><a href="#">Airclock Ad-free</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">How to use Airclock</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <ul>
+                        <li><a href="#">Advertise</a></li>
+                        <li><a href="#">Terms of use</a></li>
+                        <li><a href="#">Privacy policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Airclock displays exact, official atomic clock time for any time zone (more than 7 million locations) in 58 languages.</p>
+                <p>
+                    <a href="#">What time is it?</a> | <a href="#">¿Qué hora es?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="#">» more languages</a>
+                </p>
+            </div>
         </div>
     </footer>
 
     <div class="fullscreen-overlay" id="fullscreenOverlay">
-        <button class="close-fullscreen-btn" id="closeFullscreenBtn">✕</button>
+        
         <div class="time" id="fullscreenTime"></div>
         <div class="date" id="fullscreenDate"></div>
     </div>
@@ -1231,8 +1416,10 @@ const dom = {
     fullscreenOverlay: document.getElementById('fullscreenOverlay'),
     fullscreenTime: document.getElementById('fullscreenTime'),
     fullscreenDate: document.getElementById('fullscreenDate'),
-    closeFullscreenBtn: document.getElementById('closeFullscreenBtn'),
     popularCitiesContainer: document.getElementById('popular-cities-container'),
+    quoteContainer: document.getElementById('quoteContainer'),
+    quoteText: document.getElementById('quoteText'),
+    quoteAuthor: document.getElementById('quoteAuthor'),
     // Stopwatch elements
     stopwatchDisplay: document.getElementById('stopwatchDisplay'),
     stopwatchToggleBtn: document.getElementById('stopwatchToggleBtn'), // New toggle button
@@ -1295,11 +1482,37 @@ let state = {
         intervalId: null // This is key to knowing if the timer is running
     },
     alarms: [], // An array of alarm objects
-    alarmCheckInterval: null
+    alarmCheckInterval: null,
+    currentQuoteIndex: -1,
+    isQuoteTyping: false
 };
 
 let clockUpdateInterval = null; // Will hold the main setInterval for updating all clocks
 const API_BASE_URL = 'https://worldtimeapi.org/api';
+
+const quotes = [
+    { text: "Time is the richest gift, yet the poorest kept.", author: "Elena Marlowe" },
+    { text: "We measure life in years but waste it in moments.", author: "Victor Hale" },
+    { text: "Time heals all wounds, except the ones we refuse to let go of.", author: "Sophia Durant" },
+    { text: "The clock never stops, but we often pause for nothing.", author: "Marcus Linton" },
+    { text: "Time is silent, but it speaks the loudest truth.", author: "Isabel Moreau" },
+    { text: "We chase time as if it runs, yet it patiently waits for no one.", author: "Julian Hart" },
+    { text: "The value of time is realized only when it has slipped away.", author: "Clara Voss" },
+    { text: "We spend time like coins, forgetting there’s no way to earn them back.", author: "Adrian Cole" },
+    { text: "Time is a teacher that never asks for permission to give lessons.", author: "Nora Bennett" },
+    { text: "The cruelest thief is time, for it steals without warning.", author: "Samuel Rhodes" },
+    { text: "We wish for more hours, yet squander the ones we have.", author: "Ivy Lorenz" },
+    { text: "Time rewards the disciplined and punishes the careless.", author: "Damian Cross" },
+    { text: "Every second wasted is a debt you can never repay.", author: "Lydia Carver" },
+    { text: "We borrow time from tomorrow but rarely repay it today.", author: "Edwin Frost" },
+    { text: "Time is a canvas—some paint masterpieces, others leave it blank.", author: "Aria Sinclair" },
+    { text: "We live as if time is infinite, though each breath proves otherwise.", author: "Noah Whitfield" },
+    { text: "The costliest luxury is the moment you let slip.", author: "Fiona Gray" },
+    { text: "Time is both our servant and our master.", author: "Leonard Ashcroft" },
+    { text: "We count hours but forget to make hours count.", author: "Selene Ward" },
+    { text: "Time is the only currency that grows more precious as it runs out.", author: "Gabriel Stone" }
+];
+
 
 const cityData = [
     { name: "New York", country: "USA", timezone: "America/New_York", flag: "🇺🇸" },
@@ -1936,6 +2149,63 @@ const formatDate = (date, timezone, format = 'long') => {
     });
 };
 
+// --- QUOTE LOGIC ---
+function typeEffect(quote, author) {
+    if (state.isQuoteTyping) return;
+    state.isQuoteTyping = true;
+    
+    const quoteEl = dom.quoteText;
+    const authorEl = dom.quoteAuthor;
+    const cursorEl = dom.quoteContainer.querySelector('.cursor');
+
+    cursorEl.style.display = 'inline-block'; // Show cursor
+    quoteEl.innerHTML = '';
+    authorEl.innerHTML = '';
+
+    let i = 0;
+    const typingInterval = setInterval(() => {
+        if (i < quote.length) {
+            quoteEl.innerHTML += quote.charAt(i);
+            i++;
+        } else {
+            clearInterval(typingInterval);
+            // After quote is done, type author
+            let j = 0;
+            authorEl.innerHTML = '– ';
+            const authorTypingInterval = setInterval(() => {
+                 if(j < author.length) {
+                     authorEl.innerHTML += author.charAt(j);
+                     j++;
+                 } else {
+                     clearInterval(authorTypingInterval);
+                     state.isQuoteTyping = false;
+                     cursorEl.style.display = 'none'; // Hide cursor
+                 }
+            }, 50);
+        }
+    }, 50);
+}
+
+function changeQuote(withEffect = false) {
+    let newIndex;
+    do {
+        newIndex = Math.floor(Math.random() * quotes.length);
+    } while (newIndex === state.currentQuoteIndex);
+    
+    state.currentQuoteIndex = newIndex;
+    const newQuote = quotes[newIndex];
+    const cursorEl = dom.quoteContainer.querySelector('.cursor');
+
+    if(withEffect) {
+        typeEffect(newQuote.text, newQuote.author);
+    } else {
+        dom.quoteText.textContent = newQuote.text;
+        dom.quoteAuthor.textContent = `– ${newQuote.author}`;
+        cursorEl.style.display = 'none'; // Hide cursor on initial load
+    }
+}
+
+
 // --- 5. EVENT LISTENERS ---
 
 // This function sets up all the interactive parts of the page.
@@ -1946,7 +2216,11 @@ const setupEventListeners = () => {
     
     // --- Modal & Overlay Listeners ---
     dom.mainClockContainer.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, true));
-    dom.closeFullscreenBtn.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, false));
+    dom.fullscreenOverlay.addEventListener('click', (e) => {
+        if(e.target === dom.fullscreenOverlay) {
+            toggleModal(dom.fullscreenOverlay, false);
+        }
+    });
     dom.settingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, true));
     dom.closeSettingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, false));
     dom.menuBtn.addEventListener('click', (e) => {
@@ -2133,6 +2407,22 @@ const setupEventListeners = () => {
             updateNotesSection(); // Update the notes area
         }
     });
+    
+    // --- Intersection Observer for Quote Typing ---
+    const quoteObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const currentQuote = quotes[state.currentQuoteIndex];
+                typeEffect(currentQuote.text, currentQuote.author);
+                observer.unobserve(entry.target); // Animate only once on first scroll
+            }
+        });
+    }, { threshold: 0.8 });
+    
+    if(dom.quoteContainer) {
+        quoteObserver.observe(dom.quoteContainer);
+    }
+
 
     // --- Stopwatch Event Listeners (Updated) ---
     dom.stopwatchToggleBtn.addEventListener('click', () => {
@@ -2315,11 +2605,20 @@ const init = async () => {
     }
 
     state.mainClock = await createClockObject(initialTimezone);
-    if(state.mainClock) dom.mainLocation.textContent = state.mainClock.timezone.replace(/_/g, ' ');
+    if(state.mainClock) {
+        // Find a name for the main clock if possible
+        const mainCity = cityData.find(c => c.timezone === state.mainClock.timezone);
+        state.mainClock.name = mainCity ? mainCity.name : state.mainClock.timezone.split('/').pop().replace(/_/g, ' ');
+        dom.mainLocation.textContent = state.mainClock.timezone.replace(/_/g, ' ');
+    }
     
     applyTheme();
     renderPinnedClocks();
     setupEventListeners();
+
+    // Initialize Quote
+    changeQuote(false); // Initial quote without typing effect
+    setInterval(() => changeQuote(true), 60000); // Change quote with typing effect every minute
     
     updateAllClocks();
     clockUpdateInterval = setInterval(updateAllClocks, 1000);
