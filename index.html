@@ -17,14 +17,16 @@
     --text-light: #2c3e50; /* Light mode text color */
     --bg-dark: #000000; /* Dark mode background color */
     --text-dark: #ecf0f1; /* Dark mode text color */
-    --accent-light: #3498db; /* Accent color for light mode */
-    --accent-dark: #0026ff;  /* Accent color for dark mode */
+    --accent-light: #D4AF37; /* Golden accent for light mode */
+    --accent-dark: #FFD700;  /* Golden accent for dark mode */
     --card-bg-light: #ffffff; /* Card background in light mode */
     --card-bg-dark: #1F1F1F; /* Card background in dark mode (deeper) */
     --shadow-light: 0 8px 25px rgba(0, 0, 0, 0.1); /* Shadow for light mode elements */
     --shadow-dark: 0 8px 25px rgba(0, 0, 0, 0.3); /* Shadow for dark mode elements */
     --border-light: rgba(0, 0, 0, 0.1); /* Border color in light mode */
     --border-dark: rgba(255, 255, 255, 0.1); /* Border color in dark mode */
+    --btn-bg-light: #f3f4f6;
+    --btn-bg-dark: #374151;
     --transition: all 0.3s ease-in-out;
     --card-radius: 16px;
 }
@@ -47,12 +49,14 @@ body.light-theme {
     background-color: var(--bg-light);
     color: var(--text-light);
     --accent-color: var(--accent-light);
+    --btn-bg: var(--btn-bg-light);
 }
 
 body.dark-theme {
     background-color: var(--bg-dark);
     color: var(--text-dark);
     --accent-color: var(--accent-dark);
+    --btn-bg: var(--btn-bg-dark);
 }
 
 .container {
@@ -88,10 +92,11 @@ header {
 .logo {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .logo img {
-    height: 66px; /* Increased by ~32% */
+    height: 50px; 
     display: none;
 }
 
@@ -113,7 +118,7 @@ header {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 2.2rem; /* Increased by ~23% */
+    font-size: 1.8rem;
     padding: 0.5rem;
     display: flex;
     align-items: center;
@@ -164,20 +169,31 @@ header {
 }
 
 .settings-btn {
+    background: transparent;
+    border: none;
     cursor: pointer;
-    font-size: 1.85rem; /* Increased by ~23% */
-    width: 49px; /* Increased by ~23% */
-    height: 49px; /* Increased by ~23% */
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: var(--transition);
+    transition: transform 0.5s ease;
+    padding: 0;
+    color: inherit;
+}
+.settings-btn svg {
+  display: block;
+    /* fill: currentColor; is removed as the new SVG uses stroke */
 }
 
-.settings-btn:hover {
-    background-color: rgba(128, 128, 128, 0.1);
-    transform: rotate(30deg);
+
+.settings-btn:hover, .settings-btn:focus {
+    transform: rotate(90deg);
+}
+.settings-btn:active {
+    transform: rotate(180deg);
 }
 
 /* Styles for page sections */
@@ -266,7 +282,7 @@ header {
 .search-input:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .search-dropdown {
@@ -306,7 +322,7 @@ header {
 }
 
 .search-dropdown-item:hover {
-    background-color: rgba(52, 152, 219, 0.1);
+    background-color: rgba(212, 175, 55, 0.1);
 }
 
 .search-dropdown-item .flag { font-size: 1.5rem; }
@@ -509,8 +525,8 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
     font-weight: 600; font-size: 1.1rem;
     cursor: pointer; /* Make calendar title clickable */
     transition: opacity 0.2s;
-    background: var(--accent-color);
-    color: white;
+    background: var(--btn-bg);
+    color: inherit;
     padding: 0.5rem 1rem;
     border-radius: 8px;
 }
@@ -530,7 +546,7 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
     margin: 0 auto; transition: background-color 0.2s ease;
     position: relative; /* Needed for the note indicator */
 }
-.calendar-day:hover { background-color: rgba(52, 152, 219, 0.1); }
+.calendar-day:hover { background-color: rgba(212, 175, 55, 0.1); }
 .calendar-day.selected {
     box-shadow: 0 0 0 2px var(--accent-color);
 }
@@ -566,26 +582,26 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-weight: 500;
+    background-color: var(--btn-bg);
+    color: inherit;
 }
+.light-theme .action-btn { color: #374151; }
+.dark-theme .action-btn { color: #e5e7eb; }
+
+
 .reset-btn {
-    background-color: #e74c3c;
+    background-color: #22c55e;
 }
-.reset-btn:hover { background-color: #c0392b; }
-.refresh-btn {
-    background-color: var(--accent-color);
-}
+.reset-btn:hover { background-color: #16a34a; }
 .refresh-btn:hover {
-    background-color: #2980b9;
+    opacity: 0.8;
 }
 .refresh-btn:disabled {
     background-color: #95a5a6;
     cursor: not-allowed;
 }
-.all-notes-btn {
-    background-color: #8e44ad;
-}
 .all-notes-btn:hover {
-    background-color: #9b59b6;
+    opacity: 0.8;
 }
 
 
@@ -614,7 +630,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem; /* Reduced from 2rem */
     padding-bottom: 2rem;
     border-bottom: 1px solid;
 }
@@ -622,7 +638,7 @@ footer {
 .dark-theme .footer-top { border-color: var(--border-dark); }
 
 .footer-logo img {
-    height: 50px;
+    height: 65px; /* Increased from 50px by 30% */
     display: none;
 }
 .light-theme .footer-logo .logo-light {
@@ -935,17 +951,18 @@ input:checked + .slider:before { transform: translateX(22px); }
     cursor: pointer;
     transition: var(--transition);
     min-width: 100px; /* Give buttons a minimum width */
+    background-color: var(--btn-bg);
+    color: inherit;
 }
-.utility-btn.start-btn { background-color: #2ecc71; color: white; }
-.utility-btn.start-btn:hover { background-color: #27ae60; }
-.utility-btn.stop-btn { background-color: #e74c3c; color: white; }
-.utility-btn.stop-btn:hover { background-color: #c0392b; }
-.utility-btn.lap-btn, .utility-btn.reset-btn {
-    background-color: #95a5a6;
-    color: white;
-}
-.utility-btn.lap-btn:hover, .utility-btn.reset-btn:hover {
-    background-color: #7f8c8d;
+.light-theme .utility-btn { color: #374151; }
+.dark-theme .utility-btn { color: #e5e7eb; }
+
+.utility-btn.start-btn { background-color: #22c55e; color: white; }
+.utility-btn.start-btn:hover { background-color: #16a34a; }
+.utility-btn.stop-btn { background-color: #ef4444; color: white; }
+.utility-btn.stop-btn:hover { background-color: #dc2626; }
+.utility-btn:hover {
+    opacity: 0.8;
 }
 
 .laps-list, .alarms-list {
@@ -1086,13 +1103,39 @@ input:checked + .slider:before { transform: translateX(22px); }
 </head>
 <body>
     <header>
-        <div class="logo">
-            <img src="LOGOBlack.png" alt="AIRCLOCK Logo" class="logo-light">
-            <img src="LOGOWhite.png" alt="AIRCLOCK Logo" class="logo-dark">
+        <div class="logo" id="logoLink">
+            <img src="LOGOBlack H.png" alt="AIRCLOCK Logo" class="logo-light">
+            <img src="LOGOWhite H.png" alt="AIRCLOCK Logo" class="logo-dark">
         </div>
         <div class="header-right">
             <button class="menu-btn" id="menuBtn">☰</button>
-            <button class="settings-btn" id="settingsBtn">⚙️</button>
+<button class="settings-btn" id="settingsBtn">
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       width="24" height="24" viewBox="0 0 24 24" 
+       fill="none" stroke="currentColor" 
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82
+             2 2 0 1 1-2.83 2.83 1.65 1.65 0 0 0-1.82-.33
+             1.65 1.65 0 0 0-1 1.51A2 2 0 1 1 9.9 21
+             a1.65 1.65 0 0 0-1-1.51
+             1.65 1.65 0 0 0-1.82.33
+             2 2 0 1 1-2.83-2.83
+             1.65 1.65 0 0 0 .33-1.82
+             1.65 1.65 0 0 0-1.51-1A2 2 0 1 1 3 9.9
+             a1.65 1.65 0 0 0 1.51-1
+             1.65 1.65 0 0 0-.33-1.82
+             2 2 0 1 1 2.83-2.83
+             1.65 1.65 0 0 0 1.82.33
+             1.65 1.65 0 0 0 1-1.51A2 2 0 1 1 14.1 3
+             a1.65 1.65 0 0 0 1 1.51
+             1.65 1.65 0 0 0 1.82-.33
+             2 2 0 1 1 2.83 2.83
+             1.65 1.65 0 0 0-.33 1.82
+             1.65 1.65 0 0 0 1.51 1A2 2 0 1 1 21 14.1
+             a1.65 1.65 0 0 0-1.51 1z"></path>
+  </svg>
+</button>
         </div>
     </header>
 
@@ -1162,8 +1205,8 @@ input:checked + .slider:before { transform: translateX(22px); }
             </div>
             
             <div class="section action-buttons-container">
-                <button class="action-btn refresh-btn" id="refreshCardsBtn">Refresh Cards</button>
-                <button class="action-btn all-notes-btn" id="showAllNotesBtn">Show All Notes</button>
+                <button class="action-btn" id="refreshCardsBtn">Refresh Cards</button>
+                <button class="action-btn" id="showAllNotesBtn">Show All Notes</button>
                 <button class="action-btn reset-btn" id="resetBtn">Reset All Data</button>
             </div>
         </div>
@@ -1174,8 +1217,8 @@ input:checked + .slider:before { transform: translateX(22px); }
                 <div class="utility-display" id="stopwatchDisplay">00:00:00<span class="milliseconds">.00</span></div>
                 <div class="utility-controls">
                     <button class="utility-btn start-btn" id="stopwatchToggleBtn">Start</button>
-                    <button class="utility-btn lap-btn" id="stopwatchLapBtn">Lap</button>
-                    <button class="utility-btn reset-btn" id="stopwatchResetBtn">Reset</button>
+                    <button class="utility-btn" id="stopwatchLapBtn">Lap</button>
+                    <button class="utility-btn" id="stopwatchResetBtn">Reset</button>
                 </div>
                 <ul class="laps-list" id="lapsList"></ul>
             </div>
@@ -1201,7 +1244,7 @@ input:checked + .slider:before { transform: translateX(22px); }
                 </div>
                 <div class="utility-controls">
                     <button class="utility-btn start-btn" id="timerToggleBtn">Start</button>
-                    <button class="utility-btn reset-btn" id="timerResetBtn">Reset</button>
+                    <button class="utility-btn" id="timerResetBtn">Reset</button>
                 </div>
             </div>
         </div>
@@ -1221,7 +1264,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 
     <div class="quote-wrapper">
         <div class="quote-container" id="quoteContainer">
-            <p class="quote"><span id="quoteText"></span><span class="cursor">&nbsp;</span></p>
+            <p class="quote"><span id="quoteText"></span><span class="cursor" style="display: none;">&nbsp;</span></p>
             <p class="quote-author"><span id="quoteAuthor"></span></p>
         </div>
     </div>
@@ -1377,6 +1420,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 // This makes the code cleaner and easier to read than using document.getElementById() everywhere.
 const dom = {
     body: document.body,
+    logoLink: document.getElementById('logoLink'),
     mainTime: document.getElementById('mainTime'),
     mainDate: document.getElementById('mainDate'),
     mainLocation: document.getElementById('mainLocation'),
@@ -1596,27 +1640,31 @@ const translations = {
 
 
 // --- Page Navigation Switching ---
+const switchPage = (targetPage) => {
+     // Hide all sections
+     document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show selected section
+    const targetSection = document.getElementById(`page-${targetPage}`);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    // Update nav link active class
+    dom.navLinks.forEach(nav => {
+        nav.classList.toggle('active', nav.getAttribute('data-page') === targetPage);
+    });
+
+    // Close menu
+    dom.navOverlay.classList.remove('active');
+}
+
 dom.navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        const targetPage = link.getAttribute('data-page');
-
-        // Hide all sections
-        document.querySelectorAll('.page-section').forEach(section => {
-            section.classList.remove('active');
-        });
-
-        // Show selected section
-        const targetSection = document.getElementById(`page-${targetPage}`);
-        if (targetSection) {
-            targetSection.classList.add('active');
-        }
-
-        // Update nav link active class
-        dom.navLinks.forEach(nav => nav.classList.remove('active'));
-        link.classList.add('active');
-
-        // Close menu
-        dom.navOverlay.classList.remove('active');
+    link.addEventListener('click', (e) => {
+        const targetPage = e.target.getAttribute('data-page');
+        switchPage(targetPage);
     });
 });
 
@@ -2215,6 +2263,7 @@ const setupEventListeners = () => {
     };
     
     // --- Modal & Overlay Listeners ---
+    dom.logoLink.addEventListener('click', () => switchPage('time'));
     dom.mainClockContainer.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, true));
     dom.fullscreenOverlay.addEventListener('click', (e) => {
         if(e.target === dom.fullscreenOverlay) {
