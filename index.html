@@ -925,17 +925,78 @@ footer {
     background: black;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
 }
 .fullscreen-overlay.active { opacity: 1; pointer-events: all; }
+
+.fullscreen-overlay .time,
+.fullscreen-overlay .date {
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    color: #fff;
+    animation: moving-glow 4s ease-in-out infinite;
+}
+
 .fullscreen-overlay .time { 
     font-size: clamp(4rem, 20vw, 12rem); 
-    font-weight: 700; 
-    color: white; 
-    font-variant-numeric: tabular-nums; 
+    font-weight: 700;
 }
-.fullscreen-overlay .date { font-size: clamp(1.5rem, 6vw, 3rem); color: white; opacity: 0.8; }
-.close-fullscreen-btn { 
-    display: none;
+.fullscreen-overlay .date { 
+    font-size: clamp(1.5rem, 6vw, 3rem); 
+    opacity: 0.8;
+}
+
+@keyframes moving-glow {
+    0% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6); }
+    50% { text-shadow: 0 0 20px rgba(255,255,255,1), 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.5); }
+    100% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6); }
+}
+
+/* --- Focus Mode Styles --- */
+.video-background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+}
+
+.video-background-container iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 aspect ratio */
+    min-height: 100vh;
+    min-width: 177.77vh; /* 16:9 aspect ratio */
+    transform: translate(-50%, -50%);
+    pointer-events: none; 
+}
+
+.fullscreen-overlay.focus-active .video-background-container {
+    opacity: 0.3; /* Make it a subtle background */
+}
+
+.fullscreen-overlay.focus-active .time,
+.fullscreen-overlay.focus-active .date {
+    animation: none; /* Turn off moving glow in focus mode to keep gradient */
+    background: linear-gradient(45deg, var(--accent-dark), #fff, var(--accent-dark));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-animation 5s ease-in-out infinite;
+}
+
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .settings-group { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid; }
@@ -1198,7 +1259,7 @@ input:checked + .slider:before { transform: translateX(22px); }
                         <img src="OWL.svg" alt="Owl icon">
                         <span>Owl</span>
                     </button>
-                    <button class="sound-btn" data-video-id="WPni755-Krg">
+                    <button class="sound-btn" data-video-id="ztVV54sPOns">
                         <img src="Focus.svg" alt="Focus icon">
                         <span>Focus</span>
                     </button>
@@ -1387,7 +1448,13 @@ input:checked + .slider:before { transform: translateX(22px); }
     </footer>
 
     <div class="fullscreen-overlay" id="fullscreenOverlay">
-        
+        <div class="video-background-container" id="focusVideoContainer">
+            <iframe id="focusVideoPlayer" 
+                    src="" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
         <div class="time" id="fullscreenTime"></div>
         <div class="date" id="fullscreenDate"></div>
     </div>
@@ -1460,8 +1527,8 @@ input:checked + .slider:before { transform: translateX(22px); }
         </div>
     </div>
 
-    <div id="player-container" style="position: absolute; top: -9999px; left: -9999px;">
-        <iframe id="youtube-player" width="1" height="1" src="" frameborder="0" allow="autoplay"></iframe>
+    <div id="player-container" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+        <iframe id="youtube-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
     </div>
 
     <script>
@@ -1508,6 +1575,8 @@ const dom = {
     fullscreenOverlay: document.getElementById('fullscreenOverlay'),
     fullscreenTime: document.getElementById('fullscreenTime'),
     fullscreenDate: document.getElementById('fullscreenDate'),
+    focusVideoContainer: document.getElementById('focusVideoContainer'),
+    focusVideoPlayer: document.getElementById('focusVideoPlayer'),
     popularCitiesContainer: document.getElementById('popular-cities-container'),
     quoteContainer: document.getElementById('quoteContainer'),
     quoteText: document.getElementById('quoteText'),
@@ -1672,45 +1741,50 @@ const popularCities = [
 ];
 
 const translations = {
-    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found." }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found." }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
     bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", allNotes: "সমস্ত নোট", showAllNotes: "সব নোট দেখুন", noNotes: "কোন নোট পাওয়া যায়নি।" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে", same: "একই সময়" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
-    es: { name: "Español", ui: { notes: "Notas para", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas." }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+    es: { name: "Español", ui: { notes: "Notes for", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas." }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
 };
 
+// --- Page Navigation Switching ---
 const switchPage = (targetPage) => {
+     // Hide all sections
      document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
     });
 
+    // Show selected section
     const targetSection = document.getElementById(`page-${targetPage}`);
     if (targetSection) {
         targetSection.classList.add('active');
     }
 
+    // Update nav link active class
     dom.navLinks.forEach(nav => {
         nav.classList.toggle('active', nav.getAttribute('data-page') === targetPage);
     });
 
+    // Close menu
     dom.navOverlay.classList.remove('active');
 }
 
-dom.navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        const targetPage = e.target.getAttribute('data-page');
-        switchPage(targetPage);
-    });
-});
+// --- 2. CORE LOGIC & HELPERS ---
 
+// Helper to get a date string in YYYY-MM-DD format
 const getDateString = (date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 };
 
+// Helper to compare if two dates are the same day
 const isSameDay = (d1, d2) => {
   return d1.getFullYear() === d2.getFullYear() &&
          d1.getMonth() === d2.getMonth() &&
          d1.getDate() === d2.getDate();
 };
 
+
+// A helper function to prevent a function from being called too frequently.
+// Useful for things like search input to avoid making API calls on every keystroke.
 const debounce = (func, timeout = 300) => {
     let timer;
     return (...args) => {
@@ -1719,6 +1793,9 @@ const debounce = (func, timeout = 300) => {
     };
 };
 
+// Fetches time data from the WorldTimeAPI for a given timezone.
+// It calculates the 'offset' - the difference between the API's time and the user's browser time.
+// This offset is used to calculate the correct time locally without needing to call the API every second.
 const createClockObject = async (timezone) => {
     try {
         const response = await fetch(`${API_BASE_URL}/timezone/${timezone}`);
@@ -1733,6 +1810,8 @@ const createClockObject = async (timezone) => {
     }
 };
 
+// A helper function to get the current hour (0-23) in a specific timezone.
+// This is used to determine if it's day or night for styling the clock cards.
 const getHourInTimezone = (date, timezone) => {
     const formatter = new Intl.DateTimeFormat('en-US', {
         hour: 'numeric',
@@ -1742,9 +1821,11 @@ const getHourInTimezone = (date, timezone) => {
     return parseInt(formatter.format(date), 10);
 };
 
+// The main function that updates all visible clocks every second.
 const updateAllClocks = () => {
     const now = Date.now();
     
+    // Update the main clock
     if (state.mainClock) {
         const mainTime = new Date(now + state.mainClock.offset);
         const formattedTime = formatTime(mainTime, state.mainClock.timezone);
@@ -1759,11 +1840,13 @@ const updateAllClocks = () => {
         }
     }
     
+    // Update all the pinned city clocks
     state.pinnedClocks.forEach(clock => {
         const card = document.querySelector(`.clock-card[data-timezone="${clock.timezone}"]`);
         if (card) {
+            // Self-healing: If data is missing, trigger a refresh
             if (!clock.utc_offset && !clock.isRefreshing) {
-                clock.isRefreshing = true;
+                clock.isRefreshing = true; // Prevent multiple requests
                 (async () => {
                     console.log(`Data for ${clock.timezone} is missing. Auto-refreshing...`);
                     const refreshedClock = await createClockObject(clock.timezone);
@@ -1792,11 +1875,13 @@ const updateAllClocks = () => {
         }
     });
 
+    // Update the countdowns for all active alarms
     updateAlarmCountdowns();
 };
 
+// Adds a new city clock to the dashboard.
 const addClock = async (timezone) => {
-    if (state.pinnedClocks.some(c => c.timezone === timezone)) return;
+    if (state.pinnedClocks.some(c => c.timezone === timezone)) return; // Avoid duplicates
     const newClock = await createClockObject(timezone);
     if (newClock) {
         state.pinnedClocks.push(newClock);
@@ -1805,16 +1890,18 @@ const addClock = async (timezone) => {
     }
 };
 
+// Removes a city clock from the dashboard.
 const removeClock = (timezone) => {
     state.pinnedClocks = state.pinnedClocks.filter(c => c.timezone !== timezone);
     renderPinnedClocks();
     saveState();
 };
 
+// Calculates and formats the time difference between a pinned clock and the main clock.
 const calculateTimeDifference = (clock) => {
     const t = translations[state.settings.language];
     if (!state.mainClock || clock.utc_offset === undefined || state.mainClock.utc_offset === undefined) {
-        return '';
+        return ''; // Not enough data to calculate
     }
 
     const timezoneInfo = `${clock.abbreviation || ''} UTC${clock.utc_offset}`;
@@ -1837,6 +1924,9 @@ const calculateTimeDifference = (clock) => {
     return `${timezoneInfo}${diffFromMainText}`;
 };
 
+// --- 3. UTILITY (STOPWATCH, TIMER, ALARM) LOGIC ---
+
+// Stopwatch logic
 const updateStopwatchDisplay = () => {
     const now = Date.now();
     const time = state.stopwatch.elapsedTime + (state.stopwatch.startTime ? now - state.stopwatch.startTime : 0);
@@ -1857,12 +1947,15 @@ const renderLaps = () => {
     });
 };
 
+// Timer logic
 const playTimerSound = () => {
     try {
+        // Use Tone.js for a pleasant sound effect
         const synth = new Tone.Synth().toDestination();
         synth.triggerAttackRelease("C5", "0.5s", Tone.now());
         synth.triggerAttackRelease("G4", "0.5s", Tone.now() + 0.5);
     } catch (e) {
+        // Fallback to a simple alert if Tone.js fails
         alert('⏰ Timer finished!');
         console.error("Tone.js could not play sound.", e);
     }
@@ -1876,6 +1969,7 @@ const updateTimerDisplay = () => {
     dom.timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
 };
 
+// Alarm logic
  const playAlarmSound = (label) => {
     try {
         const synth = new Tone.Synth().toDestination();
@@ -1887,7 +1981,7 @@ const updateTimerDisplay = () => {
 
  const checkAlarms = () => {
     const now = new Date();
-    const currentTime = now.toTimeString().substring(0, 5); 
+    const currentTime = now.toTimeString().substring(0, 5); // Format: "HH:MM"
     let stateChanged = false;
 
     state.alarms.forEach(alarm => {
@@ -1899,7 +1993,7 @@ const updateTimerDisplay = () => {
             }
         } else {
             if (alarm.triggeredToday) {
-               alarm.triggeredToday = false; 
+               alarm.triggeredToday = false; // Reset for the next day
                stateChanged = true;
             }
         }
@@ -1908,6 +2002,7 @@ const updateTimerDisplay = () => {
     if (stateChanged) saveState();
 };
 
+// This function calculates and displays the remaining time for each alarm.
 const updateAlarmCountdowns = () => {
     const now = new Date();
     state.alarms.forEach(alarm => {
@@ -1915,7 +2010,7 @@ const updateAlarmCountdowns = () => {
         if (!countdownEl) return;
 
         if (!alarm.enabled) {
-            countdownEl.textContent = '';
+            countdownEl.textContent = ''; // Clear countdown if alarm is off
             return;
         }
 
@@ -1923,11 +2018,12 @@ const updateAlarmCountdowns = () => {
         let alarmTime = new Date();
         alarmTime.setHours(hours, minutes, 0, 0);
 
+        // If the alarm time for today has already passed, set it for tomorrow
         if (alarmTime < now) {
             alarmTime.setDate(alarmTime.getDate() + 1);
         }
 
-        const diff = alarmTime - now; 
+        const diff = alarmTime - now; // Difference in milliseconds
         if (diff > 0) {
             const h = Math.floor(diff / 1000 / 60 / 60);
             const m = Math.floor((diff / 1000 / 60) % 60);
@@ -1938,6 +2034,8 @@ const updateAlarmCountdowns = () => {
         }
     });
 };
+
+// --- 4. UI RENDERING & FORMATTING ---
 
 const updateNotesSection = () => {
     const t = translations[state.settings.language];
@@ -1951,9 +2049,10 @@ const updateNotesSection = () => {
     dom.notesArea.placeholder = t.placeholders.notes;
 };
 
+// Renders the list of alarms from the state.
 const renderAlarms = () => {
     dom.alarmsList.innerHTML = '';
-    if (!state.alarms) state.alarms = [];
+    if (!state.alarms) state.alarms = []; // Ensure alarms is an array
     state.alarms.forEach((alarm) => {
         const li = document.createElement('li');
         li.className = 'alarm-item';
@@ -1962,6 +2061,7 @@ const renderAlarms = () => {
         card.className = `alarm-card ${alarm.enabled ? '' : 'disabled'}`;
         card.dataset.id = alarm.id;
 
+        // The HTML for each alarm card, now including the countdown element.
         card.innerHTML = `
             <div class="alarm-card-details">
                 <div class="alarm-card-time">${alarm.time}</div>
@@ -1979,9 +2079,10 @@ const renderAlarms = () => {
         li.appendChild(card);
         dom.alarmsList.appendChild(li);
     });
-    updateAlarmCountdowns();
+    updateAlarmCountdowns(); // Update countdowns immediately after rendering
 };
 
+// Renders the grid of pinned city clocks.
 const renderPinnedClocks = () => {
     dom.clocksGrid.innerHTML = '';
     const t = translations[state.settings.language];
@@ -2011,7 +2112,7 @@ const renderPinnedClocks = () => {
         dom.clocksGrid.appendChild(card);
         card.querySelector('.remove-card-btn').addEventListener('click', () => removeClock(clock.timezone));
     });
-    updateAllClocks();
+    updateAllClocks(); // Call once to populate initial data immediately
 };
 
 const renderCalendar = () => {
@@ -2024,6 +2125,7 @@ const renderCalendar = () => {
     
     dom.calendarGrid.innerHTML = '';
     
+    // Create header row
     const headerRow = document.createElement('div');
     headerRow.style.gridColumn = '1 / -1';
     headerRow.style.display = 'grid';
@@ -2218,15 +2320,53 @@ function changeQuote() {
 }
 
 
-// --- Sound Player Logic ---
+// --- Sound Player & Focus Mode Logic ---
+function activateFocusMode() {
+    const videoId = "ztVV54sPOns";
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&enablejsapi=1`;
+    dom.focusVideoPlayer.src = embedUrl;
+    dom.fullscreenOverlay.classList.add('active', 'focus-active');
+}
+
+function deactivateFocusMode() {
+    dom.focusVideoPlayer.src = '';
+    dom.fullscreenOverlay.classList.remove('focus-active');
+    
+    const focusBtn = document.querySelector('.sound-btn[data-video-id="ztVV54sPOns"]');
+    if (focusBtn) {
+        focusBtn.classList.remove('active');
+    }
+}
+
 const setupSoundPlayer = () => {
     const soundButtons = document.querySelectorAll('.sound-btn');
     const youtubePlayer = document.getElementById('youtube-player');
     let currentlyPlayingButton = null;
+    const focusVideoId = "ztVV54sPOns";
 
     soundButtons.forEach(button => {
         button.addEventListener('click', () => {
             const videoId = button.dataset.videoId;
+            const isFocusButton = (videoId === focusVideoId);
+
+            if (isFocusButton) {
+                if (button.classList.contains('active')) {
+                    deactivateFocusMode();
+                    dom.fullscreenOverlay.classList.remove('active');
+                    currentlyPlayingButton = null;
+                } else {
+                    if (currentlyPlayingButton) {
+                        currentlyPlayingButton.classList.remove('active');
+                        youtubePlayer.src = '';
+                    }
+                    activateFocusMode();
+                    button.classList.add('active');
+                    currentlyPlayingButton = button;
+                }
+                return; 
+            }
+
+            deactivateFocusMode();
 
             if (currentlyPlayingButton === button) {
                 youtubePlayer.src = '';
@@ -2236,8 +2376,7 @@ const setupSoundPlayer = () => {
                 if (currentlyPlayingButton) {
                     currentlyPlayingButton.classList.remove('active');
                 }
-
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0`;
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&enablejsapi=1`;
                 youtubePlayer.src = embedUrl;
                 button.classList.add('active');
                 currentlyPlayingButton = button;
@@ -2259,9 +2398,8 @@ const setupEventListeners = () => {
         toggleModal(dom.fullscreenOverlay, true);
     });
     dom.fullscreenOverlay.addEventListener('click', (e) => {
-        if(e.target === dom.fullscreenOverlay) {
-            toggleModal(dom.fullscreenOverlay, false);
-        }
+        toggleModal(dom.fullscreenOverlay, false);
+        deactivateFocusMode();
     });
     dom.settingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, true));
     dom.closeSettingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, false));
@@ -2309,6 +2447,9 @@ const setupEventListeners = () => {
 
     document.addEventListener('keydown', (e) => {
         if (e.key === "Escape") {
+            if (dom.fullscreenOverlay.classList.contains('active')) {
+                deactivateFocusMode();
+            }
             [dom.fullscreenOverlay, dom.settingsModal, dom.navOverlay, dom.datePickerModal, dom.allNotesModal].forEach(modal => toggleModal(modal, false));
         }
     });
@@ -2441,20 +2582,6 @@ const setupEventListeners = () => {
             updateNotesSection();
         }
     });
-    
-    const quoteObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const currentQuote = quotes[state.currentQuoteIndex];
-                typeEffect(currentQuote.text, currentQuote.author);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.8 });
-    
-    if(dom.quoteContainer) {
-        quoteObserver.observe(dom.quoteContainer);
-    }
 
     dom.stopwatchToggleBtn.addEventListener('click', () => {
         if (state.stopwatch.intervalId) {
