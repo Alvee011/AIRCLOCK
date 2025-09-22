@@ -185,7 +185,6 @@ header {
 }
 .settings-btn svg {
   display: block;
-    /* fill: currentColor; is removed as the new SVG uses stroke */
 }
 
 
@@ -196,7 +195,6 @@ header {
     transform: rotate(180deg);
 }
 
-/* Styles for page sections */
 .page-section {
     display: none;
 }
@@ -243,7 +241,7 @@ header {
     font-size: clamp(3rem, 12vw, 6rem);
     font-weight: 700;
     letter-spacing: -2px;
-    font-variant-numeric: tabular-nums; /* Keeps numbers stable */
+    font-variant-numeric: tabular-nums; 
 }
 
 .main-clock .location {
@@ -523,7 +521,7 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
 
 .calendar-title-text {
     font-weight: 600; font-size: 1.1rem;
-    cursor: pointer; /* Make calendar title clickable */
+    cursor: pointer;
     transition: opacity 0.2s;
     background: var(--btn-bg);
     color: inherit;
@@ -544,7 +542,7 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
     text-align: center; padding: 0.5rem; cursor: pointer; border-radius: 50%; 
     width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; 
     margin: 0 auto; transition: background-color 0.2s ease;
-    position: relative; /* Needed for the note indicator */
+    position: relative;
 }
 .calendar-day:hover { background-color: rgba(212, 175, 55, 0.1); }
 .calendar-day.selected {
@@ -567,6 +565,66 @@ textarea:focus { outline: none; border-color: var(--accent-color); }
     background-color: white;
 }
 
+/* --- Sound Player Styles --- */
+.sounds-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+.sound-btn {
+    background: none;
+    border: 2px solid;
+    color: inherit;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    transition: var(--transition);
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.7;
+}
+.light-theme .sound-btn {
+    border-color: var(--border-light);
+}
+.dark-theme .sound-btn {
+    border-color: var(--border-dark);
+}
+.sound-btn:hover {
+    opacity: 1;
+    border-color: var(--accent-color);
+}
+.sound-btn.active {
+    background-color: #3b82f6; /* Blue background for active state */
+    color: white;
+    border-color: #3b82f6;
+    opacity: 1;
+}
+.sound-btn img {
+    width: 28px;
+    height: 28px;
+    pointer-events: none; /* Make sure clicks go to the button */
+    transition: filter 0.3s ease-in-out;
+}
+
+/* In dark mode, make the icons white */
+.dark-theme .sound-btn:not(.active) img {
+    filter: invert(1);
+}
+
+/* When active, the icon should always be white, against the blue background */
+.sound-btn.active img {
+    filter: brightness(0) invert(1);
+}
 
 .action-buttons-container {
     display: flex;
@@ -630,7 +688,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem; /* Reduced from 2rem */
+    margin-bottom: 1rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid;
 }
@@ -638,7 +696,7 @@ footer {
 .dark-theme .footer-top { border-color: var(--border-dark); }
 
 .footer-logo img {
-    height: 65px; /* Increased from 50px by 30% */
+    height: 65px;
     display: none;
 }
 .light-theme .footer-logo .logo-light {
@@ -696,7 +754,7 @@ footer {
 
 .quote-wrapper {
     padding: 2rem 1.5rem;
-    background-color: #ffffff; /* Quote section always has a white background */
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -714,27 +772,25 @@ footer {
     font-weight: 700;
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-    color: #333; /* Quote text is always dark */
+    color: #333;
 }
 
 .quote-author {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    color: #555; /* Quote author text is always darkish gray */
+    color: #555;
 }
 
 
 .quote-container .cursor {
     display: inline-block;
-    background-color: #333; /* Cursor is always dark to match text */
+    background-color: #333;
     margin-left: 2px;
     width: 3px;
     height: 1.2rem;
     animation: blink 1s infinite;
 }
 
-
-/* Generic Modal Styles */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
@@ -748,8 +804,8 @@ footer {
     width: 90%; max-width: 500px; border-radius: var(--card-radius);
     padding: 2rem; position: relative; transition: transform 0.3s ease;
     transform: scale(0.95);
-    max-height: 80vh; /* Set max height for scroll */
-    display: flex; /* Flexbox for layout */
+    max-height: 80vh; 
+    display: flex; 
     flex-direction: column;
 }
 .modal-overlay.active .modal-content { transform: scale(1); }
@@ -761,7 +817,7 @@ footer {
 }
 
 .modal-body {
-    overflow-y: auto; /* Allow content to scroll */
+    overflow-y: auto; 
     flex-grow: 1;
     margin-top: 1rem;
 }
@@ -777,7 +833,6 @@ footer {
 }
 .close-modal-btn:hover { background-color: rgba(128, 128, 128, 0.1); transform: rotate(90deg); }
 
-/* --- All Notes Modal Specific Styles --- */
 #allNotesContent .note-entry {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
@@ -795,14 +850,13 @@ footer {
     color: var(--accent-color);
 }
 #allNotesContent .note-text {
-    white-space: pre-wrap; /* Respect line breaks in notes */
+    white-space: pre-wrap;
     word-wrap: break-word;
 }
 
-/* Date Picker Modal Styles */
 #datePickerModal .modal-content {
     max-width: 400px;
-    background-color: #2c3e50; /* Dark background as in screenshot */
+    background-color: #2c3e50;
     color: #ecf0f1;
 }
 .date-picker-header {
@@ -877,7 +931,7 @@ footer {
     font-size: clamp(4rem, 20vw, 12rem); 
     font-weight: 700; 
     color: white; 
-    font-variant-numeric: tabular-nums; /* Keeps numbers stable */
+    font-variant-numeric: tabular-nums; 
 }
 .fullscreen-overlay .date { font-size: clamp(1.5rem, 6vw, 3rem); color: white; opacity: 0.8; }
 .close-fullscreen-btn { 
@@ -906,7 +960,6 @@ input:checked + .slider:before { transform: translateX(22px); }
 .light-theme .language-select { background-color: var(--card-bg-light); color: var(--text-light); border-color: var(--border-light); }
 .dark-theme .language-select { background-color: var(--card-bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
 
-/* Styles for Stopwatch, Timer, and Alarm */
 .utility-container {
     max-width: 600px;
     margin: 2rem auto;
@@ -928,7 +981,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     text-align: center;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    /* This property ensures numbers take up the same space, preventing the "shaking" effect as digits change. */
     font-variant-numeric: tabular-nums;
 }
 .utility-display .milliseconds {
@@ -950,7 +1002,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     border: none;
     cursor: pointer;
     transition: var(--transition);
-    min-width: 100px; /* Give buttons a minimum width */
+    min-width: 100px; 
     background-color: var(--btn-bg);
     color: inherit;
 }
@@ -968,7 +1020,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 .laps-list, .alarms-list {
     list-style: none;
     padding: 0;
-    max-height: 3000px; /* Increased height for new alarm cards */
+    max-height: 3000px;
     overflow-y: auto;
 }
 .lap-item {
@@ -1029,26 +1081,24 @@ input:checked + .slider:before { transform: translateX(22px); }
     color: white;
 }
 
-/* --- Updated Alarm UI Styles --- */
 .alarm-item {
     padding: 0;
     border: none;
-    border-bottom: 1px solid; /* The requested line separator */
+    border-bottom: 1px solid;
 }
 .light-theme .alarm-item { border-color: var(--border-light); }
 .dark-theme .alarm-item { border-color: var(--border-dark); }
 .alarm-item:last-child {
-    border-bottom: none; /* No line after the last alarm */
+    border-bottom: none;
 }
 
 .alarm-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0; /* Vertical padding, no horizontal padding for a cleaner look */
+    padding: 1rem 0;
     transition: var(--transition);
 }
-/* Removed background and shadow from alarm-card for a simpler UI */
 .light-theme .alarm-card.disabled { background-color: transparent; }
 .dark-theme .alarm-card.disabled { background-color: transparent; }
 
@@ -1056,7 +1106,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    flex-grow: 1; /* Allow details to take up space */
+    flex-grow: 1;
 }
 .alarm-card-time {
     font-family: 'Roboto Mono', monospace;
@@ -1067,19 +1117,18 @@ input:checked + .slider:before { transform: translateX(22px); }
     font-size: 1rem;
     opacity: 0.8;
 }
-/* Style for the new countdown timer */
 .alarm-countdown {
     font-family: 'Roboto Mono', monospace;
     font-size: 0.85rem;
     color: var(--accent-color);
     margin-top: 0.5rem;
-    min-height: 1.2em; /* Prevent layout shift when text appears */
+    min-height: 1.2em; 
 }
 .alarm-card-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-shrink: 0; /* Prevent controls from shrinking */
+    flex-shrink: 0;
 }
 .delete-alarm-btn {
     background: none;
@@ -1109,33 +1158,15 @@ input:checked + .slider:before { transform: translateX(22px); }
         </div>
         <div class="header-right">
             <button class="menu-btn" id="menuBtn">☰</button>
-<button class="settings-btn" id="settingsBtn">
-  <svg xmlns="http://www.w3.org/2000/svg" 
-       width="24" height="24" viewBox="0 0 24 24" 
-       fill="none" stroke="currentColor" 
-       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82
-             2 2 0 1 1-2.83 2.83 1.65 1.65 0 0 0-1.82-.33
-             1.65 1.65 0 0 0-1 1.51A2 2 0 1 1 9.9 21
-             a1.65 1.65 0 0 0-1-1.51
-             1.65 1.65 0 0 0-1.82.33
-             2 2 0 1 1-2.83-2.83
-             1.65 1.65 0 0 0 .33-1.82
-             1.65 1.65 0 0 0-1.51-1A2 2 0 1 1 3 9.9
-             a1.65 1.65 0 0 0 1.51-1
-             1.65 1.65 0 0 0-.33-1.82
-             2 2 0 1 1 2.83-2.83
-             1.65 1.65 0 0 0 1.82.33
-             1.65 1.65 0 0 0 1-1.51A2 2 0 1 1 14.1 3
-             a1.65 1.65 0 0 0 1 1.51
-             1.65 1.65 0 0 0 1.82-.33
-             2 2 0 1 1 2.83 2.83
-             1.65 1.65 0 0 0-.33 1.82
-             1.65 1.65 0 0 0 1.51 1A2 2 0 1 1 21 14.1
-             a1.65 1.65 0 0 0-1.51 1z"></path>
-  </svg>
-</button>
+            <button class="settings-btn" id="settingsBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                   width="24" height="24" viewBox="0 0 24 24" 
+                   fill="none" stroke="currentColor" 
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82 2 2 0 1 1-2.83 2.83 1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51A2 2 0 1 1 9.9 21 a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33 2 2 0 1 1-2.83-2.83 1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1A2 2 0 1 1 3 9.9 a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82 2 2 0 1 1 2.83-2.83 1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51A2 2 0 1 1 14.1 3 a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33 2 2 0 1 1 2.83 2.83 1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1A2 2 0 1 1 21 14.1 a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
         </div>
     </header>
 
@@ -1154,6 +1185,24 @@ input:checked + .slider:before { transform: translateX(22px); }
                 <div class="time" id="mainTime">--:--:--</div>
                 <div class="date" id="mainDate">Loading...</div>
                 <div class="location" id="mainLocation"></div>
+                <div class="sounds-container" id="soundsContainer">
+                    <button class="sound-btn" data-video-id="q76bMs-NwRk">
+                        <img src="rain.svg" alt="Rain icon">
+                        <span>Rain</span>
+                    </button>
+                    <button class="sound-btn" data-video-id="xNN7iTA57jM">
+                        <img src="Forest.svg" alt="Forest icon">
+                        <span>Forest</span>
+                    </button>
+                    <button class="sound-btn" data-video-id="BqAzRJmivqw">
+                        <img src="OWL.svg" alt="Owl icon">
+                        <span>Owl</span>
+                    </button>
+                    <button class="sound-btn" data-video-id="WPni755-Krg">
+                        <img src="Focus.svg" alt="Focus icon">
+                        <span>Focus</span>
+                    </button>
+                </div>
             </div>
 
             <div class="search-container" id="searchContainer">
@@ -1365,7 +1414,6 @@ input:checked + .slider:before { transform: translateX(22px); }
                 <h2 id="allNotesTitle">All Notes</h2>
             </div>
             <div class="modal-body" id="allNotesContent">
-                <!-- Notes will be dynamically inserted here -->
             </div>
         </div>
     </div>
@@ -1412,12 +1460,12 @@ input:checked + .slider:before { transform: translateX(22px); }
         </div>
     </div>
 
+    <div id="player-container" style="position: absolute; top: -9999px; left: -9999px;">
+        <iframe id="youtube-player" width="1" height="1" src="" frameborder="0" allow="autoplay"></iframe>
+    </div>
+
     <script>
         // --- 1. CONFIGURATION & STATE MANAGEMENT ---
-// This section defines all the constants and variables the app will use.
-
-// A central object to hold references to all the important HTML elements.
-// This makes the code cleaner and easier to read than using document.getElementById() everywhere.
 const dom = {
     body: document.body,
     logoLink: document.getElementById('logoLink'),
@@ -1464,26 +1512,22 @@ const dom = {
     quoteContainer: document.getElementById('quoteContainer'),
     quoteText: document.getElementById('quoteText'),
     quoteAuthor: document.getElementById('quoteAuthor'),
-    // Stopwatch elements
     stopwatchDisplay: document.getElementById('stopwatchDisplay'),
-    stopwatchToggleBtn: document.getElementById('stopwatchToggleBtn'), // New toggle button
+    stopwatchToggleBtn: document.getElementById('stopwatchToggleBtn'),
     stopwatchLapBtn: document.getElementById('stopwatchLapBtn'),
     stopwatchResetBtn: document.getElementById('stopwatchResetBtn'),
     lapsList: document.getElementById('lapsList'),
-    // Timer elements
     timerDisplay: document.getElementById('timerDisplay'),
     timerInputsContainer: document.getElementById('timerInputs'),
     timerHoursInput: document.getElementById('timerHours'),
     timerMinutesInput: document.getElementById('timerMinutes'),
     timerSecondsInput: document.getElementById('timerSeconds'),
-    timerToggleBtn: document.getElementById('timerToggleBtn'), // The new combined start/stop button
+    timerToggleBtn: document.getElementById('timerToggleBtn'),
     timerResetBtn: document.getElementById('timerResetBtn'),
-    // Alarm elements
     alarmTimeInput: document.getElementById('alarmTimeInput'),
     alarmLabelInput: document.getElementById('alarmLabelInput'),
     addAlarmBtn: document.getElementById('addAlarmBtn'),
     alarmsList: document.getElementById('alarmsList'),
-    // UI Text elements for translation
     uiText: {
         notesTitle: document.getElementById('notesTitle'),
         calendarSectionTitle: document.getElementById('calendarSectionTitle'),
@@ -1499,11 +1543,9 @@ const dom = {
     }
 };
 
-// The 'state' object holds all the dynamic data for the application.
-// Keeping all state in one place makes it easier to manage and debug.
 let state = {
-    mainClock: null, // Holds data for the user's primary clock
-    pinnedClocks: [], // An array of clock objects for different cities
+    mainClock: null, 
+    pinnedClocks: [],
     settings: {
         autoTheme: true,
         manualThemeDark: false,
@@ -1511,9 +1553,8 @@ let state = {
         language: 'en'
     },
     currentCalendarDate: new Date(),
-    selectedDate: new Date(), // Keep track of the selected date for notes
-    notes: {}, // Store notes as { 'YYYY-MM-DD': 'Note text' }
-    // State for utility features
+    selectedDate: new Date(), 
+    notes: {}, 
     stopwatch: {
         startTime: 0,
         elapsedTime: 0,
@@ -1523,15 +1564,13 @@ let state = {
     timer: {
         totalSeconds: 0,
         remainingSeconds: 0,
-        intervalId: null // This is key to knowing if the timer is running
+        intervalId: null 
     },
-    alarms: [], // An array of alarm objects
-    alarmCheckInterval: null,
-    currentQuoteIndex: -1,
-    isQuoteTyping: false
+    alarms: [],
+    alarmCheckInterval: null
 };
 
-let clockUpdateInterval = null; // Will hold the main setInterval for updating all clocks
+let clockUpdateInterval = null; 
 const API_BASE_URL = 'https://worldtimeapi.org/api';
 
 const quotes = [
@@ -1638,26 +1677,20 @@ const translations = {
     es: { name: "Español", ui: { notes: "Notas para", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas." }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
 };
 
-
-// --- Page Navigation Switching ---
 const switchPage = (targetPage) => {
-     // Hide all sections
      document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
     });
 
-    // Show selected section
     const targetSection = document.getElementById(`page-${targetPage}`);
     if (targetSection) {
         targetSection.classList.add('active');
     }
 
-    // Update nav link active class
     dom.navLinks.forEach(nav => {
         nav.classList.toggle('active', nav.getAttribute('data-page') === targetPage);
     });
 
-    // Close menu
     dom.navOverlay.classList.remove('active');
 }
 
@@ -1668,23 +1701,16 @@ dom.navLinks.forEach(link => {
     });
 });
 
-// --- 2. CORE LOGIC & HELPERS ---
-
-// Helper to get a date string in YYYY-MM-DD format
 const getDateString = (date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 };
 
-// Helper to compare if two dates are the same day
 const isSameDay = (d1, d2) => {
   return d1.getFullYear() === d2.getFullYear() &&
          d1.getMonth() === d2.getMonth() &&
          d1.getDate() === d2.getDate();
 };
 
-
-// A helper function to prevent a function from being called too frequently.
-// Useful for things like search input to avoid making API calls on every keystroke.
 const debounce = (func, timeout = 300) => {
     let timer;
     return (...args) => {
@@ -1693,9 +1719,6 @@ const debounce = (func, timeout = 300) => {
     };
 };
 
-// Fetches time data from the WorldTimeAPI for a given timezone.
-// It calculates the 'offset' - the difference between the API's time and the user's browser time.
-// This offset is used to calculate the correct time locally without needing to call the API every second.
 const createClockObject = async (timezone) => {
     try {
         const response = await fetch(`${API_BASE_URL}/timezone/${timezone}`);
@@ -1710,8 +1733,6 @@ const createClockObject = async (timezone) => {
     }
 };
 
-// A helper function to get the current hour (0-23) in a specific timezone.
-// This is used to determine if it's day or night for styling the clock cards.
 const getHourInTimezone = (date, timezone) => {
     const formatter = new Intl.DateTimeFormat('en-US', {
         hour: 'numeric',
@@ -1721,11 +1742,9 @@ const getHourInTimezone = (date, timezone) => {
     return parseInt(formatter.format(date), 10);
 };
 
-// The main function that updates all visible clocks every second.
 const updateAllClocks = () => {
     const now = Date.now();
     
-    // Update the main clock
     if (state.mainClock) {
         const mainTime = new Date(now + state.mainClock.offset);
         const formattedTime = formatTime(mainTime, state.mainClock.timezone);
@@ -1740,13 +1759,11 @@ const updateAllClocks = () => {
         }
     }
     
-    // Update all the pinned city clocks
     state.pinnedClocks.forEach(clock => {
         const card = document.querySelector(`.clock-card[data-timezone="${clock.timezone}"]`);
         if (card) {
-            // Self-healing: If data is missing, trigger a refresh
             if (!clock.utc_offset && !clock.isRefreshing) {
-                clock.isRefreshing = true; // Prevent multiple requests
+                clock.isRefreshing = true;
                 (async () => {
                     console.log(`Data for ${clock.timezone} is missing. Auto-refreshing...`);
                     const refreshedClock = await createClockObject(clock.timezone);
@@ -1775,13 +1792,11 @@ const updateAllClocks = () => {
         }
     });
 
-    // Update the countdowns for all active alarms
     updateAlarmCountdowns();
 };
 
-// Adds a new city clock to the dashboard.
 const addClock = async (timezone) => {
-    if (state.pinnedClocks.some(c => c.timezone === timezone)) return; // Avoid duplicates
+    if (state.pinnedClocks.some(c => c.timezone === timezone)) return;
     const newClock = await createClockObject(timezone);
     if (newClock) {
         state.pinnedClocks.push(newClock);
@@ -1790,18 +1805,16 @@ const addClock = async (timezone) => {
     }
 };
 
-// Removes a city clock from the dashboard.
 const removeClock = (timezone) => {
     state.pinnedClocks = state.pinnedClocks.filter(c => c.timezone !== timezone);
     renderPinnedClocks();
     saveState();
 };
 
-// Calculates and formats the time difference between a pinned clock and the main clock.
 const calculateTimeDifference = (clock) => {
     const t = translations[state.settings.language];
     if (!state.mainClock || clock.utc_offset === undefined || state.mainClock.utc_offset === undefined) {
-        return ''; // Not enough data to calculate
+        return '';
     }
 
     const timezoneInfo = `${clock.abbreviation || ''} UTC${clock.utc_offset}`;
@@ -1824,9 +1837,6 @@ const calculateTimeDifference = (clock) => {
     return `${timezoneInfo}${diffFromMainText}`;
 };
 
-// --- 3. UTILITY (STOPWATCH, TIMER, ALARM) LOGIC ---
-
-// Stopwatch logic
 const updateStopwatchDisplay = () => {
     const now = Date.now();
     const time = state.stopwatch.elapsedTime + (state.stopwatch.startTime ? now - state.stopwatch.startTime : 0);
@@ -1847,15 +1857,12 @@ const renderLaps = () => {
     });
 };
 
-// Timer logic
 const playTimerSound = () => {
     try {
-        // Use Tone.js for a pleasant sound effect
         const synth = new Tone.Synth().toDestination();
         synth.triggerAttackRelease("C5", "0.5s", Tone.now());
         synth.triggerAttackRelease("G4", "0.5s", Tone.now() + 0.5);
     } catch (e) {
-        // Fallback to a simple alert if Tone.js fails
         alert('⏰ Timer finished!');
         console.error("Tone.js could not play sound.", e);
     }
@@ -1869,7 +1876,6 @@ const updateTimerDisplay = () => {
     dom.timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
 };
 
-// Alarm logic
  const playAlarmSound = (label) => {
     try {
         const synth = new Tone.Synth().toDestination();
@@ -1881,7 +1887,7 @@ const updateTimerDisplay = () => {
 
  const checkAlarms = () => {
     const now = new Date();
-    const currentTime = now.toTimeString().substring(0, 5); // Format: "HH:MM"
+    const currentTime = now.toTimeString().substring(0, 5); 
     let stateChanged = false;
 
     state.alarms.forEach(alarm => {
@@ -1893,7 +1899,7 @@ const updateTimerDisplay = () => {
             }
         } else {
             if (alarm.triggeredToday) {
-               alarm.triggeredToday = false; // Reset for the next day
+               alarm.triggeredToday = false; 
                stateChanged = true;
             }
         }
@@ -1902,7 +1908,6 @@ const updateTimerDisplay = () => {
     if (stateChanged) saveState();
 };
 
-// This function calculates and displays the remaining time for each alarm.
 const updateAlarmCountdowns = () => {
     const now = new Date();
     state.alarms.forEach(alarm => {
@@ -1910,7 +1915,7 @@ const updateAlarmCountdowns = () => {
         if (!countdownEl) return;
 
         if (!alarm.enabled) {
-            countdownEl.textContent = ''; // Clear countdown if alarm is off
+            countdownEl.textContent = '';
             return;
         }
 
@@ -1918,12 +1923,11 @@ const updateAlarmCountdowns = () => {
         let alarmTime = new Date();
         alarmTime.setHours(hours, minutes, 0, 0);
 
-        // If the alarm time for today has already passed, set it for tomorrow
         if (alarmTime < now) {
             alarmTime.setDate(alarmTime.getDate() + 1);
         }
 
-        const diff = alarmTime - now; // Difference in milliseconds
+        const diff = alarmTime - now; 
         if (diff > 0) {
             const h = Math.floor(diff / 1000 / 60 / 60);
             const m = Math.floor((diff / 1000 / 60) % 60);
@@ -1934,8 +1938,6 @@ const updateAlarmCountdowns = () => {
         }
     });
 };
-
-// --- 4. UI RENDERING & FORMATTING ---
 
 const updateNotesSection = () => {
     const t = translations[state.settings.language];
@@ -1949,10 +1951,9 @@ const updateNotesSection = () => {
     dom.notesArea.placeholder = t.placeholders.notes;
 };
 
-// Renders the list of alarms from the state.
 const renderAlarms = () => {
     dom.alarmsList.innerHTML = '';
-    if (!state.alarms) state.alarms = []; // Ensure alarms is an array
+    if (!state.alarms) state.alarms = [];
     state.alarms.forEach((alarm) => {
         const li = document.createElement('li');
         li.className = 'alarm-item';
@@ -1961,7 +1962,6 @@ const renderAlarms = () => {
         card.className = `alarm-card ${alarm.enabled ? '' : 'disabled'}`;
         card.dataset.id = alarm.id;
 
-        // The HTML for each alarm card, now including the countdown element.
         card.innerHTML = `
             <div class="alarm-card-details">
                 <div class="alarm-card-time">${alarm.time}</div>
@@ -1979,10 +1979,9 @@ const renderAlarms = () => {
         li.appendChild(card);
         dom.alarmsList.appendChild(li);
     });
-    updateAlarmCountdowns(); // Update countdowns immediately after rendering
+    updateAlarmCountdowns();
 };
 
-// Renders the grid of pinned city clocks.
 const renderPinnedClocks = () => {
     dom.clocksGrid.innerHTML = '';
     const t = translations[state.settings.language];
@@ -2012,7 +2011,7 @@ const renderPinnedClocks = () => {
         dom.clocksGrid.appendChild(card);
         card.querySelector('.remove-card-btn').addEventListener('click', () => removeClock(clock.timezone));
     });
-    updateAllClocks(); // Call once to populate initial data immediately
+    updateAllClocks();
 };
 
 const renderCalendar = () => {
@@ -2025,7 +2024,6 @@ const renderCalendar = () => {
     
     dom.calendarGrid.innerHTML = '';
     
-    // Create header row
     const headerRow = document.createElement('div');
     headerRow.style.gridColumn = '1 / -1';
     headerRow.style.display = 'grid';
@@ -2159,7 +2157,7 @@ const applyLanguage = () => {
     const lang = state.settings.language;
     const t = translations[lang];
     
-    updateNotesSection(); // Update notes title with correct language
+    updateNotesSection();
     dom.uiText.calendarSectionTitle.textContent = t.ui.calendar;
     dom.uiText.settingsModalTitle.textContent = t.ui.settings;
     dom.uiText.themeSettingsTitle.textContent = t.ui.theme;
@@ -2198,73 +2196,68 @@ const formatDate = (date, timezone, format = 'long') => {
 };
 
 // --- QUOTE LOGIC ---
-function typeEffect(quote, author) {
-    if (state.isQuoteTyping) return;
-    state.isQuoteTyping = true;
-    
-    const quoteEl = dom.quoteText;
-    const authorEl = dom.quoteAuthor;
+const getDayOfYear = (date) => {
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = date - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+};
+
+function changeQuote() {
+    const today = new Date();
+    const dayOfYear = getDayOfYear(today);
+    const quoteIndex = dayOfYear % quotes.length;
+    const newQuote = quotes[quoteIndex];
+
+    dom.quoteText.textContent = newQuote.text;
+    dom.quoteAuthor.textContent = `– ${newQuote.author}`;
     const cursorEl = dom.quoteContainer.querySelector('.cursor');
-
-    cursorEl.style.display = 'inline-block'; // Show cursor
-    quoteEl.innerHTML = '';
-    authorEl.innerHTML = '';
-
-    let i = 0;
-    const typingInterval = setInterval(() => {
-        if (i < quote.length) {
-            quoteEl.innerHTML += quote.charAt(i);
-            i++;
-        } else {
-            clearInterval(typingInterval);
-            // After quote is done, type author
-            let j = 0;
-            authorEl.innerHTML = '– ';
-            const authorTypingInterval = setInterval(() => {
-                 if(j < author.length) {
-                     authorEl.innerHTML += author.charAt(j);
-                     j++;
-                 } else {
-                     clearInterval(authorTypingInterval);
-                     state.isQuoteTyping = false;
-                     cursorEl.style.display = 'none'; // Hide cursor
-                 }
-            }, 50);
-        }
-    }, 50);
-}
-
-function changeQuote(withEffect = false) {
-    let newIndex;
-    do {
-        newIndex = Math.floor(Math.random() * quotes.length);
-    } while (newIndex === state.currentQuoteIndex);
-    
-    state.currentQuoteIndex = newIndex;
-    const newQuote = quotes[newIndex];
-    const cursorEl = dom.quoteContainer.querySelector('.cursor');
-
-    if(withEffect) {
-        typeEffect(newQuote.text, newQuote.author);
-    } else {
-        dom.quoteText.textContent = newQuote.text;
-        dom.quoteAuthor.textContent = `– ${newQuote.author}`;
-        cursorEl.style.display = 'none'; // Hide cursor on initial load
+    if (cursorEl) {
+        cursorEl.style.display = 'none'; // Ensure cursor is always hidden
     }
 }
 
 
-// --- 5. EVENT LISTENERS ---
+// --- Sound Player Logic ---
+const setupSoundPlayer = () => {
+    const soundButtons = document.querySelectorAll('.sound-btn');
+    const youtubePlayer = document.getElementById('youtube-player');
+    let currentlyPlayingButton = null;
 
-// This function sets up all the interactive parts of the page.
+    soundButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const videoId = button.dataset.videoId;
+
+            if (currentlyPlayingButton === button) {
+                youtubePlayer.src = '';
+                button.classList.remove('active');
+                currentlyPlayingButton = null;
+            } else {
+                if (currentlyPlayingButton) {
+                    currentlyPlayingButton.classList.remove('active');
+                }
+
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0`;
+                youtubePlayer.src = embedUrl;
+                button.classList.add('active');
+                currentlyPlayingButton = button;
+            }
+        });
+    });
+};
+
 const setupEventListeners = () => {
     const toggleModal = (modal, show) => {
         modal.classList.toggle('active', show);
     };
     
-    // --- Modal & Overlay Listeners ---
     dom.logoLink.addEventListener('click', () => switchPage('time'));
-    dom.mainClockContainer.addEventListener('click', () => toggleModal(dom.fullscreenOverlay, true));
+    dom.mainClockContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.sound-btn')) {
+            return;
+        }
+        toggleModal(dom.fullscreenOverlay, true);
+    });
     dom.fullscreenOverlay.addEventListener('click', (e) => {
         if(e.target === dom.fullscreenOverlay) {
             toggleModal(dom.fullscreenOverlay, false);
@@ -2277,21 +2270,18 @@ const setupEventListeners = () => {
         toggleModal(dom.navOverlay, true)
     });
 
-    // --- Date Picker Listeners ---
     dom.calendarTitleText.addEventListener('click', () => {
         renderDatePicker(state.currentCalendarDate.getFullYear());
         toggleModal(dom.datePickerModal, true);
     });
     dom.closeDatePickerBtn.addEventListener('click', () => toggleModal(dom.datePickerModal, false));
     
-    // --- All Notes Modal Listeners ---
     dom.showAllNotesBtn.addEventListener('click', () => {
         renderAllNotesModal();
         toggleModal(dom.allNotesModal, true);
     });
     dom.closeAllNotesBtn.addEventListener('click', () => toggleModal(dom.allNotesModal, false));
     
-    // Close modals when clicking the overlay
     [dom.settingsModal, dom.datePickerModal, dom.navOverlay, dom.allNotesModal].forEach(modal => {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -2323,7 +2313,6 @@ const setupEventListeners = () => {
         }
     });
 
-    // --- Settings Controls ---
     dom.autoThemeToggle.addEventListener('change', (e) => {
         state.settings.autoTheme = e.target.checked;
         applyTheme();
@@ -2345,7 +2334,6 @@ const setupEventListeners = () => {
         saveState();
     });
 
-    // --- City Search ---
     const handleSearchInput = debounce(() => {
         const query = dom.citySearchInput.value.toLowerCase();
         dom.searchDropdown.innerHTML = '';
@@ -2377,7 +2365,6 @@ const setupEventListeners = () => {
         }
     });
 
-    // --- Popular Timezone Listeners ---
     dom.popularCitiesContainer.querySelectorAll('.timezone-item').forEach(item => {
         item.addEventListener('click', () => {
             const tz = item.textContent;
@@ -2398,7 +2385,6 @@ const setupEventListeners = () => {
         });
     });
 
-    // --- Data Persistence & Calendar Nav ---
     dom.notesArea.addEventListener('input', debounce(() => {
         const selectedDateString = getDateString(state.selectedDate);
         const noteText = dom.notesArea.value;
@@ -2408,7 +2394,7 @@ const setupEventListeners = () => {
         } else {
             delete state.notes[selectedDateString];
         }
-        renderCalendar(); // Re-render to show/hide note indicator
+        renderCalendar();
         saveState();
     }, 500));
 
@@ -2420,7 +2406,6 @@ const setupEventListeners = () => {
         }
     });
     
-    // --- Refresh Button Listener (Force Refresh All) ---
     dom.refreshCardsBtn.addEventListener('click', async () => {
         const clocksToRefresh = state.pinnedClocks;
         if (clocksToRefresh.length === 0) return;
@@ -2434,7 +2419,7 @@ const setupEventListeners = () => {
             if (index !== -1) state.pinnedClocks[index] = refreshedClock;
         });
 
-        renderPinnedClocks(); // Re-render with fresh data
+        renderPinnedClocks();
         saveState();
         dom.refreshCardsBtn.disabled = false;
     });
@@ -2451,19 +2436,18 @@ const setupEventListeners = () => {
     dom.calendarGrid.addEventListener('click', (e) => {
         const dayEl = e.target.closest('.calendar-day');
         if (dayEl && dayEl.dataset.date) {
-            state.selectedDate = new Date(dayEl.dataset.date + 'T00:00:00'); // Ensure it's parsed as local time
-            renderCalendar(); // Re-render to show the new selection
-            updateNotesSection(); // Update the notes area
+            state.selectedDate = new Date(dayEl.dataset.date + 'T00:00:00');
+            renderCalendar();
+            updateNotesSection();
         }
     });
     
-    // --- Intersection Observer for Quote Typing ---
     const quoteObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const currentQuote = quotes[state.currentQuoteIndex];
                 typeEffect(currentQuote.text, currentQuote.author);
-                observer.unobserve(entry.target); // Animate only once on first scroll
+                observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.8 });
@@ -2472,8 +2456,6 @@ const setupEventListeners = () => {
         quoteObserver.observe(dom.quoteContainer);
     }
 
-
-    // --- Stopwatch Event Listeners (Updated) ---
     dom.stopwatchToggleBtn.addEventListener('click', () => {
         if (state.stopwatch.intervalId) {
             clearInterval(state.stopwatch.intervalId);
@@ -2507,8 +2489,6 @@ const setupEventListeners = () => {
         }
     });
 
-
-    // --- Timer Event Listeners ---
     dom.timerToggleBtn.addEventListener('click', () => {
         if (state.timer.intervalId) {
             clearInterval(state.timer.intervalId);
@@ -2556,7 +2536,6 @@ const setupEventListeners = () => {
         dom.timerToggleBtn.classList.replace('stop-btn', 'start-btn');
     });
     
-    // --- Alarm Event Listeners ---
     dom.addAlarmBtn.addEventListener('click', () => {
         const time = dom.alarmTimeInput.value;
         const label = dom.alarmLabelInput.value.trim() || 'Alarm';
@@ -2593,12 +2572,10 @@ const setupEventListeners = () => {
     });
 };
 
-// --- 6. INITIALIZATION & STATE PERSISTENCE ---
-
 const saveState = () => {
     const stateToSave = {
         pinnedTimezones: state.pinnedClocks.map(c => c.timezone),
-        notes: state.notes, // Save the entire notes object
+        notes: state.notes,
         settings: state.settings,
         alarms: state.alarms
     };
@@ -2608,7 +2585,7 @@ const saveState = () => {
 const loadState = async () => {
     const savedState = JSON.parse(localStorage.getItem('airclockState'));
     if (savedState) {
-        state.notes = savedState.notes || {}; // Load notes
+        state.notes = savedState.notes || {};
         state.settings = { ...state.settings, ...savedState.settings };
         state.alarms = savedState.alarms ? savedState.alarms.map(a => ({...a, enabled: a.enabled !== false, triggeredToday: false })) : [];
         
@@ -2630,7 +2607,6 @@ const populateLanguageSelector = () => {
     }
 }
 
-// The main initialization function that runs when the page loads.
 const init = async () => {
     populateLanguageSelector();
     await loadState();
@@ -2640,7 +2616,7 @@ const init = async () => {
     dom.hourFormatToggle.checked = state.settings.is24Hour;
     dom.languageSelect.value = state.settings.language;
 
-    applyLanguage(); // This will now also call renderCalendar and updateNotesSection
+    applyLanguage();
     renderAlarms();
     
     let initialTimezone;
@@ -2655,7 +2631,6 @@ const init = async () => {
 
     state.mainClock = await createClockObject(initialTimezone);
     if(state.mainClock) {
-        // Find a name for the main clock if possible
         const mainCity = cityData.find(c => c.timezone === state.mainClock.timezone);
         state.mainClock.name = mainCity ? mainCity.name : state.mainClock.timezone.split('/').pop().replace(/_/g, ' ');
         dom.mainLocation.textContent = state.mainClock.timezone.replace(/_/g, ' ');
@@ -2664,17 +2639,15 @@ const init = async () => {
     applyTheme();
     renderPinnedClocks();
     setupEventListeners();
+    setupSoundPlayer();
 
-    // Initialize Quote
-    changeQuote(false); // Initial quote without typing effect
-    setInterval(() => changeQuote(true), 60000); // Change quote with typing effect every minute
+    changeQuote();
     
     updateAllClocks();
     clockUpdateInterval = setInterval(updateAllClocks, 1000);
     state.alarmCheckInterval = setInterval(checkAlarms, 1000);
 };
 
-// Run the app!
 init();
     </script>
 </body>
