@@ -935,6 +935,7 @@ footer {
     font-variant-numeric: tabular-nums;
     pointer-events: none;
     color: #fff;
+    /* Default glow for non-focus mode */
     animation: moving-glow 4s ease-in-out infinite;
 }
 
@@ -984,19 +985,18 @@ footer {
 
 .fullscreen-overlay.focus-active .time,
 .fullscreen-overlay.focus-active .date {
-    animation: none; /* Turn off moving glow in focus mode to keep gradient */
-    background: linear-gradient(45deg, var(--accent-dark), #fff, var(--accent-dark));
+    animation: gradient-sweep 4s linear infinite;
+    background: linear-gradient(90deg, #aaa, #fff, #aaa);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    background-size: 200% 200%;
-    animation: gradient-animation 5s ease-in-out infinite;
+    background-size: 300% 100%;
+    text-shadow: none; /* Remove text-shadow to make gradient visible */
 }
 
-@keyframes gradient-animation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes gradient-sweep {
+    0% { background-position: 150% 50%; }
+    100% { background-position: -150% 50%; }
 }
 
 .settings-group { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid; }
@@ -2324,12 +2324,27 @@ function changeQuote() {
 function activateFocusMode() {
     const videoId = "ztVV54sPOns";
     const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&enablejsapi=1`;
-    dom.focusVideoPlayer.src = embedUrl;
+    
+    // Recreate the iframe to help trigger autoplay on mobile
+    const newIframe = document.createElement('iframe');
+    newIframe.id = 'focusVideoPlayer';
+    newIframe.src = embedUrl;
+    newIframe.frameBorder = '0';
+    newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    newIframe.allowFullscreen = true;
+    
+    dom.focusVideoContainer.innerHTML = ''; // Clear old iframe
+    dom.focusVideoContainer.appendChild(newIframe);
+    dom.focusVideoPlayer = newIframe; // Update the DOM reference
+
     dom.fullscreenOverlay.classList.add('active', 'focus-active');
 }
 
+
 function deactivateFocusMode() {
-    dom.focusVideoPlayer.src = '';
+    if (dom.focusVideoPlayer) {
+        dom.focusVideoPlayer.src = '';
+    }
     dom.fullscreenOverlay.classList.remove('focus-active');
     
     const focusBtn = document.querySelector('.sound-btn[data-video-id="ztVV54sPOns"]');
@@ -2340,7 +2355,8 @@ function deactivateFocusMode() {
 
 const setupSoundPlayer = () => {
     const soundButtons = document.querySelectorAll('.sound-btn');
-    const youtubePlayer = document.getElementById('youtube-player');
+    const playerContainer = document.getElementById('player-container');
+    let youtubePlayer = document.getElementById('youtube-player');
     let currentlyPlayingButton = null;
     const focusVideoId = "ztVV54sPOns";
 
@@ -2357,7 +2373,7 @@ const setupSoundPlayer = () => {
                 } else {
                     if (currentlyPlayingButton) {
                         currentlyPlayingButton.classList.remove('active');
-                        youtubePlayer.src = '';
+                        if(youtubePlayer) youtubePlayer.src = '';
                     }
                     activateFocusMode();
                     button.classList.add('active');
@@ -2369,7 +2385,7 @@ const setupSoundPlayer = () => {
             deactivateFocusMode();
 
             if (currentlyPlayingButton === button) {
-                youtubePlayer.src = '';
+                if(youtubePlayer) youtubePlayer.src = '';
                 button.classList.remove('active');
                 currentlyPlayingButton = null;
             } else {
@@ -2377,7 +2393,16 @@ const setupSoundPlayer = () => {
                     currentlyPlayingButton.classList.remove('active');
                 }
                 const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&enablejsapi=1`;
-                youtubePlayer.src = embedUrl;
+                
+                playerContainer.innerHTML = '';
+                const newPlayer = document.createElement('iframe');
+                newPlayer.id = 'youtube-player';
+                newPlayer.src = embedUrl;
+                newPlayer.frameBorder = '0';
+                newPlayer.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                playerContainer.appendChild(newPlayer);
+                youtubePlayer = newPlayer;
+
                 button.classList.add('active');
                 currentlyPlayingButton = button;
             }
@@ -2390,6 +2415,13 @@ const setupEventListeners = () => {
         modal.classList.toggle('active', show);
     };
     
+    dom.navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetPage = e.target.getAttribute('data-page');
+            switchPage(targetPage);
+        });
+    });
+
     dom.logoLink.addEventListener('click', () => switchPage('time'));
     dom.mainClockContainer.addEventListener('click', (e) => {
         if (e.target.closest('.sound-btn')) {
