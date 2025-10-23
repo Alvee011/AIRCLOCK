@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIRCLOCK - On Time Worldwide</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>">
+    <link rel="icon" href="fav.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://worldtimeapi.org">
@@ -29,6 +29,7 @@
     --btn-bg-dark: #374151;
     --transition: all 0.3s ease-in-out;
     --card-radius: 16px;
+    --saturation: 150%;
 }
 
 * {
@@ -50,6 +51,11 @@ body.light-theme {
     color: var(--text-light);
     --accent-color: var(--accent-light);
     --btn-bg: var(--btn-bg-light);
+    --c-glass: #ffffff; /* Light glass color */
+    --c-light: #fff;
+    --c-dark: #000;
+    --glass-reflex-dark: 1;
+    --glass-reflex-light: 1;
 }
 
 body.dark-theme {
@@ -57,6 +63,11 @@ body.dark-theme {
     color: var(--text-dark);
     --accent-color: var(--accent-dark);
     --btn-bg: var(--btn-bg-dark);
+    --c-glass: #222222; /* Dark glass color */
+    --c-light: #fff;
+    --c-dark: #000;
+    --glass-reflex-dark: 2;
+    --glass-reflex-light: 0.3;
 }
 
 .container {
@@ -111,20 +122,89 @@ header {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem; /* Adjusted gap */
 }
 
-.menu-btn {
-    background: none;
+.header-icon-btn {
+    background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 1.8rem;
-    padding: 0.5rem;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, transform 0.3s ease;
+    padding: 0;
     color: inherit;
 }
+.header-icon-btn:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+.header-icon-btn svg {
+    stroke: currentColor;
+    fill: none;
+    transition: transform 0.3s ease;
+}
+
+/* Animated Hamburger Menu */
+.menu-btn svg {
+    width: 28px;
+    height: 28px;
+}
+.menu-btn .line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 5; /* Bolder lines */
+    stroke-linecap: round;
+    transition: transform 0.4s, opacity 0.2s;
+    transform-origin: center;
+}
+.menu-btn.active .top {
+    transform: translateY(21px) rotate(45deg);
+}
+.menu-btn.active .middle {
+    opacity: 0;
+}
+.menu-btn.active .bottom {
+    transform: translateY(-21px) rotate(-45deg);
+}
+
+
+/* Search Icon */
+#searchBtn svg {
+    width: 24px;
+    height: 24px;
+}
+#searchBtn:hover svg {
+    transform: scale(1.1);
+}
+
+
+.settings-btn svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.settings-btn:hover, .settings-btn:focus {
+    transform: rotate(90deg);
+}
+.settings-btn:active {
+    transform: rotate(180deg);
+}
+
+#topSearchContainer {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    z-index: 101;
+}
+
 
 .nav-overlay {
     position: fixed;
@@ -151,6 +231,7 @@ header {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
+    transition: var(--transition);
 }
 .nav-link {
     color: white;
@@ -168,31 +249,28 @@ header {
     color: var(--accent-color);
 }
 
-.settings-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: transform 0.5s ease;
-    padding: 0;
-    color: inherit;
-}
-.settings-btn svg {
-  display: block;
+.nav-menu.liquid-glass {
+    padding: 2rem;
+    border-radius: var(--card-radius);
+    width: 90%;
+    max-width: 500px;
+    background-color: color-mix(in srgb, var(--c-glass) 12%, transparent);
+    backdrop-filter: blur(8px) url(#glass-distortion) saturate(var(--saturation));
+    -webkit-backdrop-filter: blur(8px) url(#glass-distortion) saturate(var(--saturation));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--c-light) calc(var(--glass-reflex-light) * 10%),transparent),inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),inset -0.3px -1px 4px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 12%),transparent),inset -1.5px 2.5px 0px -2px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 20%),transparent),inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),inset 2px -6.5px 1px -4px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 10%),transparent),0px 1px 5px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 10%),transparent),0px 6px 16px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 8%),transparent);
 }
 
-
-.settings-btn:hover, .settings-btn:focus {
-    transform: rotate(90deg);
+.nav-menu.liquid-glass .nav-link {
+    color: var(--text-light); /* Will be overridden by dark theme if needed */
 }
-.settings-btn:active {
-    transform: rotate(180deg);
+.dark-theme .nav-menu.liquid-glass .nav-link {
+    color: var(--text-dark);
+}
+.nav-menu.liquid-glass .nav-link:hover {
+     color: var(--accent-color);
+}
+.nav-menu.liquid-glass .nav-link.active {
+     color: var(--accent-color);
 }
 
 .page-section {
@@ -254,6 +332,19 @@ header {
     position: relative;
     max-width: 600px;
     margin: 0 auto 2rem auto;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 1; /* Fix for dropdown issue */
+}
+.search-container:not(.active) {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    visibility: hidden;
+    pointer-events: none;
+}
+.search-container.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
 }
 
 .search-input {
@@ -291,7 +382,7 @@ header {
     max-height: 300px;
     overflow-y: auto;
     border-radius: 12px;
-    z-index: 100;
+    z-index: 101;
     margin-top: 0.5rem;
     display: none;
 }
@@ -326,6 +417,15 @@ header {
 .search-dropdown-item .flag { font-size: 1.5rem; }
 .search-dropdown-item .city-name { font-weight: 500; }
 .search-dropdown-item .timezone { font-size: 0.8rem; opacity: 0.7; margin-left: auto; }
+
+/* Search Layout Styles */
+body.middle-search-layout #searchBtn,
+body.middle-search-layout #topSearchContainer {
+    display: none;
+}
+body.top-search-layout #searchContainer {
+    display: none;
+}
 
 .clocks-grid {
     display: grid;
@@ -688,7 +788,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Reduced from 2rem */
     padding-bottom: 2rem;
     border-bottom: 1px solid;
 }
@@ -696,7 +796,7 @@ footer {
 .dark-theme .footer-top { border-color: var(--border-dark); }
 
 .footer-logo img {
-    height: 65px;
+    height: 78px;
     display: none;
 }
 .light-theme .footer-logo .logo-light {
@@ -711,35 +811,13 @@ footer {
 }
 
 .footer-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-column ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-column li {
-    margin-bottom: 0.75rem;
-}
-
-.footer-column a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.2s;
-}
-
-.footer-column a:hover {
-    color: var(--accent-color);
+    display: none; /* Hide all footer links */
 }
 
 .footer-bottom {
     font-size: 0.875rem;
     opacity: 0.8;
+    text-align: center;
 }
 .footer-bottom p {
     margin-bottom: 0.5rem;
@@ -750,6 +828,24 @@ footer {
 }
 .footer-bottom a:hover {
     text-decoration: underline;
+}
+
+.footer-credit {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+.footer-credit p {
+    margin-bottom: 0.25rem;
+}
+.footer-credit a {
+    color: inherit;
+    text-decoration: none;
+}
+.footer-credit a:hover {
+    text-decoration: underline;
+    color: var(--accent-color); /* Add hover color */
 }
 
 .quote-wrapper {
@@ -809,8 +905,16 @@ footer {
     flex-direction: column;
 }
 .modal-overlay.active .modal-content { transform: scale(1); }
-.light-theme .modal-content { background-color: var(--card-bg-light); }
-.dark-theme .modal-content { background-color: var(--card-bg-dark); }
+
+.modal-content.liquid-glass {
+    background-color: color-mix(in srgb, var(--c-glass) 12%, transparent);
+    backdrop-filter: blur(8px) url(#glass-distortion) saturate(var(--saturation));
+    -webkit-backdrop-filter: blur(8px) url(#glass-distortion) saturate(var(--saturation));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--c-light) calc(var(--glass-reflex-light) * 10%),transparent),inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),inset -0.3px -1px 4px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 12%),transparent),inset -1.5px 2.5px 0px -2px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 20%),transparent),inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),inset 2px -6.5px 1px -4px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 10%),transparent),0px 1px 5px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 10%),transparent),0px 6px 16px 0px color-mix(in srgb,var(--c-dark) calc(var(--glass-reflex-dark) * 8%),transparent);
+}
+
+.light-theme .modal-content:not(.liquid-glass) { background-color: var(--card-bg-light); }
+.dark-theme .modal-content:not(.liquid-glass) { background-color: var(--card-bg-dark); }
 
 .modal-header {
     flex-shrink: 0;
@@ -934,25 +1038,43 @@ footer {
 .fullscreen-overlay .date {
     font-variant-numeric: tabular-nums;
     pointer-events: none;
-    color: #fff;
-    /* Default glow for non-focus mode */
-    animation: moving-glow 4s ease-in-out infinite;
+    color: rgba(230, 230, 230, 0.9); /* Base color */
+    text-shadow: 
+        /* Top highlight */
+        0 -1px 1px rgba(255, 255, 255, 0.5),
+        /* Bottom shadow for depth */
+        0 2px 3px rgba(0, 0, 0, 0.5),
+        /* Subtle overall blur/glow */
+        0 0 5px rgba(255, 255, 255, 0.3),
+        0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .fullscreen-overlay .time { 
     font-size: clamp(4rem, 20vw, 12rem); 
-    font-weight: 700;
+    font-weight: 800; /* Bolder for better effect */
 }
 .fullscreen-overlay .date { 
     font-size: clamp(1.5rem, 6vw, 3rem); 
-    opacity: 0.8;
+    opacity: 0.9;
+    font-weight: 500;
 }
 
-@keyframes moving-glow {
-    0% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6); }
-    50% { text-shadow: 0 0 20px rgba(255,255,255,1), 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.5); }
-    100% { text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6); }
+.fullscreen-hint {
+    position: absolute;
+    bottom: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none;
 }
+.fullscreen-hint.visible {
+    opacity: 1;
+}
+
 
 /* --- Focus Mode Styles --- */
 .video-background-container {
@@ -967,7 +1089,7 @@ footer {
     overflow: hidden;
 }
 
-.video-background-container iframe {
+.video-background-container video {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -981,22 +1103,6 @@ footer {
 
 .fullscreen-overlay.focus-active .video-background-container {
     opacity: 0.3; /* Make it a subtle background */
-}
-
-.fullscreen-overlay.focus-active .time,
-.fullscreen-overlay.focus-active .date {
-    animation: gradient-sweep 4s linear infinite;
-    background: linear-gradient(90deg, #aaa, #fff, #aaa);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    background-size: 300% 100%;
-    text-shadow: none; /* Remove text-shadow to make gradient visible */
-}
-
-@keyframes gradient-sweep {
-    0% { background-position: 150% 50%; }
-    100% { background-position: -150% 50%; }
 }
 
 .settings-group { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid; }
@@ -1126,17 +1232,29 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 .add-alarm-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    justify-content: center;
 }
-.add-alarm-form input {
+.alarm-inputs {
+    display: flex;
+    gap: 1rem;
+    flex-grow: 1;
+    min-width: 250px; /* Prevent wrapping on small screens */
+}
+.alarm-inputs input {
     flex-grow: 1;
     padding: 0.75rem;
     border-radius: 8px;
     border: 1px solid;
 }
-.light-theme .add-alarm-form input { background-color: #f0f4f8; border-color: var(--border-light); }
-.dark-theme .add-alarm-form input { background-color: #1a2639; border-color: var(--border-dark); color: var(--text-dark); }
+.alarm-add-button {
+     width: 100%;
+     display: flex;
+     justify-content: center;
+}
+.light-theme .alarm-inputs input { background-color: #f0f4f8; border-color: var(--border-light); }
+.dark-theme .alarm-inputs input { background-color: #1a2639; border-color: var(--border-dark); color: var(--text-dark); }
 .add-alarm-btn {
     background-color: var(--accent-color);
     color: white;
@@ -1218,8 +1336,20 @@ input:checked + .slider:before { transform: translateX(22px); }
             <img src="LOGOWhite H.png" alt="AIRCLOCK Logo" class="logo-dark">
         </div>
         <div class="header-right">
-            <button class="menu-btn" id="menuBtn">☰</button>
-            <button class="settings-btn" id="settingsBtn">
+             <button class="header-icon-btn" id="searchBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <button class="header-icon-btn menu-btn" id="menuBtn">
+                <svg viewBox="0 0 100 100">
+                    <path class="line top" d="M 20,29 H 80" />
+                    <path class="line middle" d="M 20,50 H 80" />
+                    <path class="line bottom" d="M 20,71 H 80" />
+                </svg>
+            </button>
+            <button class="header-icon-btn settings-btn" id="settingsBtn">
               <svg xmlns="http://www.w3.org/2000/svg" 
                    width="24" height="24" viewBox="0 0 24 24" 
                    fill="none" stroke="currentColor" 
@@ -1229,10 +1359,14 @@ input:checked + .slider:before { transform: translateX(22px); }
               </svg>
             </button>
         </div>
+        <div id="topSearchContainer" class="search-container">
+            <input type="text" class="search-input city-search-input" placeholder="Search for a city or country...">
+            <div class="search-dropdown"></div>
+        </div>
     </header>
 
     <div class="nav-overlay" id="navOverlay">
-        <nav class="nav-menu">
+        <nav class="nav-menu" id="navMenu">
             <a class="nav-link" data-page="time">Time</a>
             <a class="nav-link" data-page="stopwatch">Stopwatch</a>
             <a class="nav-link" data-page="timer">Timer</a>
@@ -1247,19 +1381,19 @@ input:checked + .slider:before { transform: translateX(22px); }
                 <div class="date" id="mainDate">Loading...</div>
                 <div class="location" id="mainLocation"></div>
                 <div class="sounds-container" id="soundsContainer">
-                    <button class="sound-btn" data-video-id="q76bMs-NwRk">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056029/Rain_f1od5r.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761223281/rain2_oo07o3.mov">
                         <img src="rain.svg" alt="Rain icon">
                         <span>Rain</span>
                     </button>
-                    <button class="sound-btn" data-video-id="xNN7iTA57jM">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056020/Forest_uah836.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158049/Forest_NO_AUDIO_mihche.mp4">
                         <img src="Forest.svg" alt="Forest icon">
                         <span>Forest</span>
                     </button>
-                    <button class="sound-btn" data-video-id="BqAzRJmivqw">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056596/Owl_q6mdbq.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158091/Owl_No_Audio_tojgpo.mp4">
                         <img src="OWL.svg" alt="Owl icon">
                         <span>Owl</span>
                     </button>
-                    <button class="sound-btn" data-video-id="ztVV54sPOns">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056237/Focus_emjbto.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158057/GALAXY_NO_AUDIO_zrshcb.mp4">
                         <img src="Focus.svg" alt="Focus icon">
                         <span>Focus</span>
                     </button>
@@ -1267,8 +1401,8 @@ input:checked + .slider:before { transform: translateX(22px); }
             </div>
 
             <div class="search-container" id="searchContainer">
-                <input type="text" class="search-input" id="citySearchInput" placeholder="Search for a city or country...">
-                <div class="search-dropdown" id="searchDropdown"></div>
+                <input type="text" class="search-input city-search-input" placeholder="Search for a city or country...">
+                <div class="search-dropdown"></div>
             </div>
 
             <div class="clocks-grid" id="clocksGrid"></div>
@@ -1363,9 +1497,13 @@ input:checked + .slider:before { transform: translateX(22px); }
             <div class="utility-container">
                 <h2 class="section-title">Alarm</h2>
                 <div class="add-alarm-form">
-                    <input type="time" id="alarmTimeInput">
-                    <input type="text" id="alarmLabelInput" placeholder="Alarm label">
-                    <button class="utility-btn add-alarm-btn" id="addAlarmBtn">Add</button>
+                    <div class="alarm-inputs">
+                        <input type="time" id="alarmTimeInput">
+                        <input type="text" id="alarmLabelInput" placeholder="Alarm label">
+                    </div>
+                    <div class="alarm-add-button">
+                        <button class="utility-btn add-alarm-btn" id="addAlarmBtn">Add</button>
+                    </div>
                 </div>
                 <ul class="alarms-list" id="alarmsList"></ul>
             </div>
@@ -1386,77 +1524,30 @@ input:checked + .slider:before { transform: translateX(22px); }
                     <img src="LOGOWhite.png" alt="AIRCLOCK Logo" class="logo-dark">
                 </div>
                 <a href="#" class="app-store-btn">
-                    <img src="https://web.archive.org/web/20240127134319im_/https://www.time.is/assets/img/appstore-nonretina.png" alt="Download on the App Store">
+                    <img src="Product of TIGOTEK.png" alt="Product of TIGOTEK">
                 </a>
             </div>
-            <div class="footer-links">
-                <div class="footer-column">
-                    <ul>
-                        <li><a href="#">Exact time now</a></li>
-                        <li><a href="#">Time here&there</a></li>
-                        <li><a href="#">Your time zone</a></li>
-                        <li><a href="#">Time zones</a></li>
-                        <li><a href="#">Daylight Saving Time</a></li>
-                        <li><a href="#">Clock</a></li>
-                        <li><a href="#">Countdown</a></li>
-                        <li><a href="#">Calendar</a></li>
-                        <li><a href="#">Compact calendar</a></li>
-                        <li><a href="#">Week number</a></li>
-                        <li><a href="#">Sound</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <ul>
-                        <li><a href="#">Apps</a></li>
-                        <li><a href="#">Widgets</a></li>
-                        <li><a href="#">Time zone news</a></li>
-                        <li><a href="#">Newsletter</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <ul>
-                        <li><a href="#">UTC</a></li>
-                        <li><a href="#">Unix clock</a></li>
-                        <li><a href="#">Unix time converter</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <ul>
-                        <li><a href="#">Customize</a></li>
-                        <li><a href="#">Airclock Ad-free</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">How to use Airclock</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <ul>
-                        <li><a href="#">Advertise</a></li>
-                        <li><a href="#">Terms of use</a></li>
-                        <li><a href="#">Privacy policy</a></li>
-                    </ul>
-                </div>
-            </div>
+            
             <div class="footer-bottom">
                 <p>Airclock displays exact, official atomic clock time for any time zone (more than 7 million locations) in 58 languages.</p>
                 <p>
-                    <a href="#">What time is it?</a> | <a href="#">¿Qué hora es?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="#">» more languages</a>
+                    <a href="#">What time is it?</a> | <a href="#">কয়টা বাজে?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="#">» more languages</a>
                 </p>
+                <div class="footer-credit">
+                    <p>Powered by AIRCLOCK</p>
+                    <p>Product of <a href="https://www.tigotek.net" target="_blank" rel="noopener noreferrer">Tigotek</a></p>
+                </div>
             </div>
         </div>
     </footer>
 
     <div class="fullscreen-overlay" id="fullscreenOverlay">
         <div class="video-background-container" id="focusVideoContainer">
-            <iframe id="focusVideoPlayer" 
-                    src="" frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
+            <video id="fullscreenVideoPlayer" autoplay loop muted playsinline></video>
         </div>
         <div class="time" id="fullscreenTime"></div>
         <div class="date" id="fullscreenDate"></div>
+        <div class="fullscreen-hint" id="fullscreenHint">Press Shift+F to go full screen</div>
     </div>
 
     <div class="modal-overlay" id="datePickerModal">
@@ -1487,49 +1578,119 @@ input:checked + .slider:before { transform: translateX(22px); }
 
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-content">
-            <button class="close-modal-btn" id="closeSettingsBtn">✕</button>
-            <h2 id="settingsModalTitle">Settings</h2>
-            
-            <div class="settings-group">
-                <h3 id="themeSettingsTitle">Theme</h3>
-                <div class="setting-row">
-                    <span id="autoThemeLabel">Auto Theme</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoThemeToggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="setting-row">
-                    <span id="darkThemeLabel">Dark Mode</span>
-                    <label class="toggle-switch" id="manualThemeToggleContainer">
-                        <input type="checkbox" id="manualThemeToggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+            <div class="modal-header">
+                <button class="close-modal-btn" id="closeSettingsBtn">✕</button>
+                <h2 id="settingsModalTitle">Settings</h2>
             </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h3 id="themeSettingsTitle">Theme</h3>
+                    <div class="setting-row">
+                        <span id="autoThemeLabel">Auto Theme</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoThemeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span id="darkThemeLabel">Dark Mode</span>
+                        <label class="toggle-switch" id="manualThemeToggleContainer">
+                            <input type="checkbox" id="manualThemeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
 
-            <div class="settings-group">
-                <h3 id="formatSettingsTitle">Format</h3>
-                <div class="setting-row">
-                    <span id="hourFormatLabel">24-Hour Format</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="hourFormatToggle">
-                        <span class="slider"></span>
-                    </label>
+                <div class="settings-group">
+                    <h3 id="formatSettingsTitle">Format</h3>
+                    <div class="setting-row">
+                        <span id="hourFormatLabel">24-Hour Format</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hourFormatToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="settings-group">
-                <h3 id="languageSettingsTitle">Language</h3>
-                <select id="languageSelect" class="language-select">
-                    </select>
+
+                 <div class="settings-group">
+                    <h3 id="layoutSettingsTitle">Layout</h3>
+                    <div class="setting-row">
+                        <span id="searchLayoutLabel">Top Search Bar</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="searchLayoutToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span id="menuBackgroundLabel">Show Menu Background</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="menuBackgroundToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3 id="languageSettingsTitle">Language</h3>
+                    <select id="languageSelect" class="language-select">
+                        </select>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="player-container" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
-        <iframe id="youtube-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-    </div>
+    <audio id="ambient-audio-player" loop></audio>
+
+    <svg style="display: none">
+      <filter
+        id="glass-distortion"
+        x="0%"
+        y="0%"
+        width="100%"
+        height="100%"
+        filterUnits="objectBoundingBox"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.01 0.01"
+          numOctaves="1"
+          seed="5"
+          result="turbulence"
+        />
+        <feComponentTransfer in="turbulence" result="mapped">
+          <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+          <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+          <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+        </feComponentTransfer>
+        <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+        <feSpecularLighting
+          in="softMap"
+          surfaceScale="5"
+          specularConstant="1"
+          specularExponent="100"
+          lighting-color="white"
+          result="specLight"
+        >
+          <fePointLight x="-200" y="-200" z="300" />
+        </feSpecularLighting>
+        <feComposite
+          in="specLight"
+          operator="arithmetic"
+          k1="0"
+          k2="1"
+          k3="1"
+          k4="0"
+          result="litImage"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="softMap"
+          scale="150"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </svg>
 
     <script>
         // --- 1. CONFIGURATION & STATE MANAGEMENT ---
@@ -1541,8 +1702,8 @@ const dom = {
     mainLocation: document.getElementById('mainLocation'),
     mainClockContainer: document.getElementById('mainClockContainer'),
     searchContainer: document.getElementById('searchContainer'),
-    citySearchInput: document.getElementById('citySearchInput'),
-    searchDropdown: document.getElementById('searchDropdown'),
+    topSearchContainer: document.getElementById('topSearchContainer'),
+    citySearchInputs: document.querySelectorAll('.city-search-input'),
     clocksGrid: document.getElementById('clocksGrid'),
     notesArea: document.getElementById('notesArea'),
     resetBtn: document.getElementById('resetBtn'),
@@ -1553,7 +1714,9 @@ const dom = {
     allNotesContent: document.getElementById('allNotesContent'),
     menuBtn: document.getElementById('menuBtn'),
     navOverlay: document.getElementById('navOverlay'),
+    navMenu: document.getElementById('navMenu'),
     navLinks: document.querySelectorAll('.nav-link'),
+    searchBtn: document.getElementById('searchBtn'),
     settingsBtn: document.getElementById('settingsBtn'),
     settingsModal: document.getElementById('settingsModal'),
     closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -1561,6 +1724,8 @@ const dom = {
     manualThemeToggle: document.getElementById('manualThemeToggle'),
     manualThemeToggleContainer: document.getElementById('manualThemeToggleContainer'),
     hourFormatToggle: document.getElementById('hourFormatToggle'),
+    searchLayoutToggle: document.getElementById('searchLayoutToggle'),
+    menuBackgroundToggle: document.getElementById('menuBackgroundToggle'),
     languageSelect: document.getElementById('languageSelect'),
     calendarTitleText: document.getElementById('calendarTitleText'),
     calendarGrid: document.getElementById('calendarGrid'),
@@ -1575,8 +1740,8 @@ const dom = {
     fullscreenOverlay: document.getElementById('fullscreenOverlay'),
     fullscreenTime: document.getElementById('fullscreenTime'),
     fullscreenDate: document.getElementById('fullscreenDate'),
-    focusVideoContainer: document.getElementById('focusVideoContainer'),
-    focusVideoPlayer: document.getElementById('focusVideoPlayer'),
+    fullscreenVideoPlayer: document.getElementById('fullscreenVideoPlayer'),
+    fullscreenHint: document.getElementById('fullscreenHint'),
     popularCitiesContainer: document.getElementById('popular-cities-container'),
     quoteContainer: document.getElementById('quoteContainer'),
     quoteText: document.getElementById('quoteText'),
@@ -1597,16 +1762,21 @@ const dom = {
     alarmLabelInput: document.getElementById('alarmLabelInput'),
     addAlarmBtn: document.getElementById('addAlarmBtn'),
     alarmsList: document.getElementById('alarmsList'),
+    ambientAudioPlayer: document.getElementById('ambient-audio-player'),
     uiText: {
         notesTitle: document.getElementById('notesTitle'),
         calendarSectionTitle: document.getElementById('calendarSectionTitle'),
         settingsModalTitle: document.getElementById('settingsModalTitle'),
         themeSettingsTitle: document.getElementById('themeSettingsTitle'),
         formatSettingsTitle: document.getElementById('formatSettingsTitle'),
+        layoutSettingsTitle: document.getElementById('layoutSettingsTitle'),
+        menuSettingsTitle: document.getElementById('menuSettingsTitle'),
         languageSettingsTitle: document.getElementById('languageSettingsTitle'),
         autoThemeLabel: document.getElementById('autoThemeLabel'),
         darkThemeLabel: document.getElementById('darkThemeLabel'),
         hourFormatLabel: document.getElementById('hourFormatLabel'),
+        searchLayoutLabel: document.getElementById('searchLayoutLabel'),
+        menuBackgroundLabel: document.getElementById('menuBackgroundLabel'),
         allNotesTitle: document.getElementById('allNotesTitle'),
         showAllNotesBtn: document.getElementById('showAllNotesBtn'),
     }
@@ -1619,7 +1789,9 @@ let state = {
         autoTheme: true,
         manualThemeDark: false,
         is24Hour: true,
-        language: 'en'
+        language: 'en',
+        searchLayout: 'top', // middle or top
+        menuBackground: true
     },
     currentCalendarDate: new Date(),
     selectedDate: new Date(), 
@@ -1636,7 +1808,8 @@ let state = {
         intervalId: null 
     },
     alarms: [],
-    alarmCheckInterval: null
+    alarmCheckInterval: null,
+    currentlyPlayingButton: null
 };
 
 let clockUpdateInterval = null; 
@@ -1741,9 +1914,9 @@ const popularCities = [
 ];
 
 const translations = {
-    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found." }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
-    bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", allNotes: "সমস্ত নোট", showAllNotes: "সব নোট দেখুন", noNotes: "কোন নোট পাওয়া যায়নি।" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে", same: "একই সময়" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
-    es: { name: "Español", ui: { notes: "Notes for", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas." }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", layout: "Layout", menu: "Menu", menuBackground: "Show Menu Background", searchLayout: "Top Search Bar", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found." }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+    bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", layout: "Layout", menu: "Menu", menuBackground: "Show Menu Background", searchLayout: "Top Search Bar", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", allNotes: "সমস্ত নোট", showAllNotes: "সব নোট দেখুন", noNotes: "কোন নোট পাওয়া যায়নি।" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে", same: "একই সময়" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"] } },
+    es: { name: "Español", ui: { notes: "Notes for", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", layout: "Layout", menu: "Menu", menuBackground: "Show Menu Background", searchLayout: "Top Search Bar", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar 모든 las notas", noNotes: "No se encontraron notas." }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
 };
 
 // --- Page Navigation Switching ---
@@ -1766,6 +1939,7 @@ const switchPage = (targetPage) => {
 
     // Close menu
     dom.navOverlay.classList.remove('active');
+    dom.menuBtn.classList.remove('active');
 }
 
 // --- 2. CORE LOGIC & HELPERS ---
@@ -1825,6 +1999,15 @@ const getHourInTimezone = (date, timezone) => {
 const updateAllClocks = () => {
     const now = Date.now();
     
+    // Self-heal main clock if needed
+    if (state.mainClock && !state.mainClock.raw_offset && !state.mainClock.isRefreshing) {
+        state.mainClock.isRefreshing = true;
+        (async () => {
+            const refreshedClock = await createClockObject(state.mainClock.timezone);
+            state.mainClock = { ...refreshedClock, isRefreshing: false };
+        })();
+    }
+
     // Update the main clock
     if (state.mainClock) {
         const mainTime = new Date(now + state.mainClock.offset);
@@ -1844,15 +2027,15 @@ const updateAllClocks = () => {
     state.pinnedClocks.forEach(clock => {
         const card = document.querySelector(`.clock-card[data-timezone="${clock.timezone}"]`);
         if (card) {
-            // Self-healing: If data is missing, trigger a refresh
-            if (!clock.utc_offset && !clock.isRefreshing) {
-                clock.isRefreshing = true; // Prevent multiple requests
+            // Self-healing for pinned clocks
+            if (clock.apiFailed && !clock.isRefreshing) {
+                clock.isRefreshing = true;
                 (async () => {
                     console.log(`Data for ${clock.timezone} is missing. Auto-refreshing...`);
                     const refreshedClock = await createClockObject(clock.timezone);
                     const index = state.pinnedClocks.findIndex(c => c.timezone === refreshedClock.timezone);
                     if (index !== -1) {
-                        state.pinnedClocks[index] = refreshedClock;
+                        state.pinnedClocks[index] = { ...refreshedClock, isRefreshing: false };
                     }
                 })();
             }
@@ -1900,7 +2083,7 @@ const removeClock = (timezone) => {
 // Calculates and formats the time difference between a pinned clock and the main clock.
 const calculateTimeDifference = (clock) => {
     const t = translations[state.settings.language];
-    if (!state.mainClock || clock.utc_offset === undefined || state.mainClock.utc_offset === undefined) {
+    if (!state.mainClock || clock.raw_offset === undefined || state.mainClock.raw_offset === undefined) {
         return ''; // Not enough data to calculate
     }
 
@@ -2251,9 +2434,26 @@ const applyTheme = () => {
     } else {
         dom.body.className = state.settings.manualThemeDark ? 'dark-theme' : 'light-theme';
     }
-    dom.manualThemeToggle.disabled = state.settings.autoTheme;
-    dom.manualThemeToggleContainer.style.opacity = state.settings.autoTheme ? 0.5 : 1;
-};
+}
+
+const applySearchLayout = () => {
+    if (state.settings.searchLayout === 'top') {
+        document.body.classList.add('top-search-layout');
+        document.body.classList.remove('middle-search-layout');
+        dom.searchContainer.classList.remove('active');
+    } else {
+        document.body.classList.remove('top-search-layout');
+        document.body.classList.add('middle-search-layout');
+        dom.searchContainer.classList.add('active');
+        dom.topSearchContainer.classList.remove('active');
+    }
+}
+
+const applyMenuBackground = () => {
+    dom.navMenu.classList.toggle('liquid-glass', state.settings.menuBackground);
+    dom.settingsModal.querySelector('.modal-content').classList.toggle('liquid-glass', state.settings.menuBackground);
+}
+
 
 const applyLanguage = () => {
     const lang = state.settings.language;
@@ -2267,12 +2467,15 @@ const applyLanguage = () => {
     dom.uiText.darkThemeLabel.textContent = t.ui.darkMode;
     dom.uiText.formatSettingsTitle.textContent = t.ui.format;
     dom.uiText.hourFormatLabel.textContent = t.ui.hourFormat;
+    dom.uiText.layoutSettingsTitle.textContent = t.ui.layout;
+    dom.uiText.searchLayoutLabel.textContent = t.ui.searchLayout;
+    if (dom.uiText.menuBackgroundLabel) dom.uiText.menuBackgroundLabel.textContent = t.ui.menuBackground;
     dom.uiText.languageSettingsTitle.textContent = t.ui.language;
     dom.uiText.allNotesTitle.textContent = t.ui.allNotes;
     dom.uiText.showAllNotesBtn.textContent = t.ui.showAllNotes;
 
 
-    dom.citySearchInput.placeholder = t.placeholders.search;
+    dom.citySearchInputs.forEach(input => input.placeholder = t.placeholders.search);
     dom.resetBtn.textContent = t.ui.reset;
     
     renderCalendar();
@@ -2321,90 +2524,26 @@ function changeQuote() {
 
 
 // --- Sound Player & Focus Mode Logic ---
-function activateFocusMode() {
-    const videoId = "ztVV54sPOns";
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&enablejsapi=1`;
-    
-    // Recreate the iframe to help trigger autoplay on mobile
-    const newIframe = document.createElement('iframe');
-    newIframe.id = 'focusVideoPlayer';
-    newIframe.src = embedUrl;
-    newIframe.frameBorder = '0';
-    newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    newIframe.allowFullscreen = true;
-    
-    dom.focusVideoContainer.innerHTML = ''; // Clear old iframe
-    dom.focusVideoContainer.appendChild(newIframe);
-    dom.focusVideoPlayer = newIframe; // Update the DOM reference
-
-    dom.fullscreenOverlay.classList.add('active', 'focus-active');
-}
-
-
-function deactivateFocusMode() {
-    if (dom.focusVideoPlayer) {
-        dom.focusVideoPlayer.src = '';
-    }
-    dom.fullscreenOverlay.classList.remove('focus-active');
-    
-    const focusBtn = document.querySelector('.sound-btn[data-video-id="ztVV54sPOns"]');
-    if (focusBtn) {
-        focusBtn.classList.remove('active');
-    }
-}
-
 const setupSoundPlayer = () => {
     const soundButtons = document.querySelectorAll('.sound-btn');
-    const playerContainer = document.getElementById('player-container');
-    let youtubePlayer = document.getElementById('youtube-player');
-    let currentlyPlayingButton = null;
-    const focusVideoId = "ztVV54sPOns";
-
+    
     soundButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const videoId = button.dataset.videoId;
-            const isFocusButton = (videoId === focusVideoId);
+            const audioSrc = button.dataset.audio;
 
-            if (isFocusButton) {
-                if (button.classList.contains('active')) {
-                    deactivateFocusMode();
-                    dom.fullscreenOverlay.classList.remove('active');
-                    currentlyPlayingButton = null;
-                } else {
-                    if (currentlyPlayingButton) {
-                        currentlyPlayingButton.classList.remove('active');
-                        if(youtubePlayer) youtubePlayer.src = '';
-                    }
-                    activateFocusMode();
-                    button.classList.add('active');
-                    currentlyPlayingButton = button;
-                }
-                return; 
-            }
-
-            deactivateFocusMode();
-
-            if (currentlyPlayingButton === button) {
-                if(youtubePlayer) youtubePlayer.src = '';
+            if (state.currentlyPlayingButton === button) {
+                dom.ambientAudioPlayer.pause();
+                dom.ambientAudioPlayer.src = '';
                 button.classList.remove('active');
-                currentlyPlayingButton = null;
+                state.currentlyPlayingButton = null;
             } else {
-                if (currentlyPlayingButton) {
-                    currentlyPlayingButton.classList.remove('active');
+                if (state.currentlyPlayingButton) {
+                    state.currentlyPlayingButton.classList.remove('active');
                 }
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&controls=0&enablejsapi=1`;
-                
-                playerContainer.innerHTML = '';
-                const newPlayer = document.createElement('iframe');
-                newPlayer.id = 'youtube-player';
-                newPlayer.src = embedUrl;
-                newPlayer.frameBorder = '0';
-                newPlayer.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                playerContainer.appendChild(newPlayer);
-                youtubePlayer = newPlayer;
-
+                dom.ambientAudioPlayer.src = audioSrc;
+                dom.ambientAudioPlayer.play();
                 button.classList.add('active');
-                currentlyPlayingButton = button;
+                state.currentlyPlayingButton = button;
             }
         });
     });
@@ -2413,6 +2552,9 @@ const setupSoundPlayer = () => {
 const setupEventListeners = () => {
     const toggleModal = (modal, show) => {
         modal.classList.toggle('active', show);
+        if (modal === dom.navOverlay) {
+            dom.menuBtn.classList.toggle('active', show);
+        }
     };
     
     dom.navLinks.forEach(link => {
@@ -2427,17 +2569,39 @@ const setupEventListeners = () => {
         if (e.target.closest('.sound-btn')) {
             return;
         }
+        if (state.currentlyPlayingButton) {
+            const videoSrc = state.currentlyPlayingButton.dataset.video;
+            dom.fullscreenVideoPlayer.src = videoSrc;
+            dom.fullscreenVideoPlayer.play();
+            dom.fullscreenOverlay.classList.add('focus-active');
+        }
         toggleModal(dom.fullscreenOverlay, true);
+        
+        dom.fullscreenHint.classList.add('visible');
+        setTimeout(() => {
+            dom.fullscreenHint.classList.remove('visible');
+        }, 4000);
     });
+
     dom.fullscreenOverlay.addEventListener('click', (e) => {
         toggleModal(dom.fullscreenOverlay, false);
-        deactivateFocusMode();
+        dom.fullscreenVideoPlayer.pause();
+        dom.fullscreenVideoPlayer.src = '';
+        dom.fullscreenOverlay.classList.remove('focus-active');
     });
+    
+    dom.searchBtn.addEventListener('click', () => {
+        dom.topSearchContainer.classList.toggle('active');
+        if (dom.topSearchContainer.classList.contains('active')) {
+           dom.topSearchContainer.querySelector('.city-search-input').focus();
+        }
+    });
+
     dom.settingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, true));
     dom.closeSettingsBtn.addEventListener('click', () => toggleModal(dom.settingsModal, false));
     dom.menuBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleModal(dom.navOverlay, true)
+        toggleModal(dom.navOverlay, !dom.navOverlay.classList.contains('active'));
     });
 
     dom.calendarTitleText.addEventListener('click', () => {
@@ -2478,27 +2642,66 @@ const setupEventListeners = () => {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape") {
+        if (e.shiftKey && (e.key === 'F' || e.key === 'f')) {
             if (dom.fullscreenOverlay.classList.contains('active')) {
-                deactivateFocusMode();
+                e.preventDefault(); 
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
             }
-            [dom.fullscreenOverlay, dom.settingsModal, dom.navOverlay, dom.datePickerModal, dom.allNotesModal].forEach(modal => toggleModal(modal, false));
+        }
+        if (e.key === "Escape") {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            [dom.fullscreenOverlay, dom.settingsModal, dom.navOverlay, dom.datePickerModal, dom.allNotesModal].forEach(modal => {
+                 if(modal.classList.contains('active')) {
+                     toggleModal(modal, false);
+                     if(modal === dom.fullscreenOverlay) {
+                         dom.fullscreenVideoPlayer.pause();
+                         dom.fullscreenVideoPlayer.src = '';
+                         dom.fullscreenOverlay.classList.remove('focus-active');
+                     }
+                 }
+            });
         }
     });
 
     dom.autoThemeToggle.addEventListener('change', (e) => {
         state.settings.autoTheme = e.target.checked;
+        if(e.target.checked) {
+            state.settings.manualThemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
         applyTheme();
         saveState();
     });
     dom.manualThemeToggle.addEventListener('change', (e) => {
+        state.settings.autoTheme = false;
+        dom.autoThemeToggle.checked = false;
         state.settings.manualThemeDark = e.target.checked;
         applyTheme();
         saveState();
     });
+    
     dom.hourFormatToggle.addEventListener('change', (e) => {
         state.settings.is24Hour = e.target.checked;
         updateAllClocks();
+        saveState();
+    });
+    dom.searchLayoutToggle.addEventListener('change', (e) => {
+        state.settings.searchLayout = e.target.checked ? 'top' : 'middle';
+        applySearchLayout();
+        saveState();
+    });
+     dom.menuBackgroundToggle.addEventListener('change', (e) => {
+        state.settings.menuBackground = e.target.checked;
+        applyMenuBackground();
         saveState();
     });
     dom.languageSelect.addEventListener('change', (e) => {
@@ -2507,9 +2710,12 @@ const setupEventListeners = () => {
         saveState();
     });
 
-    const handleSearchInput = debounce(() => {
-        const query = dom.citySearchInput.value.toLowerCase();
-        dom.searchDropdown.innerHTML = '';
+    const handleSearchInput = (e) => {
+        const input = e.target;
+        const dropdown = input.nextElementSibling;
+        const query = input.value.toLowerCase();
+        
+        dropdown.innerHTML = '';
         if (query) {
             const filteredCities = cityData.filter(c => 
                 c.name.toLowerCase().includes(query) || 
@@ -2521,20 +2727,29 @@ const setupEventListeners = () => {
                 item.innerHTML = `<span class="flag">${city.flag}</span> <span class="city-name">${city.name}</span>`;
                 item.addEventListener('click', () => {
                     addClock(city.timezone);
-                    dom.citySearchInput.value = '';
-                    dom.searchDropdown.classList.remove('active');
+                    input.value = '';
+                    dropdown.classList.remove('active');
                 });
-                dom.searchDropdown.appendChild(item);
+                dropdown.appendChild(item);
             });
-            dom.searchDropdown.classList.toggle('active', filteredCities.length > 0);
+            dropdown.classList.toggle('active', filteredCities.length > 0);
         } else {
-            dom.searchDropdown.classList.remove('active');
+            dropdown.classList.remove('active');
         }
+    };
+
+    dom.citySearchInputs.forEach(input => {
+        input.addEventListener('input', debounce(handleSearchInput, 300));
     });
-    dom.citySearchInput.addEventListener('input', handleSearchInput);
+
     document.addEventListener('click', (e) => {
-        if (!dom.searchContainer.contains(e.target)) {
-            dom.searchDropdown.classList.remove('active');
+        document.querySelectorAll('.search-dropdown.active').forEach(dropdown => {
+             if (!e.target.closest('.search-container')) {
+                dropdown.classList.remove('active');
+            }
+        });
+        if (!e.target.closest('#topSearchContainer') && e.target !== dom.searchBtn && !dom.searchBtn.contains(e.target)) {
+             dom.topSearchContainer.classList.remove('active');
         }
     });
 
@@ -2580,16 +2795,23 @@ const setupEventListeners = () => {
     });
     
     dom.refreshCardsBtn.addEventListener('click', async () => {
-        const clocksToRefresh = state.pinnedClocks;
-        if (clocksToRefresh.length === 0) return;
         dom.refreshCardsBtn.disabled = true;
-
-        const refreshPromises = clocksToRefresh.map(clock => createClockObject(clock.timezone));
+        const timezonesToRefresh = [
+            state.mainClock.timezone,
+            ...state.pinnedClocks.map(c => c.timezone)
+        ];
+        const uniqueTimezones = [...new Set(timezonesToRefresh)];
+        const refreshPromises = uniqueTimezones.map(tz => createClockObject(tz));
         const refreshedClocks = await Promise.all(refreshPromises);
 
         refreshedClocks.forEach(refreshedClock => {
+            if (refreshedClock.timezone === state.mainClock.timezone) {
+                state.mainClock = { ...state.mainClock, ...refreshedClock };
+            }
             const index = state.pinnedClocks.findIndex(c => c.timezone === refreshedClock.timezone);
-            if (index !== -1) state.pinnedClocks[index] = refreshedClock;
+            if (index !== -1) {
+                state.pinnedClocks[index] = refreshedClock;
+            }
         });
 
         renderPinnedClocks();
@@ -2773,8 +2995,12 @@ const init = async () => {
     dom.autoThemeToggle.checked = state.settings.autoTheme;
     dom.manualThemeToggle.checked = state.settings.manualThemeDark;
     dom.hourFormatToggle.checked = state.settings.is24Hour;
+    dom.searchLayoutToggle.checked = state.settings.searchLayout === 'top';
+    dom.menuBackgroundToggle.checked = state.settings.menuBackground;
     dom.languageSelect.value = state.settings.language;
 
+    applySearchLayout();
+    applyMenuBackground();
     applyLanguage();
     renderAlarms();
     
