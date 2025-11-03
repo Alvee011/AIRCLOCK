@@ -309,7 +309,7 @@ This rule applies to both the Nav Menu and Settings modal.
     margin-bottom: 2rem;
     transition: var(--transition);
     cursor: pointer; /* For fullscreen toggle */
-    border: 2px solid transparent; /* <--- CHANGE 1.1 (ADDED) */
+    border: 1.4px solid transparent; /* <--- CHANGE 1.1 (ADDED) */
 }
 .main-clock .date {
     transition: color 0.2s ease;
@@ -864,7 +864,7 @@ Adjust the `height` property below to resize the main footer logo.
 Adjust the `height` property below to resize the "Product of TIGOTEK" logo.
 */
 .app-store-btn img {
-    height: 70px;
+    height: 84px;
 }
 
 .footer-links {
@@ -1500,14 +1500,23 @@ input:checked + .slider:before { transform: translateX(22px); }
 @media screen and (max-width: 768px) {
     /* Reduce main footer logo size for mobile */
     .footer-logo img {
-        height: 40px; /* Reduced from 60px */
+        height: 70px; /* Reduced from 60px */
     }
     
     /* Reduce TIGOTEK logo size for mobile */
     .app-store-btn img {
-        height: 50px; /* Reduced from 70px */
+        height: 75px; /* Reduced from 70px */
+    }
+    /* --- Mobile Header --- */
+    .logo img {
+        height: 40px; /* 20% smaller than 50px */
     }
     
+    .header-icon-btn {
+        width: 35px;  /* ~20% smaller than 44px */
+        height: 35px; /* ~20% smaller than 44px */
+    }
+    /* --- End Mobile Header --- */
     /* Adjust footer top container for better mobile layout */
     .footer-top {
         flex-direction: column; /* Stack logos vertically on small screens */
@@ -1717,7 +1726,7 @@ input:checked + .slider:before { transform: translateX(22px); }
                     </div>
                     <div class="timer-input-group">
                         <label for="timerMinutes">Minutes</label>
-                        <input type="number" id="timerMinutes" class="timer-input" min="0" max="59" value="10">
+                        <input type="number" id="timerMinutes" class="timer-input" min="0" max="59" value="24">
                     </div>
                     <div class="timer-input-group">
                         <label for="timerSeconds">Seconds</label>
@@ -3767,7 +3776,7 @@ const setupEventListeners = () => {
         if (state.timer.intervalId) clearInterval(state.timer.intervalId);
         state.timer = { totalSeconds: 0, remainingSeconds: 0, intervalId: null };
         dom.timerHoursInput.value = "0";
-        dom.timerMinutesInput.value = "10";
+        dom.timerMinutesInput.value = "24";
         dom.timerSecondsInput.value = "0";
         dom.timerInputsContainer.style.display = 'flex';
         updateTimerDisplay();
