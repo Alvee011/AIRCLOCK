@@ -1778,8 +1778,13 @@ input:checked + .slider:before { transform: translateX(22px); }
             <div class="footer-bottom">
                 <p style="text-align: left;">Airclock displays exact, official atomic clock time for any time zone (more than 7 million locations) in 58 languages.</p>
                 <p style="text-align: left;">
-                    <a href="#" id="langLinkEnglish">What time is it?</a> | <a href="#" id="langLinkBangla">কয়টা বাজে?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="mailto:info@tigotek.net">Reach Us</a>
-                </p>
+                    <a href="#" id="langLinkEnglish">What time is it?</a> | <a href="#" id="langLinkBangla">কয়টা বাজে?</a> | 
+                    <a href="#" id="langLinkArabic">ما هو الوقت؟</a> | 
+                    <a href="#" id="langLinkHindi">क्या समय हुआ है?</a> | 
+                    <a href="#" id="langLinkChinese">现在几点？</a> | 
+                    <a href="#" id="langLinkRussian">Который час?</a> | 
+                    <a href="mailto:info@tigotek.net">Reach Us</a>
+</p>
                 <div class="footer-credit">
                     <p>
                         Product of <a href="https://www.tigotek.net" target="_blank" rel="noopener noreferrer" class="footer-tigotek-link">Tigotek</a>
@@ -1987,6 +1992,10 @@ const dom = {
     languageSelect: document.getElementById('languageSelect'),
     langLinkBangla: document.getElementById('langLinkBangla'),
     langLinkEnglish: document.getElementById('langLinkEnglish'), // <--- CHANGE 3.2 (ADDED)
+    langLinkArabic: document.getElementById('langLinkArabic'), // <-- ADD
+    langLinkHindi: document.getElementById('langLinkHindi'), // <-- ADD
+    langLinkChinese: document.getElementById('langLinkChinese'), // <-- ADD
+    langLinkRussian: document.getElementById('langLinkRussian'), // <-- ADD
     calendarTitleText: document.getElementById('calendarTitleText'),
     calendarGrid: document.getElementById('calendarGrid'),
     recentNotesContainer: document.getElementById('recentNotesContainer'),
@@ -2663,7 +2672,14 @@ const translations = {
     // Updated Bengali translations
     bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", layout: "বিন্যাস", menu: "মেনু", menuBackground: "মেনুর পটভূমি দেখান", searchLayout: "শীর্ষ অনুসন্ধান বার", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", allNotes: "সমস্ত নোট", showAllNotes: "সব নোট দেখুন", noNotes: "কোন নোট পাওয়া যায়নি।", refreshCards: "কার্ড রিফ্রেশ করুন", popularCities: "সবচেয়ে জনপ্রিয় টাইমজোন এবং শহর" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে", same: "একই সময়" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", " শুক্র", "শনি"] } },
     // Updated Spanish translations
-    es: { name: "Español", ui: { notes: "Notes for", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", layout: "Diseño", menu: "Menú", menuBackground: "Mostrar fondo del menú", searchLayout: "Barra de búsqueda superior", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas.", refreshCards: "Actualizar Tarjetas", popularCities: "Zonas horarias y ciudades más populares" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } }
+    es: { name: "Español", ui: { notes: "Notes for", calendar: "Calendario", settings: "Ajustes", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo oscuro", format: "Formato", layout: "Diseño", menu: "Menú", menuBackground: "Mostrar fondo del menú", searchLayout: "Barra de búsqueda superior", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Restablecer datos", allNotes: "Todas las notas", showAllNotes: "Mostrar todas las notas", noNotes: "No se encontraron notas.", refreshCards: "Actualizar Tarjetas", popularCities: "Zonas horarias y ciudades más populares" }, placeholders: { search: "Buscar una ciudad o país...", notes: "Escribe algo para la fecha seleccionada..." }, alerts: { resetConfirm: "¿Estás seguro? Esto borrará todos los relojes y notas fijados.", noPinned: "Busca una ciudad para fijar un reloj." }, time: { ahead: "adelantado", behind: "atrasado", same: "Misma hora" }, calendar: { months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"], shortMonths: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"] } },
+    ar: { name: "العربية (Arabic)", ui: { notes: "ملاحظات لـ", calendar: "التقويم", settings: "الإعدادات", theme: "المظهر", autoTheme: "المظهر التلقائي", darkMode: "الوضع الداكن", format: "التنسيق", layout: "التخطيط", menu: "القائمة", menuBackground: "إظهار خلفية القائمة", searchLayout: "شريط البحث العلوي", hourFormat: "تنسيق 24 ساعة", language: "اللغة", reset: "إعادة ضبط جميع البيانات", allNotes: "كل الملاحظات", showAllNotes: "إظهار كل الملاحظات", noNotes: "لم يتم العثور على ملاحظات.", refreshCards: "تحديث البطاقات", popularCities: "أشهر المناطق الزمنية والمدن" }, placeholders: { search: "ابحث عن مدينة أو بلد...", notes: "اكتب شيئًا للتاريخ المحدد..." }, alerts: { resetConfirm: "هل أنت متأكد؟ سيؤدي هذا إلى مسح جميع الساعات والملاحظات المثبتة.", noPinned: "ابحث عن مدينة لتثبيت ساعة." }, time: { ahead: "متقدم", behind: "متأخر", same: "نفس الوقت" }, calendar: { months: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], shortMonths: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], weekdays: ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] } },
+    hi: { name: "हिन्दी (Hindi)", ui: { notes: "नोट्स", calendar: "कैलेंडर", settings: "सेटिंग्स", theme: "थीम", autoTheme: "ऑटो थीम", darkMode: "डार्क मोड", format: "प्रारूप", layout: "लेआउट", menu: "मेनू", menuBackground: "मेनू पृष्ठभूमि दिखाएं", searchLayout: "शीर्ष खोज बार", hourFormat: "24-घंटे का प्रारूप", language: "भाषा", reset: "सभी डेटा रीसेट करें", allNotes: "सभी नोट्स", showAllNotes: "सभी नोट्स दिखाएं", noNotes: "कोई नोट्स नहीं मिला।", refreshCards: "कार्ड रिफ्रेश करें", popularCities: "सबसे लोकप्रिय समयक्षेत्र और शहर" }, placeholders: { search: "शहर या देश खोजें...", notes: "चयनित तिथि के लिए कुछ लिखें..." }, alerts: { resetConfirm: "क्या आप निश्चित हैं? यह सभी पिन की गई घड़ियों और नोट्स को साफ़ कर देगा।", noPinned: "घड़ी पिन करने के लिए एक शहर खोजें।" }, time: { ahead: "आगे", behind: "पीछे", same: "वही समय" }, calendar: { months: ["जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितम्बर", "अक्टूबर", "नवम्बर", "दिसम्बर"], shortMonths: ["जन", "फ़र", "मार्च", "अप्रैल", "मई", "जून", "जुल", "अगस्त", "सित", "अक्टू", "नव", "दिस"], weekdays: ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"] } },
+    zh: { name: "简体中文 (Chinese)", ui: { notes: "笔记", calendar: "日历", settings: "设置", theme: "主题", autoTheme: "自动主题", darkMode: "深色模式", format: "格式", layout: "布局", menu: "菜单", menuBackground: "显示菜单背景", searchLayout: "顶部搜索栏", hourFormat: "24小时格式", language: "语言", reset: "重置所有数据", allNotes: "所有笔记", showAllNotes: "显示所有笔记", noNotes: "未找到笔记。", refreshCards: "刷新卡片", popularCities: "最受欢迎的时区和城市" }, placeholders: { search: "搜索城市或国家...", notes: "为选定日期写点什么..." }, alerts: { resetConfirm: "您确定吗？这将清除所有固定的时钟和笔记。", noPinned: "搜索一个城市以固定时钟。" }, time: { ahead: "快", behind: "慢", same: "相同时间" }, calendar: { months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], shortMonths: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"], weekdays: ["日", "一", "二", "三", "四", "五", "六"] } },
+    ru: { name: "Русский (Russian)", ui: { notes: "Заметки для", calendar: "Календарь", settings: "Настройки", theme: "Тема", autoTheme: "Авто-тема", darkMode: "Темный режим", format: "Формат", layout: "Макет", menu: "Меню", menuBackground: "Показать фон меню", searchLayout: "Верхняя строка поиска", hourFormat: "24-часовой формат", language: "Язык", reset: "Сбросить все данные", allNotes: "Все заметки", showAllNotes: "Показать все заметки", noNotes: "Заметок не найдено.", refreshCards: "Обновить карточки", popularCities: "Самые популярные часовые пояса и города" }, placeholders: { search: "Поиск города или страны...", notes: "Напишите что-нибудь для выбранной даты..." }, alerts: { resetConfirm: "Вы уверены? Это удалит все закрепленные часы и заметки.", noPinned: "Найдите город, чтобы закрепить часы." }, time: { ahead: "вперед", behind: "назад", same: "То же время" }, calendar: { months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], shortMonths: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"], weekdays: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"] } },
+    ko: { name: "한국어 (Korean)", ui: { notes: "메모", calendar: "캘린더", settings: "설정", theme: "테마", autoTheme: "자동 테마", darkMode: "다크 모드", format: "형식", layout: "레이아웃", menu: "메뉴", menuBackground: "메뉴 배경 표시", searchLayout: "상단 검색창", hourFormat: "24시간 형식", language: "언어", reset: "모든 데이터 재설정", allNotes: "모든 메모", showAllNotes: "모든 메모 보기", noNotes: "메모를 찾을 수 없습니다.", refreshCards: "카드 새로 고침", popularCities: "가장 인기 있는 시간대 및 도시" }, placeholders: { search: "도시 또는 국가 검색...", notes: "선택한 날짜에 대해 무언가를 작성하십시오..." }, alerts: { resetConfirm: "확실합니까? 모든 고정된 시계와 메모가 지워집니다.", noPinned: "시계를 고정하려면 도시를 검색하세요." }, time: { ahead: "빠름", behind: "느림", same: "같은 시간" }, calendar: { months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"], shortMonths: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"], weekdays: ["일", "월", "화", "수", "목", "금", "토"] } },
+    pt: { name: "Português", ui: { notes: "Notas para", calendar: "Calendário", settings: "Configurações", theme: "Tema", autoTheme: "Tema automático", darkMode: "Modo escuro", format: "Formato", layout: "Layout", menu: "Menu", menuBackground: "Mostrar fundo do menu", searchLayout: "Barra de pesquisa superior", hourFormat: "Formato 24 horas", language: "Idioma", reset: "Redefinir todos os dados", allNotes: "Todas as notas", showAllNotes: "Mostrar todas as notas", noNotes: "Nenhuma nota encontrada.", refreshCards: "Atualizar cartões", popularCities: "Fusos horários e cidades mais populares" }, placeholders: { search: "Pesquisar cidade ou país...", notes: "Escreva algo para a data selecionada..." }, alerts: { resetConfirm: "Tem certeza? Isso limpará todos os relógios e notas fixados.", noPinned: "Procure uma cidade para fixar um relógio." }, time: { ahead: "adiantado", behind: "atrasado", same: "Mesmo horário" }, calendar: { months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"], shortMonths: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"], weekdays: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] } },
+    fr: { name: "Français", ui: { notes: "Notes pour", calendar: "Calendrier", settings: "Paramètres", theme: "Thème", autoTheme: "Thème auto", darkMode: "Mode sombre", format: "Format", layout: "Mise en page", menu: "Menu", menuBackground: "Afficher l'arrière-plan du menu", searchLayout: "Barre de recherche supérieure", hourFormat: "Format 24 heures", language: "Langue", reset: "Réinitialiser les données", allNotes: "Toutes les notes", showAllNotes: "Afficher toutes les notes", noNotes: "Aucune note trouvée.", refreshCards: "Actualiser les cartes", popularCities: "Fuseaux horaires et villes les plus populaires" }, placeholders: { search: "Rechercher une ville ou un pays...", notes: "Écrivez quelque chose pour la date sélectionnée..." }, alerts: { resetConfirm: "Êtes-vous sûr ? Cela effacera toutes les horloges et notes épinglées.", noPinned: "Recherchez une ville pour épingler une horloge." }, time: { ahead: "en avance", behind: "en retard", same: "Même heure" }, calendar: { months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], shortMonths: ["Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"], weekdays: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] } },
 };
 
 // --- Page Navigation Switching ---
@@ -3300,7 +3316,16 @@ const applyLanguage = () => {
 };
 
 const formatTime = (date, timezone) => {
-    const locale = state.settings.language === 'bn' ? 'bn-BD' : state.settings.language;
+    let locale = state.settings.language;
+    if (locale === 'ar') {
+        locale = 'ar-u-nu-arab'; // Force Arabic numerals
+    } else if (locale === 'bn') {
+        locale = 'bn-BD'; // Allow Bengali numerals
+    } else if (locale === 'hi') {
+        locale = 'hi-u-nu-latn'; // Force Latin numerals for Hindi
+    }
+    // All other languages (en, es, etc.) will use their default (Latin) numerals.
+    
     return date.toLocaleTimeString(locale, {
         timeZone: timezone,
         hour12: !state.settings.is24Hour,
@@ -3309,7 +3334,16 @@ const formatTime = (date, timezone) => {
 };
 
 const formatDate = (date, timezone, format = 'long') => {
-    const locale = state.settings.language === 'bn' ? 'bn-BD' : state.settings.language;
+    let locale = state.settings.language;
+    if (locale === 'ar') {
+        locale = 'ar-u-nu-arab'; // Force Arabic numerals
+    } else if (locale === 'bn') {
+        locale = 'bn-BD'; // Allow Bengali numerals
+    } else if (locale === 'hi') {
+        locale = 'hi-u-nu-latn'; // Force Latin numerals for Hindi
+    }
+    // All other languages (en, es, etc.) will use their default (Latin) numerals.
+    
     return date.toLocaleDateString(locale, {
         timeZone: timezone,
         weekday: format, year: 'numeric', month: format, day: 'numeric'
@@ -3572,6 +3606,37 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'en';
         dom.languageSelect.value = 'en';
+        applyLanguage();
+        saveState();
+    });
+    dom.langLinkArabic.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.settings.language = 'ar';
+        dom.languageSelect.value = 'ar';
+        applyLanguage();
+        saveState();
+    });
+
+    dom.langLinkHindi.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.settings.language = 'hi';
+        dom.languageSelect.value = 'hi';
+        applyLanguage();
+        saveState();
+    });
+
+    dom.langLinkChinese.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.settings.language = 'zh';
+        dom.languageSelect.value = 'zh';
+        applyLanguage();
+        saveState();
+    });
+
+    dom.langLinkRussian.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.settings.language = 'ru';
+        dom.languageSelect.value = 'ru';
         applyLanguage();
         saveState();
     });
