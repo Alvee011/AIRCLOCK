@@ -309,6 +309,7 @@ This rule applies to both the Nav Menu and Settings modal.
     margin-bottom: 2rem;
     transition: var(--transition);
     cursor: pointer; /* For fullscreen toggle */
+    border: 2px solid transparent; /* <--- CHANGE 1.1 (ADDED) */
 }
 .main-clock .date {
     transition: color 0.2s ease;
@@ -327,6 +328,7 @@ This rule applies to both the Nav Menu and Settings modal.
 .main-clock:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    border-color: var(--accent-color); /* <--- CHANGE 1.2 (ADDED) */
 }
 .dark-theme .main-clock:hover {
     box-shadow: 0 12px 30px rgba(0,0,0,0.4);
@@ -884,6 +886,17 @@ Adjust the `height` property below to resize the "Product of TIGOTEK" logo.
 .footer-bottom a:hover {
     text-decoration: underline;
 }
+
+/* --- Footer "Reach Us" Link Color --- */
+.footer-bottom a[href="mailto:info@tigotek.net"] {
+    color: #00FF00; /* Flashy green */
+}
+
+.footer-bottom a[href="mailto:info@tigotek.net"]:hover {
+    color: #32CD32; /* A slightly darker green for hover */
+}
+/* <--- CHANGE 2 (ADDED) */
+
 
 .footer-credit {
     text-align: center;
@@ -1465,6 +1478,92 @@ input:checked + .slider:before { transform: translateX(22px); }
 .alarm-card.disabled .alarm-card-label {
     text-decoration: line-through;
 }
+
+
+/* --- RESPONSIVE FOOTER LOGO SIZING ---
+   Desktop: Maintains current sizes (60px for main logo, 70px for TIGOTEK logo)
+   Mobile: Scales down proportionally for better fit on smaller screens
+*/
+
+/* Main Footer Logo - Default (Desktop) size already set at line 894 */
+.footer-logo img {
+    height: 60px;
+    display: none;
+}
+
+/* TIGOTEK "Product of" Logo - Default (Desktop) size already set at line 905 */
+.app-store-btn img {
+    height: 70px;
+}
+
+/* --- MOBILE RESPONSIVENESS (Below 768px) --- */
+@media screen and (max-width: 768px) {
+    /* Reduce main footer logo size for mobile */
+    .footer-logo img {
+        height: 40px; /* Reduced from 60px */
+    }
+    
+    /* Reduce TIGOTEK logo size for mobile */
+    .app-store-btn img {
+        height: 50px; /* Reduced from 70px */
+    }
+    
+    /* Adjust footer top container for better mobile layout */
+    .footer-top {
+        flex-direction: column; /* Stack logos vertically on small screens */
+        gap: 1.5rem; /* Add spacing between stacked logos */
+        align-items: center; /* Center align both logos */
+        margin-bottom: 1.5rem; /* Adjust bottom margin */
+        padding-bottom: 1.5rem; /* Adjust bottom padding */
+    }
+    
+    /* Center align the TIGOTEK logo button on mobile */
+    .app-store-btn {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* --- TABLET RESPONSIVENESS (Between 768px and 1024px) --- */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Slightly reduce main footer logo for tablets */
+    .footer-logo img {
+        height: 50px; /* Reduced from 60px */
+    }
+    
+    /* Slightly reduce TIGOTEK logo for tablets */
+    .app-store-btn img {
+        height: 60px; /* Reduced from 70px */
+    }
+}
+
+/* --- EXTRA SMALL MOBILE (Below 480px) --- */
+@media screen and (max-width: 480px) {
+    /* Further reduce logos for very small screens */
+    .footer-logo img {
+        height: 35px; /* Even smaller for tiny screens */
+    }
+    
+    .app-store-btn img {
+        height: 45px; /* Even smaller for tiny screens */
+    }
+    
+    /* Reduce footer padding on very small screens */
+    .site-footer {
+        padding: 2rem 1rem;
+    }
+    
+    /* Make footer text more compact */
+    .footer-bottom {
+        font-size: 0.8rem;
+    }
+    
+    .footer-credit {
+        font-size: 0.75rem;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -1546,7 +1645,6 @@ input:checked + .slider:before { transform: translateX(22px); }
             <div class="clocks-grid" id="clocksGrid"></div>
 
             <div class="section" id="popular-cities-section">
-                <!-- Added ID "popularCitiesTitle" -->
                 <h2 class="section-title" id="popularCitiesTitle">Most popular timezones and cities</h2>
                 <div id="popular-cities-container">
                     <div id="city-cloud"></div>
@@ -1671,7 +1769,7 @@ input:checked + .slider:before { transform: translateX(22px); }
             <div class="footer-bottom">
                 <p style="text-align: left;">Airclock displays exact, official atomic clock time for any time zone (more than 7 million locations) in 58 languages.</p>
                 <p style="text-align: left;">
-                    <a href="#">What time is it?</a> | <a href="#" id="langLinkBangla">কয়টা বাজে?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="mailto:info@tigotek.net">Reach Us</a>
+                    <a href="#" id="langLinkEnglish">What time is it?</a> | <a href="#" id="langLinkBangla">কয়টা বাজে?</a> | <a href="#">Quelle heure est-il ?</a> | <a href="#">Который час?</a> | <a href="#">Que horas são?</a> | <a href="#">Jam berapa?</a> | <a href="#">Wieviel Uhr ist es?</a> | <a href="mailto:info@tigotek.net">Reach Us</a>
                 </p>
                 <div class="footer-credit">
                     <p>
@@ -1879,6 +1977,7 @@ const dom = {
     menuBackgroundToggle: document.getElementById('menuBackgroundToggle'),
     languageSelect: document.getElementById('languageSelect'),
     langLinkBangla: document.getElementById('langLinkBangla'),
+    langLinkEnglish: document.getElementById('langLinkEnglish'), // <--- CHANGE 3.2 (ADDED)
     calendarTitleText: document.getElementById('calendarTitleText'),
     calendarGrid: document.getElementById('calendarGrid'),
     recentNotesContainer: document.getElementById('recentNotesContainer'),
@@ -2551,7 +2650,7 @@ const popularCities = [
 
 const translations = {
     // Updated English translations
-    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Format", layout: "Layout", menu: "Menu", menuBackground: "Show Menu Background", searchLayout: "Top Search Bar", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found.", refreshCards: "Refresh Cards", popularCities: "Most popular timezones and cities" }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
+    en: { name: "English", ui: { notes: "Notes for", calendar: "Calendar", settings: "Settings", theme: "Theme", autoTheme: "Auto Theme", darkMode: "Dark Mode", format: "Formato", layout: "Diseño", menu: "Menú", menuBackground: "Show Menu Background", searchLayout: "Top Search Bar", hourFormat: "24-Hour Format", language: "Language", reset: "Reset All Data", allNotes: "All Notes", showAllNotes: "Show All Notes", noNotes: "No notes found.", refreshCards: "Refresh Cards", popularCities: "Most popular timezones and cities" }, placeholders: { search: "Search for a city or country...", notes: "Write something for the selected date..." }, alerts: { resetConfirm: "Are you sure? This will clear all pinned clocks and notes.", noPinned: "Search for a city to pin a clock." }, time: { ahead: "ahead", behind: "behind", same: "Same time" }, calendar: { months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dic"], weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } },
     // Updated Bengali translations
     bn: { name: "বাংলা (Bangla)", ui: { notes: "নোট", calendar: "ক্যালেন্ডার", settings: "সেটিংস", theme: "থিম", autoTheme: "স্বয়ংক্রিয় থিম", darkMode: "ডার্ক মোড", format: "ফরম্যাট", layout: "বিন্যাস", menu: "মেনু", menuBackground: "মেনুর পটভূমি দেখান", searchLayout: "শীর্ষ অনুসন্ধান বার", hourFormat: "২৪-ঘন্টা ফরম্যাট", language: "ভাষা", reset: "সব ডেটা রিসেট করুন", allNotes: "সমস্ত নোট", showAllNotes: "সব নোট দেখুন", noNotes: "কোন নোট পাওয়া যায়নি।", refreshCards: "কার্ড রিফ্রেশ করুন", popularCities: "সবচেয়ে জনপ্রিয় টাইমজোন এবং শহর" }, placeholders: { search: "শহর বা দেশ খুঁজুন...", notes: "কিছু লিখুন..." }, alerts: { resetConfirm: "আপনি কি নিশ্চিত? এটি সমস্ত পিন করা ঘড়ি এবং নোট মুছে ফেলবে।", noPinned: "ঘড়ি পিন করতে একটি শহর অনুসন্ধান করুন।" }, time: { ahead: "এগিয়ে", behind: "পিছিয়ে", same: "একই সময়" }, calendar: { months: ["জানুয়ারী", "ফেব্রুয়ারী", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"], shortMonths: ["জানু", "ফেব্রু", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টে", "অক্টো", "নভে", "ডিসে"], weekdays: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", " শুক্র", "শনি"] } },
     // Updated Spanish translations
@@ -3459,6 +3558,15 @@ const setupEventListeners = () => {
         applyLanguage();
         saveState();
     });
+
+    dom.langLinkEnglish.addEventListener('click', (e) => {
+        e.preventDefault();
+        state.settings.language = 'en';
+        dom.languageSelect.value = 'en';
+        applyLanguage();
+        saveState();
+    });
+    // <--- CHANGE 3.3 (ADDED)
 
     const handleSearchInput = (e) => {
         const input = e.target;
