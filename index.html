@@ -897,6 +897,43 @@ Adjust the `height` property below to resize the "Product of TIGOTEK" logo.
 }
 /* <--- CHANGE 2 (ADDED) */
 
+/* --- NEW: Footer Language Dropdown Styling --- */
+/* This dropdown is synchronized with the Settings language selector */
+.footer-language-select {
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: transparent;
+    color: inherit;
+}
+
+/* Light theme styling for footer language dropdown */
+.light-theme .footer-language-select {
+    border-color: var(--border-light);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Dark theme styling for footer language dropdown */
+.dark-theme .footer-language-select {
+    border-color: var(--border-dark);
+    background-color: rgba(31, 31, 31, 0.5);
+}
+
+/* Hover effect for footer language dropdown */
+.footer-language-select:hover {
+    border-color: var(--accent-color);
+}
+
+/* Focus effect for footer language dropdown */
+.footer-language-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+/* --- END: Footer Language Dropdown Styling --- */
 
 .footer-credit {
     text-align: center;
@@ -1783,6 +1820,10 @@ input:checked + .slider:before { transform: translateX(22px); }
                     <a href="#" id="langLinkHindi">क्या समय हुआ है?</a> | 
                     <a href="#" id="langLinkChinese">现在几点？</a> | 
                     <a href="#" id="langLinkRussian">Который час?</a> | 
+                    <!-- NEW: Footer Language Dropdown - Synchronized with Settings -->
+                    <select id="footerLanguageSelect" class="footer-language-select">
+                        <!-- Options populated by JavaScript, same as Settings language selector -->
+                    </select> | 
                     <a href="mailto:info@tigotek.net">Reach Us</a>
 </p>
                 <div class="footer-credit">
@@ -1990,6 +2031,7 @@ const dom = {
     searchLayoutToggle: document.getElementById('searchLayoutToggle'),
     menuBackgroundToggle: document.getElementById('menuBackgroundToggle'),
     languageSelect: document.getElementById('languageSelect'),
+    footerLanguageSelect: document.getElementById('footerLanguageSelect'), // NEW: Footer language dropdown reference
     langLinkBangla: document.getElementById('langLinkBangla'),
     langLinkEnglish: document.getElementById('langLinkEnglish'), // <--- CHANGE 3.2 (ADDED)
     langLinkArabic: document.getElementById('langLinkArabic'), // <-- ADD
@@ -3588,8 +3630,26 @@ const setupEventListeners = () => {
         applyMenuBackground();
         saveState();
     });
+    
+    // --- LANGUAGE CHANGE EVENT LISTENERS ---
+    // Both Settings language selector and Footer language dropdown are synchronized
+    // When one changes, the other updates automatically via the applyLanguage() function
+    
+    // Settings language selector change handler
     dom.languageSelect.addEventListener('change', (e) => {
         state.settings.language = e.target.value;
+        // Synchronize footer dropdown with settings selector
+        dom.footerLanguageSelect.value = e.target.value;
+        applyLanguage();
+        saveState();
+    });
+    
+    // NEW: Footer language dropdown change handler
+    // This mirrors the functionality of the Settings language selector
+    dom.footerLanguageSelect.addEventListener('change', (e) => {
+        state.settings.language = e.target.value;
+        // Synchronize settings selector with footer dropdown
+        dom.languageSelect.value = e.target.value;
         applyLanguage();
         saveState();
     });
@@ -3598,6 +3658,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'bn';
         dom.languageSelect.value = 'bn';
+        dom.footerLanguageSelect.value = 'bn';
         applyLanguage();
         saveState();
     });
@@ -3606,6 +3667,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'en';
         dom.languageSelect.value = 'en';
+        dom.footerLanguageSelect.value = 'en';
         applyLanguage();
         saveState();
     });
@@ -3613,6 +3675,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'ar';
         dom.languageSelect.value = 'ar';
+        dom.footerLanguageSelect.value = 'ar';
         applyLanguage();
         saveState();
     });
@@ -3621,6 +3684,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'hi';
         dom.languageSelect.value = 'hi';
+        dom.footerLanguageSelect.value = 'hi';
         applyLanguage();
         saveState();
     });
@@ -3629,6 +3693,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'zh';
         dom.languageSelect.value = 'zh';
+        dom.footerLanguageSelect.value = 'zh';
         applyLanguage();
         saveState();
     });
@@ -3637,6 +3702,7 @@ const setupEventListeners = () => {
         e.preventDefault();
         state.settings.language = 'ru';
         dom.languageSelect.value = 'ru';
+        dom.footerLanguageSelect.value = 'ru';
         applyLanguage();
         saveState();
     });
@@ -3963,26 +4029,47 @@ const loadState = async () => {
     }
 };
 
+// --- POPULATE LANGUAGE SELECTORS ---
+// This function populates BOTH the Settings language selector AND the Footer language dropdown
+// with all available languages from the translations object.
+// This ensures both dropdowns have identical options and stay synchronized.
 const populateLanguageSelector = () => {
+    // Clear both selectors first
     dom.languageSelect.innerHTML = '';
+    dom.footerLanguageSelect.innerHTML = '';
+    
+    // Loop through all available languages in the translations object
     for(const langCode in translations) {
-        const option = document.createElement('option');
-        option.value = langCode;
-        option.textContent = translations[langCode].name;
-        dom.languageSelect.appendChild(option);
+        // Create option for Settings language selector
+        const settingsOption = document.createElement('option');
+        settingsOption.value = langCode;
+        settingsOption.textContent = translations[langCode].name;
+        dom.languageSelect.appendChild(settingsOption);
+        
+        // Create identical option for Footer language dropdown
+        const footerOption = document.createElement('option');
+        footerOption.value = langCode;
+        footerOption.textContent = translations[langCode].name;
+        dom.footerLanguageSelect.appendChild(footerOption);
     }
 }
 
 const init = async () => {
+    // Populate both Settings and Footer language selectors with all available languages
     populateLanguageSelector();
     await loadState();
     
+    // Initialize all settings toggles and selectors with saved state
     dom.autoThemeToggle.checked = state.settings.autoTheme;
     dom.manualThemeToggle.checked = state.settings.manualThemeDark;
     dom.hourFormatToggle.checked = state.settings.is24Hour;
     dom.searchLayoutToggle.checked = state.settings.searchLayout === 'top';
     dom.menuBackgroundToggle.checked = state.settings.menuBackground;
+    
+    // Synchronize BOTH language selectors with the saved language preference
+    // This ensures both Settings and Footer dropdowns show the same selected language
     dom.languageSelect.value = state.settings.language;
+    dom.footerLanguageSelect.value = state.settings.language; // NEW: Initialize footer dropdown
 
     applySearchLayout();
     applyMenuBackground();
