@@ -1664,19 +1664,19 @@ input:checked + .slider:before { transform: translateX(22px); }
                 <div class="date" id="mainDate">Loading...</div>
                 <div class="location" id="mainLocation"></div>
                 <div class="sounds-container" id="soundsContainer">
-                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056029/Rain_f1od5r.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761223281/rain2_oo07o3.mov">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/alvee/video/upload/v1761056029/Rain_f1od5r.mp3" data-video="https://res.cloudinary.com/alvee/video/upload/v1761223281/rain2_oo07o3.mov">
                         <img src="rain.svg" alt="Rain icon">
                         <span>Rain</span>
                     </button>
-                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056020/Forest_uah836.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158049/Forest_NO_AUDIO_mihche.mp4">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/alvee/video/upload/v1761056020/Forest_uah836.mp3" data-video="https://res.cloudinary.com/alvee/video/upload/v1761158049/Forest_NO_AUDIO_mihche.mp4">
                         <img src="Forest.svg" alt="Forest icon">
                         <span>Forest</span>
                     </button>
-                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056596/Owl_q6mdbq.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158091/Owl_No_Audio_tojgpo.mp4">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/alvee/video/upload/v1761056596/Owl_q6mdbq.mp3" data-video="https://res.cloudinary.com/alvee/video/upload/v1761158091/Owl_No_Audio_tojgpo.mp4">
                         <img src="OWL.svg" alt="Owl icon">
                         <span>Owl</span>
                     </button>
-                    <button class="sound-btn" data-audio="https://res.cloudinary.com/dhkjgite9/video/upload/v1761056237/Focus_emjbto.mp3" data-video="https://res.cloudinary.com/dhkjgite9/video/upload/v1761158057/GALAXY_NO_AUDIO_zrshcb.mp4">
+                    <button class="sound-btn" data-audio="https://res.cloudinary.com/alvee/video/upload/v1761056237/Focus_emjbto.mp3" data-video="https://res.cloudinary.com/alvee/video/upload/v1761158057/GALAXY_NO_AUDIO_zrshcb.mp4">
                         <img src="Focus.svg" alt="Focus icon">
                         <span>Focus</span>
                     </button>
@@ -2938,7 +2938,7 @@ const renderLaps = () => {
 // Timer logic
 const playTimerSound = () => {
     try {
-    const timerSound = new Tone.Player("https://res.cloudinary.com/dhkjgite9/video/upload/v1761238099/alarm_timer_orkjxa.mp3").toDestination();
+    const timerSound = new Tone.Player("https://res.cloudinary.com/alvee/video/upload/v1761238099/alarm_timer_orkjxa.mp3").toDestination();
     Tone.loaded().then(() => {
     timerSound.start();
     });
@@ -2962,7 +2962,7 @@ const updateTimerDisplay = () => {
 // Alarm logic
  const playAlarmSound = (label) => {
     try {
-        const alarmSound = new Tone.Player("https://res.cloudinary.com/dhkjgite9/video/upload/v1761238099/alarm_qbd9zp.mp3").toDestination();
+        const alarmSound = new Tone.Player("https://res.cloudinary.com/alvee/video/upload/v1761238099/alarm_qbd9zp.mp3").toDestination();
         Tone.loaded().then(() => {
         alarmSound.start();
         });
@@ -3420,48 +3420,26 @@ const setupSoundPlayer = () => {
     const soundButtons = document.querySelectorAll('.sound-btn');
     
     soundButtons.forEach(button => {
-        button.addEventListener("click", () => {
+        button.addEventListener('click', () => {
             const audioSrc = button.dataset.audio;
-            const videoSrc = button.dataset.video;
 
             if (state.currentlyPlayingButton === button) {
-                // Stop playing
                 dom.ambientAudioPlayer.pause();
-                dom.ambientAudioPlayer.src = "";
-                
-                const videoPlayer = document.getElementById("ambient-video-player");
-                if (videoPlayer) {
-                    videoPlayer.pause();
-                    videoPlayer.src = "";
-                    videoPlayer.classList.remove("active");
-                }
-
-                button.classList.remove("active");
+                dom.ambientAudioPlayer.src = '';
+                button.classList.remove('active');
                 state.currentlyPlayingButton = null;
             } else {
-                // Start playing
                 if (state.currentlyPlayingButton) {
-                    state.currentlyPlayingButton.classList.remove("active");
+                    state.currentlyPlayingButton.classList.remove('active');
                 }
-                
                 dom.ambientAudioPlayer.src = audioSrc;
-                dom.ambientAudioPlayer.play().catch(e => console.error("Audio play failed:", e));
-                
-                const videoPlayer = document.getElementById("ambient-video-player");
-                if (videoPlayer && videoSrc) {
-                    videoPlayer.src = videoSrc;
-                    videoPlayer.play().catch(e => console.error("Video play failed:", e));
-                    videoPlayer.classList.add("active");
-                } else if (videoPlayer) {
-                    videoPlayer.classList.remove("active");
-                    videoPlayer.pause();
-                }
-
-                button.classList.add("active");
+                dom.ambientAudioPlayer.play();
+                button.classList.add('active');
                 state.currentlyPlayingButton = button;
             }
         });
     });
+};
 
 const downloadAllNotes = () => {
     let content = "AIRCLOCK NOTES\n==================\n\n";
